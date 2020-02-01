@@ -1,9 +1,17 @@
 import React from 'react';
-import { render } from '@testing-library/react';
 import App from './App';
+import {MemoryRouter} from 'react-router-dom'
+import {render} from '@testing-library/react'
+import '@testing-library/jest-dom/extend-expect'
 
-test('renders learn react link', () => {
-  const { getByText } = render(<App />);
-  const linkElement = getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+describe("App", () => {
+    it("should render a day view ", async () => {
+        const wrapper = render(
+            <MemoryRouter initialEntries={['/days/morgen']}>
+                <App/>
+            </MemoryRouter>
+        );
+
+        expect(wrapper.getByText("morgen")).toBeVisible();
+    });
 });
