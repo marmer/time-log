@@ -1,6 +1,10 @@
 import React from "react";
 
-export default function DayView(props: { day: String }) {
+export interface DayViewProps {
+    day: string;
+}
+
+export default function DayView(props: DayViewProps) {
     return <div>Day
         <p>{props.day}</p></div>
 }
