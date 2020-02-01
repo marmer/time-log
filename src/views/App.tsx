@@ -1,22 +1,23 @@
 import React from "react";
-import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
+import {HashRouter as Router, Redirect, Route, Switch} from "react-router-dom";
 import DayView from "./DayView";
 
-export default function App() {
-
-    return (
-        <Router>
-            <div>
-                <Switch>
-                    <Route exact path="/">
-                        <DayView day="today"/>
-                    </Route>
-                    <Route exact path="/:day">
-                        <DayView day="today"/>
-                    </Route>
-                </Switch>
-            </div>
-        </Router>
-    );
+export default class App extends React.Component {
+    render() {
+        return (
+            <Router>
+                <div>
+                    <Switch>
+                        <Route exact path="/">
+                            <Redirect to={"/heute"}/>
+                        </Route>
+                        <Route exact path="/:day" render={routeProps => {
+                            return <DayView day={routeProps.match.params.day}/>
+                        }}/>
+                    </Switch>
+                </div>
+            </Router>
+        );
+    }
 }
 

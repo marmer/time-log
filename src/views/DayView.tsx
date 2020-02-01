@@ -1,7 +1,6 @@
 import React from "react";
-import {useParams} from "react-router-dom";
 
-export default function DayView() {
+export default function DayView(props: { day: String }) {
     return <div>Day
-        <p>{useParams()}</p></div>
+        <p>{props.day}</p></div>
 }
