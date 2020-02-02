@@ -24,7 +24,10 @@ steps:
 - task: PublishCodeCoverageResults@1
   inputs:
     codeCoverageTool: 'Cobertura'
-    summaryFileLocation: '$(System.DefaultWorkingDirectory)/coverage/'
+    summaryFileLocation: 'coverage/cobertura-coverage.xml'
+    pathToSources: 'src'
+    reportDirectory: 'coverage/lcov-report'
+    failIfCoverageEmpty: true
 
 - script: npm run build
   displayName: npm run build
