@@ -10,6 +10,9 @@
     "coveragePathIgnorePatterns": [
       "/src/serviceWorker.ts",
       "/src/index.ts"
+    ],
+    "coverageReporters": [
+      "cobertura"
     ]
   },
   "dependencies": {
