@@ -11,16 +11,21 @@ export interface DayViewProps {
 
 export default class DayView extends React.Component<DayViewProps> {
     render() {
-        return <div>Day
-            <p>{this.props.day.toISOString()}</p>
+        return <div>
+            <p>Day</p>
             <Route render={({history}) =>
-                <DatePicker shouldCloseOnSelect
-                            todayButton="Today"
-                            dateFormat="yyyy-MM-dd"
-                            selected={this.props.day}
-                            onChange={day => {
-                                if (day) history.push(`/days/${moment(day).format("YYYY-MM-DD")}`)
-                            }}
+                <DatePicker
+                    dropdownMode={"scroll"}
+                    showMonthDropdown
+                    showYearDropdown
+                    useShortMonthInDropdown
+                    showWeekNumbers
+                    todayButton="today"
+                    dateFormat="yyyy-MM-dd"
+                    selected={this.props.day}
+                    onChange={day => {
+                        if (day) history.push(`/days/${moment(day).format("YYYY-MM-DD")}`)
+                    }}
                 />}/>
         </div>
     }
