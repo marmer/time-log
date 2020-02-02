@@ -25,3 +25,16 @@ steps:
     summaryFileLocation: '$(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml'
 
 - script: npm run build
+
+- task: SonarCloudPrepare@1
+  inputs:
+    SonarCloud: 'Sonar'
+    organization: 'marmer-github'
+    scannerMode: 'CLI'
+    configMode: 'file'
+
+- task: SonarCloudAnalyze@1
+
+- task: SonarCloudPublish@1
+  inputs:
+    pollingTimeoutSec: '300'
