@@ -2,6 +2,16 @@
   "name": "time-log",
   "version": "0.1.0",
   "private": true,
+  "author": {
+    "name": "MarMer"
+  },
+  "license": "GPL3",
+  "jest": {
+    "coveragePathIgnorePatterns": [
+      "/src/serviceWorker.ts",
+      "/src/index.ts"
+    ]
+  },
   "dependencies": {
     "bootstrap": "^4.4.1",
     "react": "^16.12.0",
