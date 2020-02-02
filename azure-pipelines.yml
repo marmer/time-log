@@ -16,15 +16,21 @@ steps:
   displayName: 'Install Node.js'
 
 - script: npm install
+  displayName: npm run install
 
 - script: npm test
+  displayName: npm run test
 
 - task: PublishCodeCoverageResults@1
   inputs:
     codeCoverageTool: 'Cobertura'
-    summaryFileLocation: '$(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml'
+    summaryFileLocation: 'coverage/cobertura-coverage.xml'
+    pathToSources: 'src'
+    reportDirectory: 'coverage/lcov-report'
+    failIfCoverageEmpty: true
 
 - script: npm run build
+  displayName: npm run build
 
 - task: SonarCloudPrepare@1
   inputs:
