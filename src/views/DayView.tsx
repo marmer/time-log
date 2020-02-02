@@ -7,9 +7,33 @@ export interface DayViewProps {
     day: Date;
 }
 
+
+function TimeLogTableView(props: {
+    timeLogs: { durationInMinutes: number, description: string }[]
+}) {
+    return <table>
+        <thead>
+        <tr>
+            <th>Duration in Minutes</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        {props.timeLogs.map(timeLog => <tr>
+            <td>{timeLog.description}</td>
+            <td>{timeLog.durationInMinutes}</td>
+        </tr>)}
+        </tbody>
+    </table>;
+}
+
 export default function DayView(props: DayViewProps) {
     return <div>
-        <p>Day</p>
         <DayNavigator day={props.day}/>
+        <TimeLogTableView timeLogs={[{
+            durationInMinutes: 5, description: "foo"
+        }, {
+            durationInMinutes: 42, description: "bar"
+        }]}/>
     </div>
 }
