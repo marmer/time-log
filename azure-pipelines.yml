@@ -25,9 +25,6 @@ steps:
   inputs:
     codeCoverageTool: 'Cobertura'
     summaryFileLocation: 'coverage/cobertura-coverage.xml'
-    pathToSources: 'src'
-    reportDirectory: 'coverage/lcov-report'
-    failIfCoverageEmpty: true
 
 - script: npm run build
   displayName: npm run build
