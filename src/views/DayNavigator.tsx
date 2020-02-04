@@ -8,7 +8,7 @@ export interface DayNavigatorProps {
     day: Date;
 }
 
-export function DayNavigator(props: DayNavigatorProps) {
+export default function DayNavigator(props: DayNavigatorProps) {
     return <Route render={({history}) =>
         <DatePicker
             dropdownMode={"scroll"}

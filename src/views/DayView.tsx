@@ -1,7 +1,8 @@
 import React from "react";
 
 import "react-datepicker/dist/react-datepicker.css";
-import {DayNavigator} from "./DayNavigator";
+import DayNavigator from "./DayNavigator";
+import TimeLogService, {TimeLog} from "../core/TimeLogService";
 
 export interface DayViewProps {
     day: Date;
@@ -9,7 +10,7 @@ export interface DayViewProps {
 
 
 function TimeLogTableView(props: {
-    timeLogs: { durationInMinutes: number, description: string }[]
+    timeLogs: TimeLog[]
 }) {
     return <table>
         <thead>
@@ -19,7 +20,7 @@ function TimeLogTableView(props: {
         </tr>
         </thead>
         <tbody>
-        {props.timeLogs.map(timeLog => <tr>
+        {props.timeLogs.map(timeLog => <tr key={timeLog.description}>
             <td>{timeLog.description}</td>
             <td>{timeLog.durationInMinutes}</td>
         </tr>)}
@@ -27,13 +28,30 @@ function TimeLogTableView(props: {
     </table>;
 }
 
-export default function DayView(props: DayViewProps) {
-    return <div>
-        <DayNavigator day={props.day}/>
-        <TimeLogTableView timeLogs={[{
-            durationInMinutes: 5, description: "foo"
-        }, {
-            durationInMinutes: 42, description: "bar"
-        }]}/>
-    </div>
+interface TimeLogTableState {
+    timeLogs: TimeLog[]
+}
+
+export default class DayView extends React.Component<DayViewProps, TimeLogTableState> {
+
+    constructor(props: Readonly<DayViewProps>) {
+        super(props);
+
+        this.state = {
+            timeLogs: []
+        }
+    }
+
+    componentDidMount(): void {
+        TimeLogService.getTimeLogsForDay(this.props.day)
+            .then(timeLogs => this.setState({timeLogs}));
+    }
+
+    render() {
+        return <div>
+            <DayNavigator day={this.props.day}/>
+            <TimeLogTableView timeLogs={this.state.timeLogs}/>
+            <p>Loading...</p>
+        </div>
+    }
 }
