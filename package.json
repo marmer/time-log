@@ -12,7 +12,8 @@
       "/src/index.ts"
     ],
     "coverageReporters": [
-      "cobertura"
+      "cobertura",
+      "lcov"
     ]
   },
   "dependencies": {
