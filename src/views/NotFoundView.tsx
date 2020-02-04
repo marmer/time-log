@@ -1,7 +1,7 @@
 import React from "react";
 
 export interface NotFoundViewProps {
-    location: String;
+    location: string;
 }
 
 export default (props: NotFoundViewProps) => <div>
