@@ -29,7 +29,7 @@ function TimeLogTableView(props: {
 }
 
 interface TimeLogTableState {
-    timeLogs: TimeLog[]
+    timeLogs: TimeLog[] | null
 }
 
 export default class DayView extends React.Component<DayViewProps, TimeLogTableState> {
@@ -38,7 +38,7 @@ export default class DayView extends React.Component<DayViewProps, TimeLogTableS
         super(props);
 
         this.state = {
-            timeLogs: []
+            timeLogs: null
         }
     }
 
@@ -50,8 +50,10 @@ export default class DayView extends React.Component<DayViewProps, TimeLogTableS
     render() {
         return <div>
             <DayNavigator day={this.props.day}/>
-            <TimeLogTableView timeLogs={this.state.timeLogs}/>
-            <p>Loading...</p>
+            {this.state.timeLogs === null ?
+                <p>Loading...</p> :
+                <TimeLogTableView timeLogs={this.state.timeLogs}/>
+            }
         </div>
     }
 }

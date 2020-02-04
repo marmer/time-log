@@ -17,7 +17,7 @@ describe("DayView", () => {
             expect(underTest.getByText("Loading..."))
         });
 
-        it("should show existing entries if it's possible to load them", async () => {
+        it("should show existing entries if it's possible to load time logs", async () => {
             const someDay = new Date(2020, 2, 2);
 
             TimeLogService.getTimeLogsForDay = jest.fn().mockImplementation((_: Date) => Promise.resolve([{
@@ -30,7 +30,19 @@ describe("DayView", () => {
             const actualDescription = await reactTest.waitForElement(() => underTest.getByText("fancy description for day " + someDay.toISOString()));
             expect(actualDescription).toBeVisible();
         });
-        // TODO: marmer 04.02.2020 error case
-    });
 
+        it("should not show the loading state if it was possible to load time logs", async () => {
+            const someDay = new Date(2020, 2, 2);
+
+            TimeLogService.getTimeLogsForDay = jest.fn().mockImplementation((_: Date) => Promise.resolve([{
+                durationInMinutes: 1234,
+                description: "fancy description for day " + someDay.toISOString()
+            } as TimeLog]));
+
+            const underTest = reactTest.render(<DayView day={someDay}/>);
+            const loadingState = underTest.getByText("Loading...")
+
+            await reactTest.waitForElementToBeRemoved(() => underTest.getByText("Loading..."));
+        });
+    });
 });
