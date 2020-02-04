@@ -21,8 +21,8 @@ export default class App extends React.Component {
                     <Route exact path="/days/:day" render={routeProps =>
                         moment(routeProps.match.params.day).isValid() ?
                             <DayView day={moment(routeProps.match.params.day).toDate()}/> :
-                            <Route component={NotFoundView}/>}/>
-                    <Route component={NotFoundView}/>
+                            <NotFoundView location={routeProps.location.pathname}/>}/>
+                    <Route render={routeProps => <NotFoundView location={routeProps.location.pathname}/>}/>
                 </Switch>
             </div>
         );

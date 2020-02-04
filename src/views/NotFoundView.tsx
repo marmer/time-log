@@ -1,3 +1,10 @@
 import React from "react";
 
-export default () => <h1>Who told you about this location?</h1>;
+export interface NotFoundViewProps {
+    location: String;
+}
+
+export default (props: NotFoundViewProps) => <div>
+    <h1>Who told you about this location?</h1>
+    <p>Nothing to see here at: <em>{props.location}</em></p>
+</div>;

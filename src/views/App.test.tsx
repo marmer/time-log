@@ -6,6 +6,7 @@ import '@testing-library/jest-dom/extend-expect'
 import {DayViewProps} from "./DayView";
 import {createMemoryHistory} from 'history'
 import moment from "moment";
+import {NotFoundViewProps} from "./NotFoundView";
 
 jest.mock("./DayView", () => (props: DayViewProps): React.ReactNode => <div>
     <div>{
@@ -13,7 +14,10 @@ jest.mock("./DayView", () => (props: DayViewProps): React.ReactNode => <div>
     }</div>
     <div>{(props as any).location}</div>
 </div>);
-jest.mock("./NotFoundView", () => (): React.ReactNode => <div>NotFoundView</div>);
+jest.mock("./NotFoundView", () => (props: NotFoundViewProps): React.ReactNode => <div>
+    <p>NotFoundView</p>
+    <p>{props.location}</p>
+</div>);
 
 describe("App", () => {
     describe("default route", () => {
@@ -71,6 +75,7 @@ describe("App", () => {
         );
 
         expect(wrapper.getByText("NotFoundView")).toBeVisible();
+        expect(wrapper.getByText("/days/2020-02-30")).toBeVisible();
     });
 
     it("should show a not found message on an not existing route", async () => {
@@ -81,5 +86,6 @@ describe("App", () => {
         );
 
         expect(wrapper.getByText("NotFoundView")).toBeVisible();
+        expect(wrapper.getByText("/Definitely/NotExisting/path")).toBeVisible();
     });
 });
