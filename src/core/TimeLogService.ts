@@ -1,4 +1,4 @@
-import {TimeLogDatabase} from "../local/TimeLogDatabase";
+import TimeLogRepository from "../local/TimeLogRepository";
 
 export interface TimeLog {
     day: Date;
@@ -7,10 +7,9 @@ export interface TimeLog {
 }
 
 export default class TimeLogService {
-    private static readonly db = new TimeLogDatabase();
 
     public static async getTimeLogsForDay(date: Date): Promise<TimeLog[]> {
-        return TimeLogService.db.timeLogs.where("date").equals(date).toArray();
+        return Promise.resolve(TimeLogRepository.getTimeLogsForDay(date));
     }
 
 }
