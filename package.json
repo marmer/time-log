@@ -28,6 +28,7 @@
     "typescript": "~3.7.5"
   },
   "devDependencies": {
+    "@types/lockr": "^0.8.6",
     "@testing-library/jest-dom": "5.1.0",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
