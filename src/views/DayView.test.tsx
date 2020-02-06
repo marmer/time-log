@@ -19,7 +19,6 @@ describe("DayView", () => {
     it("should show the time logs for the appropriate day", async () => {
         const day = new Date(2020, 3, 4);
         const underTest = reactTest.render(<DayView day={day}/>);
-
         underTest.getByText("TimeLogTableView+" + day.toISOString());
     });
 });
