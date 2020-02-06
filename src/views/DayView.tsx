@@ -1,6 +1,6 @@
 import React from "react";
 import DayNavigator from "./DayNavigator";
-import {TimeLogTableView} from "./TimeLogTableView";
+import TimeLogTableView from "./TimeLogTableView";
 
 export interface DayViewProps {
     day: Date;
