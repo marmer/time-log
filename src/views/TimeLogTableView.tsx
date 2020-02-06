@@ -1,21 +1,45 @@
-import {TimeLog} from "../core/TimeLogService";
+import TimeLogService, {TimeLog} from "../core/TimeLogService";
 import React from "react";
 
-export function TimeLogTableView(props: {
-    timeLogs: TimeLog[]
-}) {
-    return <table>
-        <thead>
-        <tr>
-            <th>Duration in Minutes</th>
-            <th>Description</th>
-        </tr>
-        </thead>
-        <tbody>
-        {props.timeLogs.map(timeLog => <tr key={timeLog.description}>
-            <td>{timeLog.description}</td>
-            <td>{timeLog.durationInMinutes}</td>
-        </tr>)}
-        </tbody>
-    </table>;
+export interface TimeLogTableViewProps {
+    day: Date;
+}
+
+interface TimeLogTableViewState {
+    timeLogs: TimeLog[] | null;
+}
+
+export default class TimeLogTableView extends React.Component<TimeLogTableViewProps, TimeLogTableViewState> {
+
+    constructor(props: Readonly<{ day: Date }>) {
+        super(props);
+        this.state = {timeLogs: null}
+    }
+
+    componentDidMount(): void {
+        TimeLogService.getTimeLogsForDay(this.props.day)
+            .then(timeLogs => this.setState({
+                timeLogs
+            }));
+    }
+
+    render() {
+        return this.state.timeLogs === null ?
+            <p>Loading...</p> :
+            <table>
+                <thead>
+                <tr>
+                    <th>Duration in Minutes</th>
+                    <th>Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                {this.state.timeLogs.map(timeLog => <tr key={timeLog.description}>
+                    <td>{timeLog.description}</td>
+                    <td>{timeLog.durationInMinutes}</td>
+                </tr>)}
+                </tbody>
+            </table>
+
+    }
 }
