@@ -1,7 +1,6 @@
 import TimeLogRepository from "../local/TimeLogRepository";
 
 export interface TimeLog {
-    day: Date;
     durationInMinutes: number;
     description: string;
 }
