@@ -3,30 +3,12 @@ import React from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import DayNavigator from "./DayNavigator";
 import TimeLogService, {TimeLog} from "../core/TimeLogService";
+import {TimeLogTableView} from "./TimeLogTableView";
 
 export interface DayViewProps {
     day: Date;
 }
 
-
-function TimeLogTableView(props: {
-    timeLogs: TimeLog[]
-}) {
-    return <table>
-        <thead>
-        <tr>
-            <th>Duration in Minutes</th>
-            <th>Description</th>
-        </tr>
-        </thead>
-        <tbody>
-        {props.timeLogs.map(timeLog => <tr key={timeLog.description}>
-            <td>{timeLog.description}</td>
-            <td>{timeLog.durationInMinutes}</td>
-        </tr>)}
-        </tbody>
-    </table>;
-}
 
 interface TimeLogTableState {
     timeLogs: TimeLog[] | null
