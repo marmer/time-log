@@ -2,7 +2,7 @@ import React from 'react';
 import '@testing-library/jest-dom/extend-expect'
 import * as reactTest from "@testing-library/react";
 import TimeLogService, {TimeLog} from "../core/TimeLogService";
-import {TimeLogTableView} from "./TimeLogTableView";
+import TimeLogTableView from "./TimeLogTableView";
 
 
 describe("TimeLogTableView", () => {
