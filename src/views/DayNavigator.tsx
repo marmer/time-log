@@ -3,6 +3,7 @@ import DatePicker from "react-datepicker";
 import moment from "moment";
 import React from "react";
 
+import "react-datepicker/dist/react-datepicker.css";
 
 export interface DayNavigatorProps {
     day: Date;
