@@ -32,6 +32,7 @@ export default class TimeLogTableView extends React.Component<TimeLogTableViewPr
                     <th>#</th>
                     <th>Duration in Minutes</th>
                     <th>Description</th>
+                    <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -40,6 +41,10 @@ export default class TimeLogTableView extends React.Component<TimeLogTableViewPr
                     <th>{index}</th>
                     <td><input type="text" value={timeLog.description}/></td>
                     <td><input type="text" value={timeLog.durationInMinutes}/></td>
+                    <td>
+                        <button>+</button>
+                        <button>-</button>
+                    </td>
                 </tr>)}
                 </tbody>
             </table>
