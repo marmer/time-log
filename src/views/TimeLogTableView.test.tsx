@@ -56,7 +56,7 @@ describe("TimeLogTableView", () => {
     });
 
     describe("Add element", () => {
-        it("should add and store an element at the end it the last add button has been clicked", async () => {
+        it("should add an element at the end it the last add button has been clicked", async () => {
             TimeLogService.getTimeLogsForDay = jest.fn().mockImplementation((_: Date) => Promise.resolve([{
                 durationInMinutes: 1234,
                 description: "existing description"
@@ -73,7 +73,7 @@ describe("TimeLogTableView", () => {
             const timeLogIdField = underTest.getByTitle("TimeLog 1");
             expect(timeLogIdField).toBeVisible()
         });
-        it("should add and store an element after the clicked add button row", async () => {
+        it("should add an element after the clicked add button row", async () => {
             const firstExpectedEntry = {
                 durationInMinutes: 111,
                 description: "as first description expected"
@@ -116,7 +116,7 @@ describe("TimeLogTableView", () => {
     });
 
     describe("Remove an element", () => {
-        it("should add and store an element after the clicked add button row", async () => {
+        it("should remove an element the remove button has been clicked", async () => {
             const firstExpectedEntry = {
                 durationInMinutes: 111,
                 description: "as first description expected"
