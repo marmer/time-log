@@ -65,7 +65,7 @@ describe("TimeLogTableView", () => {
 
             //loading finished
             await reactTest.wait(() => expect(underTest.getByTitle("TimeLog 0")).toBeVisible());
-            expect(underTest.queryByTitle("TimeLog 1")).not.toBeInTheDocument()
+            expect(underTest.queryByTitle("TimeLog 1")).not.toBeInTheDocument();
 
             userEvent.click(underTest.getByTitle("add"));
 
