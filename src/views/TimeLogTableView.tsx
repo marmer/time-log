@@ -49,7 +49,8 @@ export default class TimeLogTableView extends React.Component<TimeLogTableViewPr
                         key={index}>
                         <th className="text-sm-center" title={"TimeLog " + index}>{index}</th>
                         <td><input className="fullWidth" title="duration" type="text"
-                                   value={timeLog.durationInMinutes}/></td>
+                                   value={timeLog.durationInMinutes}
+                                   onChange={event => this.updateDuration(index, event.target.value)}/></td>
                         <td><input className="fullWidth" title="description" type="text" value={timeLog.description}/>
                         </td>
                         <td>
@@ -73,7 +74,7 @@ export default class TimeLogTableView extends React.Component<TimeLogTableViewPr
                     <tr>
                         <th colSpan={4}>
                             <button className="btn btn-primary fullWidth" title="save" type={"submit"}
-                                    onSubmit={() => this.addTimelog()} onClick={() => this.addTimelog()}>save
+                                    onSubmit={() => this.store()} onClick={() => this.store()}>save
                             </button>
                         </th>
                     </tr>
@@ -84,6 +85,13 @@ export default class TimeLogTableView extends React.Component<TimeLogTableViewPr
 
     private addTimelog() {
         this.addTimelogBefore(this.state.timeLogs.length + 1);
+    }
+
+    private store() {
+        TimeLogService.storeTimeLogsForDay(this.props.day, this.state.timeLogs)
+            .then(timeLogs => this.setState({
+                timeLogs
+            }));
     }
 
     private addTimelogBefore(index: number) {
@@ -102,6 +110,16 @@ export default class TimeLogTableView extends React.Component<TimeLogTableViewPr
         const timeLogs = [...this.state.timeLogs];
         timeLogs.splice(index, 1);
 
+        this.setState({
+            timeLogs
+        })
+    }
+
+    private updateDuration(index: number, value: string) {
+        const timeLogs = [...this.state.timeLogs];
+        timeLogs[index].durationInMinutes = value;
+// TODO: marmer 07.02.2020 test this
+// TODO: marmer 07.02.2020 test für description
         this.setState({
             timeLogs
         })
