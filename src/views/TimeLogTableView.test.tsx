@@ -18,15 +18,26 @@ describe("TimeLogTableView", () => {
         it("should show existing entries if it's possible to load time logs", async () => {
             const someDay = new Date(2020, 2, 2);
 
-            TimeLogService.getTimeLogsForDay = jest.fn().mockImplementation((_: Date) => Promise.resolve([{
+            const entries: TimeLog[] = [{
                 durationInMinutes: 1234,
                 description: "fancy description for day " + someDay.toISOString()
-            } as TimeLog]));
+            }, {
+                durationInMinutes: 4321,
+                description: "fancy other description"
+            }];
+            TimeLogService.getTimeLogsForDay = jest.fn().mockImplementation((_: Date) => Promise.resolve(entries));
 
             const underTest = reactTest.render(<TimeLogTableView day={someDay}/>);
 
-            const actualDescription = await reactTest.waitForElement(() => underTest.getByDisplayValue("fancy description for day " + someDay.toISOString()));
-            expect(actualDescription).toBeVisible();
+
+            entries.forEach(async (timeLog, index) => {
+                const timelogIdCell = await reactTest.waitForElement(() => underTest.getByTitle("TimeLog " + index));
+                const row = timelogIdCell.closest("tr");
+
+                const util = reactTest.within(row as any);
+                expect(util.getByDisplayValue(timeLog.description)).toBeVisible();
+                expect(util.getByDisplayValue(timeLog.durationInMinutes.toString())).toBeVisible();
+            });
         });
 
         it("should not show the loading state if it was possible to load time logs", async () => {
