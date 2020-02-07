@@ -5,10 +5,10 @@ import * as reactTest from "@testing-library/react";
 import {Router} from "react-router-dom";
 import {createMemoryHistory} from "history";
 
-let onChangeCallback: (day: Date) => void;
+let onChangeCallback: (day: Date | null) => void;
 
 jest.mock("react-datepicker", () => (props: {
-    onChange: (day: Date) => void,
+    onChange: (day: Date | null) => void,
     selected: Date
 }) => {
     onChangeCallback = props.onChange;
@@ -40,6 +40,18 @@ describe("DayNavigator", () => {
 
         expect(history.location.pathname).toBe("/days/2000-03-17");
         expect(window.location.reload).toBeCalled();
+    });
 
+    it("should not reload the site if no day has been chosen on change", async () => {
+
+        const day = new Date(2005, 3, 7);
+        const history = createMemoryHistory();
+        history.push("/days/1985-01-02");
+
+        reactTest.render(<Router history={history}><DayNavigator day={day}/></Router>);
+
+        await reactTest.wait(() => onChangeCallback(null));
+
+        expect(history.location.pathname).toBe("/days/1985-01-02");
     });
 });
