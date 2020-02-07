@@ -73,7 +73,7 @@ describe("TimeLogTableView", () => {
             const timeLogIdField = underTest.getByTitle("TimeLog 1");
             expect(timeLogIdField).toBeVisible()
         });
-        it("should add an element after the clicked add button row", async () => {
+        it("should add an element before the clicked add button row", async () => {
             const firstExpectedEntry = {
                 durationInMinutes: 111,
                 description: "as first description expected"
@@ -144,6 +144,35 @@ describe("TimeLogTableView", () => {
     describe("save", () => {
         it("should should save the current state if the save button is clicked", async () => {
 
+            TimeLogService.storeTimeLogsForDay = jest.fn().mockImplementation((day: Date, timeLogs: TimeLog[]) => Promise.resolve())
+
+            const entryBeforeUpdate = {
+                durationInMinutes: 111,
+                description: "description before update"
+            };
+            const entryWhileUpdate = {
+                durationInMinutes: 222,
+                description: "description while update"
+            };
+            const entryAfterUpdate = {
+                durationInMinutes: 333,
+                description: "description after update"
+            };
+
+            TimeLogService.getTimeLogsForDay = jest.fn().mockImplementation((_: Date) => Promise.resolve([entryBeforeUpdate] as TimeLog[]));
+
+            const underTest = reactTest.render(<TimeLogTableView day={new Date(2020, 2, 2)}/>);
+
+            //loading finished
+            const descriptionField = await reactTest.waitForElement(() => underTest.getByText(entryBeforeUpdate.description));
+            userEvent.type(descriptionField, entryWhileUpdate.description);
+
+            underTest.getByText("save");
+
+            expect(TimeLogService.storeTimeLogsForDay).toBeCalledWith([entryWhileUpdate]);
+
+            await reactTest.waitForDomChange();
+            expect(descriptionField).toHaveValue(entryAfterUpdate.description);
         });
     });
 });
