@@ -46,13 +46,11 @@ export default class TimeLogTableView extends React.Component<TimeLogTableViewPr
                         <button>-</button>
                     </td>
                 </tr>)}
-                {/*<tfoot>*/}
                 <tr>
                     <th colSpan={4}>
                         <button className="fullWidth">+</button>
                     </th>
                 </tr>
-                {/*</tfoot>*/}
                 </tbody>
             </table>
 
