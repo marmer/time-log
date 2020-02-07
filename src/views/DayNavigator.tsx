@@ -21,7 +21,10 @@ export default function DayNavigator(props: DayNavigatorProps) {
             dateFormat="yyyy-MM-dd"
             selected={props.day}
             onChange={day => {
-                if (day) history.push(`/days/${moment(day).format("YYYY-MM-DD")}`)
+                if (day) {
+                    history.push(`/days/${moment(day).format("YYYY-MM-DD")}`);
+                    window.location.reload();
+                }
             }}
         />}/>;
 }
