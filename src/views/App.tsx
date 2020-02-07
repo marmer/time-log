@@ -19,10 +19,12 @@ export default class App extends React.Component {
                     <Route exact path="/days/today">
                         <DayView day={new Date()}/>
                     </Route>
-                    <Route exact path="/days/:day" render={routeProps =>
-                        moment(routeProps.match.params.day).isValid() ?
+                    <Route exact path="/days/:day" render={routeProps => {
+                        routeProps.history.listen(() => window.location.reload());
+                        return moment(routeProps.match.params.day).isValid() ?
                             <DayView day={moment(routeProps.match.params.day).toDate()}/> :
-                            <NotFoundView location={routeProps.location.pathname}/>}/>
+                            <NotFoundView location={routeProps.location.pathname}/>;
+                    }}/>
                     <Route render={routeProps => <NotFoundView location={routeProps.location.pathname}/>}/>
                 </Switch>
             </div>
