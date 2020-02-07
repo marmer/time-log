@@ -35,35 +35,44 @@ export default class TimeLogTableView extends React.Component<TimeLogTableViewPr
         return <form>{
             this.state.isLoadingTimeLogs ?
                 <p>Loading...</p> :
-                <table>
+                <table className="table table-sm">
                     <thead>
                     <tr>
-                        <th>#</th>
-                        <th>Duration in Minutes</th>
-                        <th>Description</th>
-                        <th>Actions</th>
+                        <th scope="col" className="text-sm-center">#</th>
+                        <th scope="col" className="text-sm-center">Duration in Minutes</th>
+                        <th scope="col" className="text-sm-center">Description</th>
+                        <th scope="col" className="text-sm-left">Actions</th>
                     </tr>
                     </thead>
                     <tbody>
                     {this.state.timeLogs.map((timeLog, index) => <tr
                         key={index}>
-                        <th title={"TimeLog " + index}>{index}</th>
-                        <td><input title="duration" type="text" value={timeLog.durationInMinutes}/></td>
-                        <td><input title="description" type="text" value={timeLog.description}/></td>
+                        <th className="text-sm-center" title={"TimeLog " + index}>{index}</th>
+                        <td><input className="fullWidth" title="duration" type="text"
+                                   value={timeLog.durationInMinutes}/></td>
+                        <td><input className="fullWidth" title="description" type="text" value={timeLog.description}/>
+                        </td>
                         <td>
-                            <button title="add before" onClick={() => this.addTimelogBefore(index)}>+</button>
-                            <button title="remove" onClick={() => this.removeTimelogAt(index)}>-</button>
+                            <span className="btn-group actions">
+                                <button className="btn btn-outline-primary" title="add before"
+                                        onClick={() => this.addTimelogBefore(index)}>+
+                                </button>
+                                <button className="btn btn-outline-primary" title="remove"
+                                        onClick={() => this.removeTimelogAt(index)}>-
+                                </button>
+                            </span>
                         </td>
                     </tr>)}
                     <tr>
                         <th colSpan={4}>
-                            <button title="add" className="fullWidth" onClick={() => this.addTimelog()}>+
+                            <button className="btn btn-outline-primary fullWidth" title="add"
+                                    onClick={() => this.addTimelog()}>+
                             </button>
                         </th>
                     </tr>
                     <tr>
                         <th colSpan={4}>
-                            <button title="save" className="fullWidth" type={"submit"}
+                            <button className="btn btn-primary fullWidth" title="save" type={"submit"}
                                     onSubmit={() => this.addTimelog()} onClick={() => this.addTimelog()}>save
                             </button>
                         </th>
