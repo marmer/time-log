@@ -140,4 +140,10 @@ describe("TimeLogTableView", () => {
             expect(underTest.getByDisplayValue(firstExpectedEntry.description)).toBeVisible();
         })
     });
+
+    describe("save", () => {
+        it("should should save the current state if the save button is clicked", async () => {
+
+        });
+    });
 });

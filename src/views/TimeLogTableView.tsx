@@ -32,36 +32,44 @@ export default class TimeLogTableView extends React.Component<TimeLogTableViewPr
     }
 
     render() {
-        return this.state.isLoadingTimeLogs ?
-            <p>Loading...</p> :
-            <table>
-                <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Duration in Minutes</th>
-                    <th>Description</th>
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                {this.state.timeLogs.map((timeLog, index) => <tr
-                    key={index}>
-                    <th title={"TimeLog " + index}>{index}</th>
-                    <td><input title="duration" type="text" value={timeLog.durationInMinutes}/></td>
-                    <td><input title="description" type="text" value={timeLog.description}/></td>
-                    <td>
-                        <button title="add before" onClick={() => this.addTimelogBefore(index)}>+</button>
-                        <button title="remove" onClick={() => this.removeTimelogAt(index)}>-</button>
-                    </td>
-                </tr>)}
-                <tr>
-                    <th colSpan={4}>
-                        <button title="add" className="fullWidth" onClick={() => this.addTimelog()}>+
-                        </button>
-                    </th>
-                </tr>
-                </tbody>
-            </table>
+        return <form>{
+            this.state.isLoadingTimeLogs ?
+                <p>Loading...</p> :
+                <table>
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Duration in Minutes</th>
+                        <th>Description</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {this.state.timeLogs.map((timeLog, index) => <tr
+                        key={index}>
+                        <th title={"TimeLog " + index}>{index}</th>
+                        <td><input title="duration" type="text" value={timeLog.durationInMinutes}/></td>
+                        <td><input title="description" type="text" value={timeLog.description}/></td>
+                        <td>
+                            <button title="add before" onClick={() => this.addTimelogBefore(index)}>+</button>
+                            <button title="remove" onClick={() => this.removeTimelogAt(index)}>-</button>
+                        </td>
+                    </tr>)}
+                    <tr>
+                        <th colSpan={4}>
+                            <button title="add" className="fullWidth" onClick={() => this.addTimelog()}>+
+                            </button>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th colSpan={4}>
+                            <button title="save" className="fullWidth" type={"submit"}
+                                    onSubmit={() => this.addTimelog()} onClick={() => this.addTimelog()}>save
+                            </button>
+                        </th>
+                    </tr>
+                    </tbody>
+                </table>}</form>
 
     }
 
