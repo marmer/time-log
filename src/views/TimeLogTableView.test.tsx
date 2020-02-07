@@ -42,4 +42,10 @@ describe("TimeLogTableView", () => {
             await reactTest.waitForElementToBeRemoved(() => underTest.getByText("Loading..."));
         });
     });
+
+    describe("Add element", () => {
+        it("should add and store an element at the end it the last add button has been clicked", async () => {
+            // TODO: marmer 07.02.2020 Implement me ;)
+        });
+    });
 });
