@@ -114,4 +114,30 @@ describe("TimeLogTableView", () => {
             }
         });
     });
+
+    describe("Remove an element", () => {
+        it("should add and store an element after the clicked add button row", async () => {
+            const firstExpectedEntry = {
+                durationInMinutes: 111,
+                description: "as first description expected"
+            };
+            const secondExpectedEntry = {
+                durationInMinutes: 333,
+                description: "as third description expected"
+            };
+            TimeLogService.getTimeLogsForDay = jest.fn().mockImplementation((_: Date) => Promise.resolve([firstExpectedEntry, secondExpectedEntry] as TimeLog[]));
+
+            const underTest = reactTest.render(<TimeLogTableView day={new Date(2020, 2, 2)}/>);
+
+            //loading finished
+            await reactTest.wait(() => expect(underTest.getByTitle("TimeLog 0")).toBeVisible());
+
+            const secondRow = (await reactTest.waitForElement(() => underTest.getByTitle("TimeLog 1").closest("tr")));
+            const addBeforeButton = reactTest.within(secondRow as any).getByTitle("remove");
+            userEvent.click(addBeforeButton);
+
+            expect(secondRow).not.toBeInTheDocument();
+            expect(underTest.getByDisplayValue(firstExpectedEntry.description)).toBeVisible();
+        })
+    });
 });
