@@ -3,6 +3,7 @@ import {Redirect, Route, Switch} from "react-router-dom";
 import DayView from "./DayView";
 import NotFoundView from "./NotFoundView";
 import moment from "moment";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 export default class App extends React.Component {
     render() {
