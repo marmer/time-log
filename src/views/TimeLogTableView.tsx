@@ -29,12 +29,14 @@ export default class TimeLogTableView extends React.Component<TimeLogTableViewPr
             <table>
                 <thead>
                 <tr>
+                    <th>#</th>
                     <th>Duration in Minutes</th>
                     <th>Description</th>
                 </tr>
                 </thead>
                 <tbody>
-                {this.state.timeLogs.map(timeLog => <tr key={timeLog.description}>
+                {this.state.timeLogs.map((timeLog, index) => <tr key={index}>
+                    <td>{index}</td>
                     <td>{timeLog.description}</td>
                     <td>{timeLog.durationInMinutes}</td>
                 </tr>)}
