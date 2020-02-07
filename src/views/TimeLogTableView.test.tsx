@@ -30,14 +30,15 @@ describe("TimeLogTableView", () => {
             const underTest = reactTest.render(<TimeLogTableView day={someDay}/>);
 
 
-            entries.forEach(async (timeLog, index) => {
+            for (let index = 0; index < entries.length; index++) {
+                let timeLog = entries[index];
                 const timelogIdCell = await reactTest.waitForElement(() => underTest.getByTitle("TimeLog " + index));
                 const row = timelogIdCell.closest("tr");
 
                 const util = reactTest.within(row as any);
                 expect(util.getByDisplayValue(timeLog.description)).toBeVisible();
                 expect(util.getByDisplayValue(timeLog.durationInMinutes.toString())).toBeVisible();
-            });
+            }
         });
 
         it("should not show the loading state if it was possible to load time logs", async () => {
