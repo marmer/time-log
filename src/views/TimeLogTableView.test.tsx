@@ -25,7 +25,7 @@ describe("TimeLogTableView", () => {
 
             const underTest = reactTest.render(<TimeLogTableView day={someDay}/>);
 
-            const actualDescription = await reactTest.waitForElement(() => underTest.getByText("fancy description for day " + someDay.toISOString()));
+            const actualDescription = await reactTest.waitForElement(() => underTest.getByDisplayValue("fancy description for day " + someDay.toISOString()));
             expect(actualDescription).toBeVisible();
         });
 
@@ -38,8 +38,7 @@ describe("TimeLogTableView", () => {
             } as TimeLog]));
 
             const underTest = reactTest.render(<TimeLogTableView day={someDay}/>);
-            const loadingState = underTest.getByText("Loading...")
-
+            underTest.getByText("Loading...");
             await reactTest.waitForElementToBeRemoved(() => underTest.getByText("Loading..."));
         });
     });
