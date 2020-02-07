@@ -42,7 +42,7 @@ export default class TimeLogTableView extends React.Component<TimeLogTableViewPr
                     <td><input title="duration" type="text" value={timeLog.durationInMinutes}/></td>
                     <td><input title="description" type="text" value={timeLog.description}/></td>
                     <td>
-                        <button title="addAfter">+</button>
+                        <button title="add before" onClick={() => this.addTimelogBefore(index)}>+</button>
                         <button title="remove">-</button>
                     </td>
                 </tr>)}
@@ -60,6 +60,18 @@ export default class TimeLogTableView extends React.Component<TimeLogTableViewPr
     private addTimelog() {
         const timeLogs = [...(this.state.timeLogs as TimeLog[])];
         timeLogs?.push({
+            description: "",
+            durationInMinutes: 0
+        });
+
+        this.setState({
+            timeLogs
+        })
+    }
+
+    private addTimelogBefore(index: number) {
+        const timeLogs = [...(this.state.timeLogs as TimeLog[])];
+        timeLogs?.splice(index, 0, {
             description: "",
             durationInMinutes: 0
         });

@@ -73,5 +73,45 @@ describe("TimeLogTableView", () => {
             const timeLogIdField = underTest.getByTitle("TimeLog 1");
             expect(timeLogIdField).toBeVisible()
         });
+        it("should add and store an element after the clicked add button row", async () => {
+            const firstExpectedEntry = {
+                durationInMinutes: 111,
+                description: "as first description expected"
+            };
+            const secondExpectedEntry = {
+                durationInMinutes: 0,
+                description: ""
+            };
+            const thirdExpectedEntry = {
+                durationInMinutes: 333,
+                description: "as third description expected"
+            };
+            TimeLogService.getTimeLogsForDay = jest.fn().mockImplementation((_: Date) => Promise.resolve([firstExpectedEntry, thirdExpectedEntry] as TimeLog[]));
+
+            const underTest = reactTest.render(<TimeLogTableView day={new Date(2020, 2, 2)}/>);
+
+            //loading finished
+            await reactTest.wait(() => expect(underTest.getByTitle("TimeLog 0")).toBeVisible());
+
+
+            const secondRow = (await reactTest.waitForElement(() => underTest.getByTitle("TimeLog 1").closest("tr")));
+            const addBeforeButton = reactTest.within(secondRow as any).getByTitle("add before");
+            userEvent.click(addBeforeButton);
+
+
+            userEvent.click(underTest.getByTitle("add"));
+
+            const outputExpectation = [firstExpectedEntry, secondExpectedEntry, thirdExpectedEntry];
+
+            for (let index = 0; index < outputExpectation.length; index++) {
+                let timeLog = outputExpectation[index];
+                const timelogIdCell = await reactTest.waitForElement(() => underTest.getByTitle("TimeLog " + index));
+                const row = timelogIdCell.closest("tr");
+
+                const util = reactTest.within(row as any);
+                expect(util.getByDisplayValue(timeLog.description)).toBeVisible();
+                expect(util.getByDisplayValue(timeLog.durationInMinutes.toString())).toBeVisible();
+            }
+        });
     });
 });
