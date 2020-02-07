@@ -6,25 +6,33 @@ export interface TimeLogTableViewProps {
 }
 
 interface TimeLogTableViewState {
-    timeLogs: TimeLog[] | null;
+    timeLogs: TimeLog[];
+    isLoadingTimeLogs: boolean;
 }
 
 export default class TimeLogTableView extends React.Component<TimeLogTableViewProps, TimeLogTableViewState> {
 
     constructor(props: Readonly<{ day: Date }>) {
         super(props);
-        this.state = {timeLogs: null}
+        this.state = {
+            timeLogs: [],
+            isLoadingTimeLogs: true
+        }
     }
 
     componentDidMount(): void {
+        this.setState({
+            isLoadingTimeLogs: true
+        });
         TimeLogService.getTimeLogsForDay(this.props.day)
             .then(timeLogs => this.setState({
-                timeLogs
+                timeLogs,
+                isLoadingTimeLogs: false
             }));
     }
 
     render() {
-        return this.state.timeLogs === null ?
+        return this.state.isLoadingTimeLogs ?
             <p>Loading...</p> :
             <table>
                 <thead>
@@ -58,20 +66,12 @@ export default class TimeLogTableView extends React.Component<TimeLogTableViewPr
     }
 
     private addTimelog() {
-        const timeLogs = [...(this.state.timeLogs as TimeLog[])];
-        timeLogs?.push({
-            description: "",
-            durationInMinutes: 0
-        });
-
-        this.setState({
-            timeLogs
-        })
+        this.addTimelogBefore(this.state.timeLogs.length + 1);
     }
 
     private addTimelogBefore(index: number) {
-        const timeLogs = [...(this.state.timeLogs as TimeLog[])];
-        timeLogs?.splice(index, 0, {
+        const timeLogs = [...this.state.timeLogs];
+        timeLogs.splice(index, 0, {
             description: "",
             durationInMinutes: 0
         });
