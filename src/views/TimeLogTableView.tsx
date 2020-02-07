@@ -38,21 +38,34 @@ export default class TimeLogTableView extends React.Component<TimeLogTableViewPr
                 <tbody>
                 {this.state.timeLogs.map((timeLog, index) => <tr
                     key={index}>
-                    <th>{index}</th>
-                    <td><input type="text" value={timeLog.description}/></td>
-                    <td><input type="text" value={timeLog.durationInMinutes}/></td>
+                    <th title={"TimeLog " + index}>{index}</th>
+                    <td><input title="duration" type="text" value={timeLog.durationInMinutes}/></td>
+                    <td><input title="description" type="text" value={timeLog.description}/></td>
                     <td>
-                        <button>+</button>
-                        <button>-</button>
+                        <button title="addAfter">+</button>
+                        <button title="remove">-</button>
                     </td>
                 </tr>)}
                 <tr>
                     <th colSpan={4}>
-                        <button className="fullWidth">+</button>
+                        <button title="add" className="fullWidth" onClick={() => this.addTimelog()}>+
+                        </button>
                     </th>
                 </tr>
                 </tbody>
             </table>
 
+    }
+
+    private addTimelog() {
+        const timeLogs = [...(this.state.timeLogs as TimeLog[])];
+        timeLogs?.push({
+            description: "",
+            durationInMinutes: 0
+        });
+
+        this.setState({
+            timeLogs
+        })
     }
 }

@@ -3,7 +3,7 @@ import '@testing-library/jest-dom/extend-expect'
 import * as reactTest from "@testing-library/react";
 import TimeLogService, {TimeLog} from "../core/TimeLogService";
 import TimeLogTableView from "./TimeLogTableView";
-
+import userEvent from "@testing-library/user-event";
 
 describe("TimeLogTableView", () => {
     describe("loading", () => {
@@ -45,7 +45,21 @@ describe("TimeLogTableView", () => {
 
     describe("Add element", () => {
         it("should add and store an element at the end it the last add button has been clicked", async () => {
-            // TODO: marmer 07.02.2020 Implement me ;)
+            TimeLogService.getTimeLogsForDay = jest.fn().mockImplementation((_: Date) => Promise.resolve([{
+                durationInMinutes: 1234,
+                description: "existing description"
+            } as TimeLog]));
+
+            const underTest = reactTest.render(<TimeLogTableView day={new Date(2020, 2, 2)}/>);
+
+            //loading finished
+            await reactTest.wait(() => expect(underTest.getByTitle("TimeLog 0")).toBeVisible());
+            expect(underTest.queryByTitle("TimeLog 1")).not.toBeInTheDocument()
+
+            userEvent.click(underTest.getByTitle("add"));
+
+            const timeLogIdField = underTest.getByTitle("TimeLog 1");
+            expect(timeLogIdField).toBeVisible()
         });
     });
 });
