@@ -32,7 +32,10 @@ export default class TimeLogTableView extends React.Component<TimeLogTableViewPr
     }
 
     render() {
-        return <form target="_self">{
+        return <form target="_self" onSubmit={() => {
+            this.store();
+            return false
+        }}>{
             this.state.isLoadingTimeLogs ?
                 <p>Loading...</p> :
                 <table className="table table-sm">
@@ -80,11 +83,8 @@ export default class TimeLogTableView extends React.Component<TimeLogTableViewPr
                     <tr>
                         <th colSpan={4}>
                             <button className="btn btn-primary fullWidth" title="save"
-                                    type={"submit"} onSubmit={event => {
-                                this.store();
-                                return false
-                            }}
-                                    onClick={event => this.store()}>save
+                                    type={"submit"}
+                            >save
                             </button>
                         </th>
                     </tr>
