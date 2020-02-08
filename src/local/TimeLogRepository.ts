@@ -7,6 +7,12 @@ interface TimeLogDbo {
 }
 
 export default class TimeLogRepository {
+    public static saveTimelogs(date: Date, timeLogs: TimeLog[]): TimeLog[] {
+        // TODO: marmer 08.02.2020 implement me!
+        console.log(timeLogs);
+        return timeLogs;
+    }
+
     public static getTimeLogsForDay(date: Date): TimeLog[] {
 
         const timeLog: TimeLogDbo = Lockr.get("TimeLog", {});
