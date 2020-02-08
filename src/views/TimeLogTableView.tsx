@@ -32,7 +32,7 @@ export default class TimeLogTableView extends React.Component<TimeLogTableViewPr
     }
 
     render() {
-        return <form target="_self" onSubmit={() => this.store()}>{
+        return <form target="_self">{
             this.state.isLoadingTimeLogs ?
                 <p>Loading...</p> :
                 <table className="table table-sm">
@@ -58,17 +58,21 @@ export default class TimeLogTableView extends React.Component<TimeLogTableViewPr
                         <td>
                             <span className="btn-group actions">
                                 <button className="btn btn-outline-primary" title="add before"
-                                        onClick={() => this.addTimelogBefore(index)}>+
+                                        onClick={() => this.addTimelogBefore(index)}
+                                        type="button">+
                                 </button>
                                 <button className="btn btn-outline-primary" title="remove"
-                                        onClick={() => this.removeTimelogAt(index)}>-
+                                        onClick={() => this.removeTimelogAt(index)}
+                                        type="button">-
                                 </button>
                             </span>
                         </td>
                     </tr>)}
                     <tr>
                         <th colSpan={4}>
-                            <button className="btn btn-outline-primary fullWidth" title="add"
+                            <button className="btn btn-outline-primary fullWidth"
+                                    type="button"
+                                    title="add"
                                     onClick={() => this.addTimelog()}>+
                             </button>
                         </th>
@@ -76,7 +80,11 @@ export default class TimeLogTableView extends React.Component<TimeLogTableViewPr
                     <tr>
                         <th colSpan={4}>
                             <button className="btn btn-primary fullWidth" title="save"
-                                    type={"submit"}>save
+                                    type={"submit"} onSubmit={event => {
+                                this.store();
+                                return false
+                            }}
+                                    onClick={event => this.store()}>save
                             </button>
                         </th>
                     </tr>
