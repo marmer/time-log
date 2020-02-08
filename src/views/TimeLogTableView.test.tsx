@@ -144,7 +144,6 @@ describe("TimeLogTableView", () => {
     describe("save", () => {
         it("should should save the current state if the save button is clicked", async () => {
 
-            TimeLogService.storeTimeLogsForDay = jest.fn().mockImplementation((day: Date, timeLogs: TimeLog[]) => Promise.resolve())
 
             const entryBeforeUpdate = {
                 durationInMinutes: 111,
@@ -159,20 +158,29 @@ describe("TimeLogTableView", () => {
                 description: "description after update"
             };
 
+            TimeLogService.storeTimeLogsForDay = jest.fn().mockImplementation((_: Date, __: TimeLog[]) => Promise.resolve([entryAfterUpdate]));
             TimeLogService.getTimeLogsForDay = jest.fn().mockImplementation((_: Date) => Promise.resolve([entryBeforeUpdate] as TimeLog[]));
 
-            const underTest = reactTest.render(<TimeLogTableView day={new Date(2020, 2, 2)}/>);
+            const day = new Date(2020, 2, 2);
+            const underTest = reactTest.render(<TimeLogTableView day={day}/>);
 
             //loading finished
-            const descriptionField = await reactTest.waitForElement(() => underTest.getByText(entryBeforeUpdate.description));
+            const descriptionField = await reactTest.waitForElement(() => underTest.getByDisplayValue(entryBeforeUpdate.description));
+            const durationField = await reactTest.waitForElement(() => underTest.getByDisplayValue(entryBeforeUpdate.durationInMinutes.toString()));
             userEvent.type(descriptionField, entryWhileUpdate.description);
+            userEvent.type(durationField, entryWhileUpdate.durationInMinutes.toString());
 
-            underTest.getByText("save");
+            expect(descriptionField).toHaveValue(entryWhileUpdate.description);
+            expect(durationField).toHaveValue(entryWhileUpdate.durationInMinutes.toString());
 
-            expect(TimeLogService.storeTimeLogsForDay).toBeCalledWith([entryWhileUpdate]);
+            userEvent.click(underTest.getByText("save"));
+
+            expect(TimeLogService.storeTimeLogsForDay).toBeCalledWith(day, [entryWhileUpdate]);
 
             await reactTest.waitForDomChange();
             expect(descriptionField).toHaveValue(entryAfterUpdate.description);
+            expect(durationField).toHaveValue(entryAfterUpdate.durationInMinutes.toString());
+
         });
     });
 });
