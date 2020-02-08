@@ -32,7 +32,7 @@ export default class TimeLogTableView extends React.Component<TimeLogTableViewPr
     }
 
     render() {
-        return <form>{
+        return <form target="_self" onSubmit={() => this.store()}>{
             this.state.isLoadingTimeLogs ?
                 <p>Loading...</p> :
                 <table className="table table-sm">
@@ -49,9 +49,11 @@ export default class TimeLogTableView extends React.Component<TimeLogTableViewPr
                         key={index}>
                         <th className="text-sm-center" title={"TimeLog " + index}>{index}</th>
                         <td><input className="fullWidth" title="duration" type="text"
+                                   inputMode="numeric"
                                    value={timeLog.durationInMinutes}
                                    onChange={event => this.updateDuration(index, event.target.value)}/></td>
-                        <td><input className="fullWidth" title="description" type="text" value={timeLog.description}/>
+                        <td><input className="fullWidth" title="description" type="text" value={timeLog.description}
+                                   onChange={event => this.updateDescription(index, event.target.value)}/>
                         </td>
                         <td>
                             <span className="btn-group actions">
@@ -73,8 +75,8 @@ export default class TimeLogTableView extends React.Component<TimeLogTableViewPr
                     </tr>
                     <tr>
                         <th colSpan={4}>
-                            <button className="btn btn-primary fullWidth" title="save" type={"submit"}
-                                    onSubmit={() => this.store()} onClick={() => this.store()}>save
+                            <button className="btn btn-primary fullWidth" title="save"
+                                    type={"submit"}>save
                             </button>
                         </th>
                     </tr>
@@ -117,9 +119,15 @@ export default class TimeLogTableView extends React.Component<TimeLogTableViewPr
 
     private updateDuration(index: number, value: string) {
         const timeLogs = [...this.state.timeLogs];
-        timeLogs[index].durationInMinutes = value;
-// TODO: marmer 07.02.2020 test this
-// TODO: marmer 07.02.2020 test für description
+        timeLogs[index].durationInMinutes = Number.parseInt(value);
+        this.setState({
+            timeLogs
+        })
+    }
+
+    private updateDescription(index: number, value: string) {
+        const timeLogs = [...this.state.timeLogs];
+        timeLogs[index].description = value;
         this.setState({
             timeLogs
         })
