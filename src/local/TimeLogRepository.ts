@@ -7,15 +7,18 @@ interface TimeLogDbo {
 }
 
 export default class TimeLogRepository {
+    private static readonly STORE_KEY = "TimeLog";
+
     public static saveTimelogs(date: Date, timeLogs: TimeLog[]): TimeLog[] {
-        // TODO: marmer 08.02.2020 implement me!
-        console.log(timeLogs);
+        const dbo: TimeLogDbo = {};
+        dbo[TimeLogRepository.timelogKeyFor(date)] = timeLogs;
+        Lockr.set(TimeLogRepository.STORE_KEY, dbo);
         return timeLogs;
     }
 
     public static getTimeLogsForDay(date: Date): TimeLog[] {
 
-        const timeLog: TimeLogDbo = Lockr.get("TimeLog", {});
+        const timeLog: TimeLogDbo = Lockr.get(this.STORE_KEY, {});
 
         const key = this.timelogKeyFor(date);
         const timelogs = timeLog[key];
