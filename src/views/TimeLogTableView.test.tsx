@@ -182,5 +182,43 @@ describe("TimeLogTableView", () => {
             expect(durationField).toHaveValue(entryAfterUpdate.durationInMinutes.toString());
 
         });
+        it("should should save the current state on submit", async () => {
+            const entryBeforeUpdate = {
+                durationInMinutes: 111,
+                description: "description before update"
+            };
+            const entryWhileUpdate = {
+                durationInMinutes: 222,
+                description: "description while update"
+            };
+            const entryAfterUpdate = {
+                durationInMinutes: 333,
+                description: "description after update"
+            };
+
+            TimeLogService.storeTimeLogsForDay = jest.fn().mockImplementation((_: Date, __: TimeLog[]) => Promise.resolve([entryAfterUpdate]));
+            TimeLogService.getTimeLogsForDay = jest.fn().mockImplementation((_: Date) => Promise.resolve([entryBeforeUpdate] as TimeLog[]));
+
+            const day = new Date(2020, 2, 2);
+            const underTest = reactTest.render(<TimeLogTableView day={day}/>);
+
+            //loading finished
+            const descriptionField = await reactTest.waitForElement(() => underTest.getByDisplayValue(entryBeforeUpdate.description));
+            const durationField = await reactTest.waitForElement(() => underTest.getByDisplayValue(entryBeforeUpdate.durationInMinutes.toString()));
+            userEvent.type(descriptionField, entryWhileUpdate.description);
+            userEvent.type(durationField, entryWhileUpdate.durationInMinutes.toString());
+
+            expect(descriptionField).toHaveValue(entryWhileUpdate.description);
+            expect(durationField).toHaveValue(entryWhileUpdate.durationInMinutes.toString());
+
+            reactTest.fireEvent.submit(durationField);
+
+            expect(TimeLogService.storeTimeLogsForDay).toBeCalledWith(day, [entryWhileUpdate]);
+
+            await reactTest.waitForDomChange();
+            expect(descriptionField).toHaveValue(entryAfterUpdate.description);
+            expect(durationField).toHaveValue(entryAfterUpdate.durationInMinutes.toString());
+
+        });
     });
 });
