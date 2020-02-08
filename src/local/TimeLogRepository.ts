@@ -10,7 +10,7 @@ export default class TimeLogRepository {
     private static readonly STORE_KEY = "TimeLog";
 
     public static saveTimelogs(date: Date, timeLogs: TimeLog[]): TimeLog[] {
-        const dbo: TimeLogDbo = {};
+        const dbo: TimeLogDbo = Lockr.get(this.STORE_KEY, {});
         dbo[TimeLogRepository.timelogKeyFor(date)] = timeLogs;
         Lockr.set(TimeLogRepository.STORE_KEY, dbo);
         return timeLogs;
