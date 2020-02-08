@@ -158,7 +158,7 @@ describe("TimeLogTableView", () => {
                 description: "description after update"
             };
 
-            TimeLogService.storeTimeLogsForDay = jest.fn().mockImplementation((_: Date, __: TimeLog[]) => Promise.resolve([entryAfterUpdate]));
+            TimeLogService.saveTimeLogsForDay = jest.fn().mockImplementation((_: Date, __: TimeLog[]) => Promise.resolve([entryAfterUpdate]));
             TimeLogService.getTimeLogsForDay = jest.fn().mockImplementation((_: Date) => Promise.resolve([entryBeforeUpdate] as TimeLog[]));
 
             const day = new Date(2020, 2, 2);
@@ -175,13 +175,14 @@ describe("TimeLogTableView", () => {
 
             userEvent.click(underTest.getByText("save"));
 
-            expect(TimeLogService.storeTimeLogsForDay).toBeCalledWith(day, [entryWhileUpdate]);
+            expect(TimeLogService.saveTimeLogsForDay).toBeCalledWith(day, [entryWhileUpdate]);
 
             await reactTest.waitForDomChange();
             expect(descriptionField).toHaveValue(entryAfterUpdate.description);
             expect(durationField).toHaveValue(entryAfterUpdate.durationInMinutes.toString());
 
         });
+
         it("should should save the current state on submit", async () => {
             const entryBeforeUpdate = {
                 durationInMinutes: 111,
@@ -196,7 +197,7 @@ describe("TimeLogTableView", () => {
                 description: "description after update"
             };
 
-            TimeLogService.storeTimeLogsForDay = jest.fn().mockImplementation((_: Date, __: TimeLog[]) => Promise.resolve([entryAfterUpdate]));
+            TimeLogService.saveTimeLogsForDay = jest.fn().mockImplementation((_: Date, __: TimeLog[]) => Promise.resolve([entryAfterUpdate]));
             TimeLogService.getTimeLogsForDay = jest.fn().mockImplementation((_: Date) => Promise.resolve([entryBeforeUpdate] as TimeLog[]));
 
             const day = new Date(2020, 2, 2);
@@ -213,7 +214,7 @@ describe("TimeLogTableView", () => {
 
             reactTest.fireEvent.submit(durationField);
 
-            expect(TimeLogService.storeTimeLogsForDay).toBeCalledWith(day, [entryWhileUpdate]);
+            expect(TimeLogService.saveTimeLogsForDay).toBeCalledWith(day, [entryWhileUpdate]);
 
             await reactTest.waitForDomChange();
             expect(descriptionField).toHaveValue(entryAfterUpdate.description);

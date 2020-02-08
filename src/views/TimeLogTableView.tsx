@@ -98,7 +98,7 @@ export default class TimeLogTableView extends React.Component<TimeLogTableViewPr
     }
 
     private store() {
-        TimeLogService.storeTimeLogsForDay(this.props.day, this.state.timeLogs)
+        TimeLogService.saveTimeLogsForDay(this.props.day, this.state.timeLogs)
             .then(timeLogs => this.setState({
                 timeLogs
             }));

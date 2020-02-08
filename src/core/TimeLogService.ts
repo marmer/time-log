@@ -6,10 +6,8 @@ export interface TimeLog {
 }
 
 export default class TimeLogService {
-    public static async storeTimeLogsForDay(date: Date, timeLogs: TimeLog[]): Promise<TimeLog[]> {
-        console.log(timeLogs);
-        // TODO: marmer 07.02.2020 Implement me!
-        return Promise.resolve(timeLogs);
+    public static async saveTimeLogsForDay(date: Date, timeLogs: TimeLog[]): Promise<TimeLog[]> {
+        return Promise.resolve(TimeLogRepository.saveTimelogs(date, timeLogs));
     }
 
     public static async getTimeLogsForDay(date: Date): Promise<TimeLog[]> {
