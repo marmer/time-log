@@ -50,16 +50,6 @@
     "test": "react-scripts test --coverage",
     "eject": "react-scripts eject",
     "prod": "node server.js",
-    "deploy": "gh-pages-deploy -- 'A custom commit message'"
-  },
-  "gh-pages-deploy": {
-    "staticpath": "build",
-    "prep": [
-      "react-scripts build"
-    ],
-    "commit": "Automated deployment",
-    "post": [],
-    "noprompt": false
   },
   "eslintConfig": {
     "extends": "react-app"
