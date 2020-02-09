@@ -58,9 +58,7 @@
       "react-scripts build"
     ],
     "commit": "Automated deployment",
-    "post": [
-      "clean-source"
-    ],
+    "post": [],
     "noprompt": false
   },
   "eslintConfig": {
