@@ -12,6 +12,10 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
+
+- checkout: self
+  persistCredentials: true
+  
 - task: NodeTool@0
   inputs:
     versionSpec: '10.x'
@@ -41,10 +45,6 @@ steps:
   inputs:
     pollingTimeoutSec: '300'
 
-
-- checkout: self
-  persistCredentials: true
-  
 - script: |
     git config user.email "Mariano.Mertinat@gmail.com"
     git config user.name "MarMer"
