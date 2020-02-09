@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "bootstrap": "^4.4.1",
+    "gh-pages": "^2.2.0",
     "lockr": "^0.8.5",
     "moment": "^2.24.0",
     "npm": "^6.13.7",
@@ -45,6 +46,8 @@
     "webpack": "^4.41.5"
   },
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --coverage",
