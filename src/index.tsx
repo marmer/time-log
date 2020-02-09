@@ -5,7 +5,7 @@ import * as serviceWorker from './serviceWorker';
 import {HashRouter} from "react-router-dom";
 import "./index.css"
 
-ReactDOM.render(<HashRouter basename="time-log"><App/></HashRouter>, document.getElementById('root'));
+ReactDOM.render(<HashRouter><App/></HashRouter>, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
