@@ -54,7 +54,6 @@
   },
   "gh-pages-deploy": {
     "staticpath": "build",
-    "cname": "nope.org",
     "prep": [
       "react-scripts build"
     ],
