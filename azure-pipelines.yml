@@ -44,6 +44,7 @@ steps:
 
 - checkout: self
   persistCredentials: true
+  
 - script: |
     git config user.email "Mariano.Mertinat@gmail.com"
     git config user.name "MarMer"
