@@ -8,7 +8,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 const LoginSpike = () => {
 
 
-    https://accounts.google.com/o/oauth2/v2/auth
+    // https://accounts.google.com/o/oauth2/v2/auth
 
         if (!process.env.REACT_APP_OAUTH_CLIENT_ID)
             return <div>Server Missconfiguration ... Environment Variable not set: REACT_APP_OAUTH_CLIENT_ID</div>
