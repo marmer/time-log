@@ -26,11 +26,13 @@ steps:
 
 - script: npm test
   displayName: npm run test
+  condition: succeeded()
 
 - task: PublishCodeCoverageResults@1
   inputs:
     codeCoverageTool: 'Cobertura'
     summaryFileLocation: 'coverage/cobertura-coverage.xml'
+  condition: succeeded()
 
 - task: SonarCloudPrepare@1
   inputs:
@@ -38,15 +40,20 @@ steps:
     organization: 'marmer-github'
     scannerMode: 'CLI'
     configMode: 'file'
+  condition: succeeded()
 
 - task: SonarCloudAnalyze@1
+  condition: succeeded()
 
 - task: SonarCloudPublish@1
   inputs:
-    pollingTimeoutSec: '300'
+    pollingTimeoutSec: '300'  
+  condition: succeeded()
 
 - script: |
     git config user.email "Mariano.Mertinat@gmail.com"
     git config user.name "MarMer"
     npm run deploy -- -r https://$(github_pat)@github.com/marmer/time-log.git
   displayName: deploy
+  continueOnError: false
+  condition: succeeded()
