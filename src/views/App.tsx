@@ -12,7 +12,6 @@ const LoginSpike = () => {
         authorization_url: 'https://accounts.google.com/o/oauth2/v2/auth' // required,
     });
 
-    // https://accounts.google.com/o/oauth2/v2/auth
     // https://www.npmjs.com/package/@zalando/oauth2-client-js
     if (!process.env.REACT_APP_OAUTH_CLIENT_ID)
         return <div>Server Missconfiguration ... Environment Variable not set: REACT_APP_OAUTH_CLIENT_ID</div>
@@ -46,58 +45,89 @@ const LoginSpike = () => {
     </div>)
 }
 
+interface GoogleUserInfo {
+    id: string;
+    email: string;
+    verified_email: boolean;
+    picture: string
+}
+
 // TODO: marmer 12.02.2020 Do something
-const sampleLoginValue = {
-    "state": "7bfd33b1-1e8a-4b56-8744-aa93ef8c801f",
-    "access_token": "ya29.Il-9B-LkMfKs5R3jLdhMxTSr0H1UnmazevMi0puP3-msjecc3cD4efmcow7VAPOyh83_ReeH66gJ313BKN28CQitw_z6ghxkFB1pmU_szVo2vhm7x-ml7Szvml5lUhDXwg",
-    "token_type": "Bearer",
-    "expires_in": "3599",
-    "scope": "email https://www.googleapis.com/auth/userinfo.email openid",
-    "authuser": "1",
-    "prompt": "consent",
-    "session_state": "d059388d1c75467a1522f78af62b8120526a9186..08d6"
+interface GoogleLoginValue {
+    state: string;
+    access_token: string;
+    token_type: "Bearer" | string;
+    expires_in: string; // seconds
+    scope: string; //e.g. email https://www.googleapis.com/auth/userinfo.email openid
+    authuser: string; //numeric string
+    prompt: string;
+    session_state: string;
 };
 
-function getOAuthObjectFromSearchString(searchString: string) {
+function getOAuthObjectFromSearchString(searchString: string): GoogleLoginValue {
     return JSON.parse(decodeURI(searchString.replace(/^\?/, "")));
 }
 
-export default class App extends React.Component {
-    render() {
-        return (
-            <main>
-                <LoginSpike/>
-                <Route render={props => {
-                    props.history.listen(() => window.location.reload());
-                    return <Switch>
-                        <Route path="/login/google" render={routeProps => {
-                            const searchString = routeProps.location.search;
-                            return <div>
-                                {JSON.stringify(getOAuthObjectFromSearchString(searchString))}
-                            </div>
-                        }}/>
-                        <Route exact path="/">
-                            <Redirect to={"/days"}/>
-                        </Route>
-                        <Route exact path="/days">
-                            <Redirect to={"/days/today"}/>
-                        </Route>
-                        <Route exact path="/days/today">
-                            <DayView day={new Date()}/>
-                        </Route>
-                        <Route exact path="/days/:day" render={routeProps =>
-                            moment(routeProps.match.params.day).isValid() ?
-                                <DayView day={moment(routeProps.match.params.day).toDate()}/> :
-                                <NotFoundView location={routeProps.location.pathname}/>}/>
-                        <Route render={routeProps =>
-                            <NotFoundView location={routeProps.location.pathname}/>
-                        }/>
-                    </Switch>
-                }}>
+export default function App() {
 
-                </Route>
-            </main>
-        );
-    }
+    const [userInfo, setUserInfo] = React.useState<GoogleUserInfo>()
+
+    return (
+        <main>
+            <LoginSpike/>
+
+            <Route render={props => {
+                props.history.listen(() => window.location.reload());
+                return <Switch>
+                    <Route path="/login/google" render={routeProps => {
+
+                        const searchString = routeProps.location.search;
+
+                        const oAuthObjectFromSearchString = getOAuthObjectFromSearchString(searchString);
+
+                        fetch("https://www.googleapis.com/oauth2/v2/userinfo", {
+                            method: "GET",
+                            headers: {
+                                "Accept": "application/json",
+                                "Authorization": "Bearer " + oAuthObjectFromSearchString.access_token
+                            }
+                        }).then((response) => {
+                            if (response.status !== 200) {
+                                throw new Error("Unexpected response status: " + response.status);
+                            }
+                            return response.json();
+                        }).then((value: GoogleUserInfo) => setUserInfo(value));
+
+                        return <div>
+                            <label>oAuthObject
+                                <p>{JSON.stringify(oAuthObjectFromSearchString)}</p>
+                            </label>
+                            <label>userString
+                                <p>{JSON.stringify(userInfo)}</p>
+                            </label>
+                        </div>
+                    }}/>
+                    <Route exact path="/">
+                        <Redirect to={"/days"}/>
+                    </Route>
+                    <Route exact path="/days">
+                        <Redirect to={"/days/today"}/>
+                    </Route>
+                    <Route exact path="/days/today">
+                        <DayView day={new Date()}/>
+                    </Route>
+                    <Route exact path="/days/:day" render={routeProps =>
+                        moment(routeProps.match.params.day).isValid() ?
+                            <DayView day={moment(routeProps.match.params.day).toDate()}/> :
+                            <NotFoundView location={routeProps.location.pathname}/>}/>
+                    <Route render={routeProps =>
+                        <NotFoundView location={routeProps.location.pathname}/>
+                    }/>
+                </Switch>
+            }}>
+
+            </Route>
+        </main>
+    );
 }
 
