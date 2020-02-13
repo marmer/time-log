@@ -1,5 +1,3 @@
-const OAuth = require('@zalando/oauth2-client-js');
-
 export interface User {
     email: string;
 }
@@ -23,23 +21,25 @@ export default class UserService {
         if (!process.env.REACT_APP_OAUTH_REDIRECT_URL)
             result.push("REACT_APP_OAUTH_REDIRECT_URL");
 
+        if (!process.env.REACT_APP_OAUTH_AUTHORIZATION_URL)
+            result.push("REACT_APP_OAUTH_AUTHORIZATION_URL");
+
         return result;
     }
 
     static performLogin() {
-        // TODO: marmer 13.02.2020 currently just a spike
-        const google = new OAuth.Provider({
-            id: 'google',   // required
-            authorization_url: 'https://accounts.google.com/o/oauth2/v2/auth' // required,
-        });
-        const request = new OAuth.Request({
-            client_id: process.env.REACT_APP_OAUTH_CLIENT_ID,  // required
-            redirect_uri: process.env.REACT_APP_OAUTH_REDIRECT_URL,
-            scope: "email https://www.googleapis.com/auth/drive.file",
-        });
+        const requestProps: { [key: string]: any; } = {
+            scope: encodeURI("email https://www.googleapis.com/auth/drive.file"),
+            include_granted_scopes: true,
+            response_type: "token",
+            state: "/",
+            redirect_uri: encodeURI(process.env.REACT_APP_OAUTH_REDIRECT_URL ? process.env.REACT_APP_OAUTH_REDIRECT_URL : ""),
+            client_id: process.env.REACT_APP_OAUTH_CLIENT_ID
+        };
 
-        const uri = google.requestToken(request);
-        google.remember(request);
-        window.location.href = uri
+        window.location.href = "https://accounts.google.com/o/oauth2/v2/auth?" + Object.keys(requestProps)
+            .map((key: string) => {
+                return key + "=" + requestProps[key]
+            }).reduce((previousValue, currentValue) => previousValue + "&" + currentValue, "");
     }
 }
