@@ -28,7 +28,6 @@ const LoginSpike = () => {
                 client_id: process.env.REACT_APP_OAUTH_CLIENT_ID,  // required
                 redirect_uri: process.env.REACT_APP_OAUTH_REDIRECT_URL,
                 scope: "email",
-                metadata: "weeeehah"
             });
 
 // Give it to the provider
@@ -39,7 +38,7 @@ const LoginSpike = () => {
             google.remember(request);
 
 // Do the redirect
-            window.location.href = uri;
+            window.location.href = uri
         }}>login with google
         </button>
     </div>)
@@ -70,7 +69,7 @@ function getOAuthObjectFromSearchString(searchString: string): GoogleLoginValue 
 
 export default function App() {
 
-    const [userInfo, setUserInfo] = React.useState<GoogleUserInfo>()
+    const [userInfo, setUserInfo] = React.useState<GoogleUserInfo>();
 
     return (
         <main>
@@ -85,18 +84,19 @@ export default function App() {
 
                         const oAuthObjectFromSearchString = getOAuthObjectFromSearchString(searchString);
 
-                        fetch("https://www.googleapis.com/oauth2/v2/userinfo", {
-                            method: "GET",
-                            headers: {
-                                "Accept": "application/json",
-                                "Authorization": "Bearer " + oAuthObjectFromSearchString.access_token
-                            }
-                        }).then((response) => {
-                            if (response.status !== 200) {
-                                throw new Error("Unexpected response status: " + response.status);
-                            }
-                            return response.json();
-                        }).then((value: GoogleUserInfo) => setUserInfo(value));
+                        if (!userInfo)
+                            fetch("https://www.googleapis.com/oauth2/v2/userinfo", {
+                                method: "GET",
+                                headers: {
+                                    "Accept": "application/json",
+                                    "Authorization": "Bearer " + oAuthObjectFromSearchString.access_token
+                                }
+                            }).then((response) => {
+                                if (response.status !== 200) {
+                                    throw new Error("Unexpected response status: " + response.status);
+                                }
+                                return response.json();
+                            }).then((value: GoogleUserInfo) => setUserInfo(value));
 
                         return <div>
                             <label>oAuthObject
