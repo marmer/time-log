@@ -27,7 +27,7 @@ const LoginSpike = () => {
             var request = new OAuth.Request({
                 client_id: process.env.REACT_APP_OAUTH_CLIENT_ID,  // required
                 redirect_uri: process.env.REACT_APP_OAUTH_REDIRECT_URL,
-                scope: "email",
+                scope: "email https://www.googleapis.com/auth/drive.file",
             });
 
 // Give it to the provider
