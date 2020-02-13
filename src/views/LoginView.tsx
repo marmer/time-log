@@ -18,11 +18,13 @@ interface GoogleLoginValue {
     session_state: string;
 }
 
-function getOAuthObjectFromSearchString(searchString: string): GoogleLoginValue {
-    return JSON.parse(decodeURI(searchString.replace(/^\?/, "")));
+const getOAuthObjectFromSearchString = (searchString: string): GoogleLoginValue => JSON.parse(decodeURI(searchString.replace(/^\?/, "")));
+
+export interface LoginViewProps {
+    searchString: string;
 }
 
-export function LoginView(props: { searchString: string }) {
+export default (props: LoginViewProps) => {
 
 
     const [userInfo, setUserInfo] = React.useState<GoogleUserInfo>();
@@ -52,4 +54,4 @@ export function LoginView(props: { searchString: string }) {
             <p>{JSON.stringify(userInfo)}</p>
         </label>
     </div>;
-}
+};
