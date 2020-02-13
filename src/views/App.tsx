@@ -13,7 +13,6 @@ interface GoogleUserInfo {
     picture: string
 }
 
-// TODO: marmer 12.02.2020 Do something
 interface GoogleLoginValue {
     state: string;
     access_token: string;
@@ -29,9 +28,39 @@ function getOAuthObjectFromSearchString(searchString: string): GoogleLoginValue 
     return JSON.parse(decodeURI(searchString.replace(/^\?/, "")));
 }
 
-export default function App() {
+function LoginView(props: { searchString: string }) {
 
     const [userInfo, setUserInfo] = React.useState<GoogleUserInfo>();
+
+    const oAuthObjectFromSearchString = getOAuthObjectFromSearchString(props.searchString);
+
+
+    if (!userInfo)
+        fetch("https://www.googleapis.com/oauth2/v2/userinfo", {
+            method: "GET",
+            headers: {
+                "Accept": "application/json",
+                "Authorization": "Bearer " + oAuthObjectFromSearchString.access_token
+            }
+        }).then((response) => {
+            if (response.status !== 200) {
+                throw new Error("Unexpected response status: " + response.status);
+            }
+            return response.json();
+        }).then((value: GoogleUserInfo) => setUserInfo(value));
+
+    const div = <div>
+        <label>oAuthObject
+            <p>{JSON.stringify(oAuthObjectFromSearchString)}</p>
+        </label>
+        <label>userString
+            <p>{JSON.stringify(userInfo)}</p>
+        </label>
+    </div>;
+    return div;
+}
+
+export default function App() {
 
     return (
         <main>
@@ -40,35 +69,8 @@ export default function App() {
             <Route render={props => {
                 props.history.listen(() => window.location.reload());
                 return <Switch>
-                    <Route path="/login/google" render={routeProps => {
-
-                        const searchString = routeProps.location.search;
-
-                        const oAuthObjectFromSearchString = getOAuthObjectFromSearchString(searchString);
-
-                        if (!userInfo)
-                            fetch("https://www.googleapis.com/oauth2/v2/userinfo", {
-                                method: "GET",
-                                headers: {
-                                    "Accept": "application/json",
-                                    "Authorization": "Bearer " + oAuthObjectFromSearchString.access_token
-                                }
-                            }).then((response) => {
-                                if (response.status !== 200) {
-                                    throw new Error("Unexpected response status: " + response.status);
-                                }
-                                return response.json();
-                            }).then((value: GoogleUserInfo) => setUserInfo(value));
-
-                        return <div>
-                            <label>oAuthObject
-                                <p>{JSON.stringify(oAuthObjectFromSearchString)}</p>
-                            </label>
-                            <label>userString
-                                <p>{JSON.stringify(userInfo)}</p>
-                            </label>
-                        </div>
-                    }}/>
+                    <Route path="/login/google"
+                           render={routeProps => <LoginView searchString={routeProps.location.search}/>}/>
                     <Route exact path="/">
                         <Redirect to={"/days"}/>
                     </Route>
