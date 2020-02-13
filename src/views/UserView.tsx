@@ -1,20 +1,19 @@
 import React from "react";
+import UserService from "../core/UserService";
 
 const OAuth = require('@zalando/oauth2-client-js');
 
 export default () => {
+    const missingEnvironmentVariables = UserService.getMissingEnvironmentVariables();
+    if (missingEnvironmentVariables && missingEnvironmentVariables.length) return <section>
+        <strong>Server Missconfiguration. Set the following environment variables are not set properly:</strong>
+        {missingEnvironmentVariables.map(envVar => <div key={envVar}>{envVar}</div>)}
+    </section>;
+
     const google = new OAuth.Provider({
         id: 'google',   // required
         authorization_url: 'https://accounts.google.com/o/oauth2/v2/auth' // required,
     });
-
-    // https://www.npmjs.com/package/@zalando/oauth2-client-js
-    if (!process.env.REACT_APP_OAUTH_CLIENT_ID)
-        return <div>Server Missconfiguration ... Environment Variable not set: REACT_APP_OAUTH_CLIENT_ID</div>;
-    if (!process.env.REACT_APP_OAUTH_CLIENT_SECRET)
-        return <div>Server Missconfiguration ... Environment Variable not set: REACT_APP_OAUTH_CLIENT_SECRET</div>;
-    if (!process.env.REACT_APP_OAUTH_REDIRECT_URL)
-        return <div>Server Missconfiguration ... Environment Variable not set: REACT_APP_OAUTH_REDIRECT_URL</div>;
 
 
     return (<div><p>This yould be a login</p>
