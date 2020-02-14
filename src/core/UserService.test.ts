@@ -50,5 +50,24 @@ describe("UserService", () => {
                     "client_id=" + oAuthClientId);
             });
         });
+        describe("missing environment variables", () => {
+            it("should try to redirect with an incomplete url", async () => {
+                delete process.env.REACT_APP_OAUTH_CLIENT_ID;
+                delete process.env.REACT_APP_OAUTH_REDIRECT_URL;
+                delete process.env.REACT_APP_OAUTH_AUTHORIZATION_URL;
+
+                WindowService.redirectTo = jest.fn();
+
+                UserService.performLogin();
+
+                expect(WindowService.redirectTo).toBeCalledWith("?" +
+                    "scope=email&" +
+                    "include_granted_scopes=true&" +
+                    "response_type=token&" +
+                    "state=/&" +
+                    "redirect_uri=&" +
+                    "client_id=");
+            });
+        });
     });
 });

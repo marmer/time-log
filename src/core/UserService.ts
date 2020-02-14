@@ -33,16 +33,17 @@ export default class UserService {
             response_type: "token",
             state: "/",
             redirect_uri: encodeURI(process.env.REACT_APP_OAUTH_REDIRECT_URL ? process.env.REACT_APP_OAUTH_REDIRECT_URL : ""),
-            client_id: process.env.REACT_APP_OAUTH_CLIENT_ID
+            client_id: process.env.REACT_APP_OAUTH_CLIENT_ID ? process.env.REACT_APP_OAUTH_CLIENT_ID : ""
         };
 
-        const redirectUrl = process.env.REACT_APP_OAUTH_AUTHORIZATION_URL + "?" + Object.keys(requestProps)
-            .map((key: string) => {
-                return key + "=" + requestProps[key]
-            }).reduce((previousValue, currentValue) =>
-                previousValue ?
-                    previousValue + "&" + currentValue :
-                    currentValue);
+        const redirectUrl = (process.env.REACT_APP_OAUTH_AUTHORIZATION_URL ? process.env.REACT_APP_OAUTH_AUTHORIZATION_URL : "") +
+            "?" + Object.keys(requestProps)
+                .map((key: string) => {
+                    return key + "=" + requestProps[key]
+                }).reduce((previousValue, currentValue) =>
+                    previousValue ?
+                        previousValue + "&" + currentValue :
+                        currentValue);
 
         WindowService.redirectTo(redirectUrl);
     }
