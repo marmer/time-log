@@ -9,4 +9,4 @@ const requestObject = decodeURI(window.location.hash)
     })
     .reduce((previousValue, currentValue) => ({...previousValue, ...currentValue}));
 
-window.location.href = "/#/login/google?" + JSON.stringify(requestObject);
+window.location.href = "./#/login/google?" + JSON.stringify(requestObject);
