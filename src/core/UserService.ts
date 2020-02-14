@@ -1,3 +1,5 @@
+import WindowService from "./WindowService";
+
 export interface User {
     email: string;
 }
@@ -26,7 +28,7 @@ export default class UserService {
 
     static performLogin() {
         const requestProps: { [key: string]: any; } = {
-            scope: encodeURI("email https://www.googleapis.com/auth/drive.file"),
+            scope: encodeURI("email"),
             include_granted_scopes: true,
             response_type: "token",
             state: "/",
@@ -34,9 +36,14 @@ export default class UserService {
             client_id: process.env.REACT_APP_OAUTH_CLIENT_ID
         };
 
-        window.location.href = process.env.REACT_APP_OAUTH_AUTHORIZATION_URL + "?" + Object.keys(requestProps)
+        const redirectUrl = process.env.REACT_APP_OAUTH_AUTHORIZATION_URL + "?" + Object.keys(requestProps)
             .map((key: string) => {
                 return key + "=" + requestProps[key]
-            }).reduce((previousValue, currentValue) => previousValue + "&" + currentValue, "");
+            }).reduce((previousValue, currentValue) =>
+                previousValue ?
+                    previousValue + "&" + currentValue :
+                    currentValue);
+
+        WindowService.redirectTo(redirectUrl);
     }
 }
