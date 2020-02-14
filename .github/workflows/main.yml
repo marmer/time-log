@@ -6,6 +6,8 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    env:
+      CI: true
     steps:
     - name: Checkout
       uses: actions/checkout@v1
@@ -22,6 +24,5 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         REACT_APP_OAUTH_CLIENT_ID: ${{ secrets.REACT_APP_OAUTH_CLIENT_ID }}
         REACT_APP_OAUTH_CLIENT_SECRET: ${{ secrets.REACT_APP_OAUTH_CLIENT_SECRET }}
-        CI: true
         BRANCH: gh-pages
         FOLDER: build
