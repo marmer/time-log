@@ -24,4 +24,4 @@ jobs:
         CI: true
     - run: echo ${{ secrets.GITHUB_TOKEN }}
     - run: echo ${{ secrets.REACT_APP_SOME_ENV_VAR }}
-    - run: echo ${{ REACT_APP_OAUTH_CLIENT_ID }}
+    - run: echo ${{ secrets.REACT_APP_OAUTH_CLIENT_ID }}
