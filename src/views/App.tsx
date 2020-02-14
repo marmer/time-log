@@ -9,13 +9,6 @@ import HeaderView from "./HeaderView";
 
 export default function App() {
     return (<>
-            {/*Spike for environment variables in github pages start */}
-            <div>
-                <p>process.env.REACT_APP_SOME_ENV_VAR:</p>
-                <p>{process.env.REACT_APP_SOME_ENV_VAR ? "Yeah, this is the value I wanted to see: " + process.env.REACT_APP_SOME_ENV_VAR : "Oh noooooooooo. I cannot find the variable"}</p>
-            </div>
-            {/*Spike for environment variables github pages  end */}
-
             <HeaderView/>
             <main>
                 <Route render={globalRouteProps => {
