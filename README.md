@@ -1,4 +1,4 @@
-[![Build Status](https://dev.azure.com/MarianoMertinat/time-log/_apis/build/status/marmer.time-log?branchName=master)](https://dev.azure.com/MarianoMertinat/time-log/_build/latest?definitionId=2&branchName=master)
+![Build and deploy](https://github.com/marmer/time-log/workflows/Build%20and%20deploy/badge.svg)
  
 [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=io.github.marmer.apps.time-log:time-log&metric=alert_status)](https://sonarcloud.io/dashboard?id=io.github.marmer.apps.time-log:time-log)
 [![Code Coverage](https://sonarcloud.io/api/project_badges/measure?project=io.github.marmer.apps.time-log:time-log&metric=coverage)](https://sonarcloud.io/component_measures?id=io.github.marmer.apps.time-log:time-log&metric=Coverage)
