@@ -42,7 +42,7 @@ jobs:
         env:
           REACT_APP_SOME_ENV_VAR: ${{ secrets.REACT_APP_SOME_ENV_VAR }}
           REACT_APP_OAUTH_CLIENT_ID: ${{ secrets.REACT_APP_OAUTH_CLIENT_ID }}
-        if: ${{ success() && github.ref == "master"}}
+        if: ${{ success() && github.ref == 'master'}}
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@releases/v3
@@ -50,4 +50,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: gh-pages
           FOLDER: build
-        if: ${{ success() && github.ref == "master"}}
+        if: ${{ success() && github.ref == 'master'}}
