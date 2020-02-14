@@ -37,19 +37,12 @@ jobs:
         env:
          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         if: success()
-        
-#      - name: SonarCloud Scan
-#        uses: sonarsource/sonarcloud-github-action@master
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-#        if: success()
 
       - run: npm run build --if-present
         env:
           REACT_APP_SOME_ENV_VAR: ${{ secrets.REACT_APP_SOME_ENV_VAR }}
           REACT_APP_OAUTH_CLIENT_ID: ${{ secrets.REACT_APP_OAUTH_CLIENT_ID }}
-        if: success()
+        if: ${{ success() && github.ref == "master"}}
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@releases/v3
@@ -57,4 +50,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: gh-pages
           FOLDER: build
-        if: success()
+        if: ${{ success() && github.ref == "master"}}
