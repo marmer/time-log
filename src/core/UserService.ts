@@ -11,7 +11,6 @@ export default class UserService {
     }
 
     static getMissingEnvironmentVariables(): string[] {
-        // TODO: marmer 13.02.2020 currently just a spike
         const result: string[] = [];
 
         if (!process.env.REACT_APP_OAUTH_CLIENT_ID)

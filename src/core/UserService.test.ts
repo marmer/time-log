@@ -70,4 +70,49 @@ describe("UserService", () => {
             });
         });
     });
+
+    describe("getMissingEnvironmentVariables", () => {
+        describe("all variables are set", () => {
+            it("should return an empty list of thoose variable names", async () => {
+                process.env.REACT_APP_OAUTH_CLIENT_ID = "oAuthClientId";
+                process.env.REACT_APP_OAUTH_REDIRECT_URL = "oauthRedirectUrl";
+                process.env.REACT_APP_OAUTH_AUTHORIZATION_URL = "oauthAuthorizationUrl";
+
+                const result = UserService.getMissingEnvironmentVariables();
+
+                expect(result).toStrictEqual([]);
+            });
+
+        });
+
+
+        describe("variables missing", () => {
+
+            let variableNames = ["REACT_APP_OAUTH_CLIENT_ID", "REACT_APP_OAUTH_REDIRECT_URL", "REACT_APP_OAUTH_AUTHORIZATION_URL"];
+
+            variableNames.forEach(variableName => {
+                it("should print it " + variableName + " if it's missing", async () => {
+                    process.env.REACT_APP_OAUTH_CLIENT_ID = "oauthCientId";
+                    process.env.REACT_APP_OAUTH_REDIRECT_URL = "oauthRedirectUrl";
+                    process.env.REACT_APP_OAUTH_AUTHORIZATION_URL = "oauthAuthorizationUrl";
+
+                    delete process.env[variableName];
+
+                    const result = UserService.getMissingEnvironmentVariables();
+
+                    expect(result).toEqual([variableName]);
+                })
+            });
+
+            it("should print all missing variables if all variables are missing", async () => {
+                variableNames.forEach(variableName => delete process.env[variableName]);
+
+                const result = UserService.getMissingEnvironmentVariables();
+
+                variableNames.forEach(variableName => expect(result).toContain(variableName));
+                expect(result).toHaveLength(variableNames.length);
+            })
+
+        });
+    });
 });
