@@ -37,7 +37,7 @@ export default class UserService {
             client_id: process.env.REACT_APP_OAUTH_CLIENT_ID
         };
 
-        window.location.href = "https://accounts.google.com/o/oauth2/v2/auth?" + Object.keys(requestProps)
+        window.location.href = process.env.REACT_APP_OAUTH_AUTHORIZATION_URL + "?" + Object.keys(requestProps)
             .map((key: string) => {
                 return key + "=" + requestProps[key]
             }).reduce((previousValue, currentValue) => previousValue + "&" + currentValue, "");
