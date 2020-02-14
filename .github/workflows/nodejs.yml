@@ -2,8 +2,11 @@ name: Build and deploy
 
 on:
   push:
-    branches:
-      - master
+    branches: 
+      - '*'
+  pull_request:
+    branches: 
+      - '*'
 
 jobs:
   build:
