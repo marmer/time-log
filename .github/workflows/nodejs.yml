@@ -9,7 +9,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [8.x, 10.x, 12.x]
+        node-version: [10.x]
 
     steps:
     - uses: actions/checkout@v2
@@ -25,3 +25,12 @@ jobs:
     - run: echo ${{ secrets.GITHUB_TOKEN }}
     - run: echo ${{ secrets.REACT_APP_SOME_ENV_VAR }}
     - run: echo ${{ secrets.REACT_APP_OAUTH_CLIENT_ID }}
+      
+    - name: Deploy
+      uses: JamesIves/github-pages-deploy-action@releases/v3
+      with:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        REACT_APP_SOME_ENV_VAR: ${{ secrets.REACT_APP_SOME_ENV_VAR }}
+        REACT_APP_OAUTH_CLIENT_ID: ${{ secrets.REACT_APP_OAUTH_CLIENT_ID }}
+        BRANCH: gh-pages
+        FOLDER: build
