@@ -23,14 +23,14 @@ describe("LoginService", () => {
             describe("success search string", () => {
                 describe("valid response", () => {
                     it("should store the relevant user information and return the state from the oauth response as sourceURL", async () => {
-                        UserService.setUser = jest.fn();
+                        UserService.setCurrentuser = jest.fn();
                         SearchStringService.parse = jest.fn().mockReturnValue({...googleOAuthSuccessResponseBase});
                         GoogleUserInfoCrudService.getUserInfo = jest.fn().mockResolvedValue({email: "some@one.there"} as GoogleUserInfo);
 
                         const result = await LoginService.loginBySearchString("someSearchString");
 
                         expect(SearchStringService.parse).toBeCalledWith("someSearchString");
-                        expect(UserService.setUser).toBeCalledWith({
+                        expect(UserService.setCurrentuser).toBeCalledWith({
                             email: "some@one.there",
                         } as User);
                         expect(GoogleUserInfoCrudService.getUserInfo).toBeCalledWith(googleOAuthSuccessResponseBase.access_token);
@@ -38,7 +38,7 @@ describe("LoginService", () => {
                     });
 
                     it("should return home as default sourceUrl if no state is set", async () => {
-                        UserService.setUser = jest.fn();
+                        UserService.setCurrentuser = jest.fn();
                         SearchStringService.parse = jest.fn().mockReturnValue({
                             ...googleOAuthSuccessResponseBase,
                             state: undefined
