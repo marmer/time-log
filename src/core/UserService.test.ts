@@ -1,5 +1,6 @@
-import UserService from "./UserService";
+import UserService, {User} from "./UserService";
 import WindowService from "./WindowService";
+import UserRepository from "../local/UserRepository";
 
 type KeyValuePairs = { [key: string]: string | undefined; };
 
@@ -16,6 +17,7 @@ const resetCustomEnvironmentVariables = () => {
         .forEach(key => process.env[key] = originalEnvironmentVariables[key]);
 };
 
+const userBase = {email: "albert@einstein.de"} as User;
 describe("UserService", () => {
 
     beforeEach(() => {
@@ -113,6 +115,22 @@ describe("UserService", () => {
                 expect(result).toHaveLength(variableNames.length);
             })
 
+        });
+    });
+
+    describe("getCurrentUser", () => {
+        describe("a user exists", () => {
+            it("should return the user", async () => {
+                UserRepository.getCurrentUser = jest.fn().mockReturnValue({...userBase});
+                const result = UserService.getCurrentUser();
+                expect(result).resolves.toStrictEqual(userBase);
+            });
+        });
+
+        describe("no user exists", () => {
+            UserRepository.getCurrentUser = jest.fn().mockReturnValue(null);
+            const result = UserService.getCurrentUser();
+            expect(result).resolves.toStrictEqual(null);
         });
     });
 });

@@ -1,13 +1,13 @@
 import WindowService from "./WindowService";
+import UserRepository from "../local/UserRepository";
 
 export interface User {
     email: string;
 }
 
 export default class UserService {
-    static getCurrentUser(): User | null {
-        // TODO: marmer 13.02.2020 currently just a spike
-        return null;
+    static async getCurrentUser(): Promise<User | null> {
+        return Promise.resolve(UserRepository.getCurrentUser());
     }
 
     static getMissingEnvironmentVariables(): string[] {
