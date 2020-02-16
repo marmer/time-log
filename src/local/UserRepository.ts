@@ -8,6 +8,6 @@ export default class UserRepository {
     }
 
     static setCurrentUser(user: User) {
-        // TODO: marmer 16.02.2020
+        Lockr.set("user", user);
     }
 }
