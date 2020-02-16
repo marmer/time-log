@@ -20,15 +20,15 @@ interface GoogleOAuthErrorResponse {
     error: string;
 }
 
-interface GoogleOResponse extends GoogleOSuccessResponse, GoogleOAuthErrorResponse {
+interface GoogleOAuthResponse extends GoogleOSuccessResponse, GoogleOAuthErrorResponse {
 }
 
-const getOAuthObjectFromSearchString = (searchString: string): GoogleOResponse => JSON.parse(decodeURI(searchString.replace(/^\?/, "")));
+const getOAuthObjectFromSearchString = (searchString: string): GoogleOAuthResponse => JSON.parse(decodeURI(searchString.replace(/^\?/, "")));
 
 export default class LoginService {
 
     static async loginBySearchString(searchString: string): Promise<LoginResult> {
-        return Promise.reject("möööp");
+        return Promise.reject(new Error("möööp"));
         //
         // const [userInfo, setUserInfo] = React.useState<GoogleUserInfo>();
         //
