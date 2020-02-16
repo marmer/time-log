@@ -128,9 +128,11 @@ describe("UserService", () => {
         });
 
         describe("no user exists", () => {
-            UserRepository.getCurrentUser = jest.fn().mockReturnValue(null);
-            const result = UserService.getCurrentUser();
-            expect(result).resolves.toStrictEqual(null);
+            it("should return nothing", async () => {
+                UserRepository.getCurrentUser = jest.fn().mockReturnValue(null);
+                const result = UserService.getCurrentUser();
+                expect(result).resolves.toStrictEqual(null);
+            });
         });
     });
 });
