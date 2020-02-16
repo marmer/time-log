@@ -123,7 +123,7 @@ describe("UserService", () => {
             it("should return the user", async () => {
                 UserRepository.getCurrentUser = jest.fn().mockReturnValue({...userBase});
                 const result = UserService.getCurrentUser();
-                expect(result).resolves.toStrictEqual(userBase);
+                expect(result).toStrictEqual(userBase);
             });
         });
 
@@ -131,7 +131,7 @@ describe("UserService", () => {
             it("should return nothing", async () => {
                 UserRepository.getCurrentUser = jest.fn().mockReturnValue(null);
                 const result = UserService.getCurrentUser();
-                expect(result).resolves.toStrictEqual(null);
+                expect(result).toStrictEqual(null);
             });
         });
     });
