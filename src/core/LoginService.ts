@@ -32,26 +32,5 @@ export default class LoginService {
                 oauthResponse.state :
                 "/"
         };
-        //
-        // const [userInfo, setUserInfo] = React.useState<GoogleUserInfo>();
-        //
-        // const oAuthObjectFromSearchString = getOAuthObjectFromSearchString(searchString);
-        //
-        // if (!userInfo)
-        //     fetch("https://www.googleapis.com/oauth2/v2/userinfo", {
-        //         method: "GET",
-        //         headers: {
-        //             "Accept": "application/json",
-        //             "Authorization": "Bearer " + oAuthObjectFromSearchString.access_token
-        //         }
-        //     }).then((response) => {
-        //         if (response.status !== 200) {
-        //             throw new Error("Unexpected response status: " + response.status);
-        //         }
-        //         return response.json();
-        //     }).then((value: GoogleUserInfo) => setUserInfo(value));
-
     }
-
-
 }
