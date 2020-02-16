@@ -29,4 +29,21 @@ describe("UserRepository", () => {
         });
 
     });
+
+    describe("setCurrentUser", () => {
+        it("should save a new current user", async () => {
+            UserRepository.setCurrentUser({...userBase});
+
+            const storedCurrentUser = Lockr.get("user");
+            expect(storedCurrentUser).toStrictEqual(userBase);
+        });
+
+        it("should override any existing user", async () => {
+            Lockr.set("user", {...userBase, email: "oldMail"} as User);
+            UserRepository.setCurrentUser({...userBase, email: "newMail"});
+
+            const storedCurrentUser = Lockr.get("user");
+            expect(storedCurrentUser).toStrictEqual({...userBase, email: "newMail"});
+        });
+    });
 });
