@@ -44,6 +44,7 @@ export default class UserService {
                         previousValue + "&" + currentValue :
                         currentValue);
 
+        // TODO: marmer 16.02.2020 move the last part of the url creation into the search string service?
         WindowService.redirectTo(redirectUrl);
     }
 
