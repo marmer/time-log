@@ -19,9 +19,6 @@ export interface GoogleOAuthErrorResponse {
 
 interface GoogleOAuthResponse extends GoogleOAuthSuccessResponse, GoogleOAuthErrorResponse {
 }
-
-const getOAuthObjectFromSearchString = (searchString: string): GoogleOAuthResponse => JSON.parse(decodeURI(searchString.replace(/^\?/, "")));
-
 export default class LoginService {
 
     static async loginBySearchString(searchString: string): Promise<LoginResult> {
