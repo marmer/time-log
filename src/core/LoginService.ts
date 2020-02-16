@@ -1,26 +1,23 @@
+import SearchStringService from "./SearchStringService";
+import GoogleUserInfoCrudService from "../google/oauth/GoogleUserInfoCrudService";
+import UserService from "./UserService";
+
 export interface LoginResult {
     sourceUrl: string
 }
 
-interface GoogleUserInfo {
-    id: string;
-    email: string;
-    verified_email: boolean;
-    picture: string
-}
-
-interface GoogleOSuccessResponse {
+export interface GoogleOAuthSuccessResponse {
     state?: string;
     access_token: string;
     token_type: "Bearer" | string;
     expires_in: string; // seconds
 }
 
-interface GoogleOAuthErrorResponse {
+export interface GoogleOAuthErrorResponse {
     error: string;
 }
 
-interface GoogleOAuthResponse extends GoogleOSuccessResponse, GoogleOAuthErrorResponse {
+interface GoogleOAuthResponse extends GoogleOAuthSuccessResponse, GoogleOAuthErrorResponse {
 }
 
 const getOAuthObjectFromSearchString = (searchString: string): GoogleOAuthResponse => JSON.parse(decodeURI(searchString.replace(/^\?/, "")));
@@ -28,7 +25,16 @@ const getOAuthObjectFromSearchString = (searchString: string): GoogleOAuthRespon
 export default class LoginService {
 
     static async loginBySearchString(searchString: string): Promise<LoginResult> {
-        return Promise.reject(new Error("möööp"));
+        const oauthResponse: GoogleOAuthResponse = SearchStringService.parse(searchString);
+
+        const userInfo = await GoogleUserInfoCrudService.getUserInfo(oauthResponse.access_token);
+        UserService.setUser(userInfo);
+
+        return {
+            sourceUrl: oauthResponse.state ?
+                oauthResponse.state :
+                "/"
+        };
         //
         // const [userInfo, setUserInfo] = React.useState<GoogleUserInfo>();
         //
