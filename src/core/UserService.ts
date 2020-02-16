@@ -6,8 +6,8 @@ export interface User {
 }
 
 export default class UserService {
-    static async getCurrentUser(): Promise<User | null> {
-        return Promise.resolve(UserRepository.getCurrentUser());
+    static getCurrentUser(): User | null {
+        return UserRepository.getCurrentUser();
     }
 
     static getMissingEnvironmentVariables(): string[] {
