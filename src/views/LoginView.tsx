@@ -1,59 +1,35 @@
 import React from "react";
-
-interface GoogleUserInfo {
-    id: string;
-    email: string;
-    verified_email: boolean;
-    picture: string
-}
-
-interface GoogleOSuccessResponse {
-    state?: string;
-    access_token: string;
-    token_type: "Bearer" | string;
-    expires_in: string; // seconds
-}
-
-interface GoogleOAuthErrorResponse {
-    error: string;
-}
-
-interface GoogleOResponse extends GoogleOSuccessResponse, GoogleOAuthErrorResponse {
-}
-
-const getOAuthObjectFromSearchString = (searchString: string): GoogleOResponse => JSON.parse(decodeURI(searchString.replace(/^\?/, "")));
+import LoginService, {LoginResult} from "../core/LoginService";
+import {Redirect} from "react-router-dom";
 
 export interface LoginViewProps {
     searchString: string;
 }
 
-export default (props: LoginViewProps) => {
+
+export default class LoginView extends React.Component<LoginViewProps, { loginResult?: LoginResult, loginError?: Error }> {
 
 
-    const [userInfo, setUserInfo] = React.useState<GoogleUserInfo>();
+    constructor(props: Readonly<LoginViewProps>) {
+        super(props);
+        this.state = {};
+    }
 
-    const oAuthObjectFromSearchString = getOAuthObjectFromSearchString(props.searchString);
+    componentDidMount(): void {
+        LoginService.loginBySearchString(this.props.searchString)
+            .then(loginResult => this.setState({
+                loginResult
+            }))
+            .catch(loginError => this.setState({loginError}))
+    }
 
-    if (!userInfo)
-        fetch("https://www.googleapis.com/oauth2/v2/userinfo", {
-            method: "GET",
-            headers: {
-                "Accept": "application/json",
-                "Authorization": "Bearer " + oAuthObjectFromSearchString.access_token
-            }
-        }).then((response) => {
-            if (response.status !== 200) {
-                throw new Error("Unexpected response status: " + response.status);
-            }
-            return response.json();
-        }).then((value: GoogleUserInfo) => setUserInfo(value));
-
-    return <div>
-        <label>oAuthObject
-            <p>{JSON.stringify(oAuthObjectFromSearchString)}</p>
-        </label>
-        <label>userString
-            <p>{JSON.stringify(userInfo)}</p>
-        </label>
-    </div>;
-};
+    render() {
+        if (this.state.loginResult) {
+            return <Redirect to={this.state.loginResult?.sourceUrl}/>
+        } else if (this.state.loginError) {
+            return <div>Error while trying to log you in. Reason: {this.state.loginError?.message}</div>
+        } else {
+            return <div>requesting user data...</div>;
+        }
+    }
+}
