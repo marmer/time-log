@@ -10,9 +10,6 @@ describe("LoginService", () => {
     describe("LoginBySearchString", () => {
 
         describe("valid search string", () => {
-            describe("error search string", () => {
-                // TODO: marmer 16.02.2020
-            });
             describe("success search string", () => {
 
                 describe("valid response", () => {
@@ -21,6 +18,9 @@ describe("LoginService", () => {
                 describe("error response", () => {
                     // TODO: marmer 16.02.2020
                 });
+            });
+            describe("error search string", () => {
+                // TODO: marmer 16.02.2020
             });
         });
         describe("invalid search string", () => {
