@@ -47,7 +47,7 @@ export default class UserService {
         WindowService.redirectTo(redirectUrl);
     }
 
-    static setUser(user: User) {
-// TODO: marmer 16.02.2020
+    static setCurrentuser(user: User) {
+        UserRepository.setCurrentUser(user);
     }
 }

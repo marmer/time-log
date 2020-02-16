@@ -135,4 +135,14 @@ describe("UserService", () => {
             });
         });
     });
+
+    describe("setCurrentuser", () => {
+        it("should store the user if called", async () => {
+            UserRepository.setCurrentUser = jest.fn();
+
+            UserService.setCurrentuser({...userBase});
+
+            expect(UserRepository.setCurrentUser).toBeCalledWith(userBase);
+        });
+    });
 });

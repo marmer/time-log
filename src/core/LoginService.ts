@@ -28,7 +28,7 @@ export default class LoginService {
         const oauthResponse: GoogleOAuthResponse = SearchStringService.parse(searchString);
 
         const userInfo = await GoogleUserInfoCrudService.getUserInfo(oauthResponse.access_token);
-        UserService.setUser(userInfo);
+        UserService.setCurrentuser(userInfo);
 
         return {
             sourceUrl: oauthResponse.state ?
