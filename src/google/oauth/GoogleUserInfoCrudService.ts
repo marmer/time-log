@@ -19,21 +19,13 @@ export default class GoogleUserInfoCrudService {
                 "Authorization": "Bearer " + accessToken
             }
         })
-            .then(response => response.json())
-            .then((dto: GoogleUserDto) => ({email: dto.email} as GoogleUserInfo))
-
-
-        // .the
-        //
-        // response.json()
-        //
-        // .then((response) => {
-        // if (response.status !== 200) {
-        //     throw new Error("Unexpected response status: " + response.status);
-        // }
-        // return response.json();
-        // });
-        //
-        // response.
+            .then(response => {
+                if (response.status !== 200)
+                    throw new Error("Cannot get user infos. Request for User infos end with status code " + response.status);
+                return response.json();
+            })
+            .then((dto: GoogleUserDto) => ({
+                email: dto.email
+            }));
     }
 }
