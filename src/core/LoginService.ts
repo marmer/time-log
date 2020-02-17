@@ -24,13 +24,15 @@ export default class LoginService {
     static async loginBySearchString(searchString: string): Promise<LoginResult> {
         const oauthResponse: GoogleOAuthResponse = SearchStringService.parse(searchString);
 
-        const userInfo = await GoogleUserInfoCrudService.getUserInfo(oauthResponse.access_token);
-        UserService.setCurrentuser(userInfo);
+        return GoogleUserInfoCrudService.getUserInfo(oauthResponse.access_token)
+            .then(userInfo => {
+                UserService.setCurrentuser(userInfo);
 
-        return {
-            sourceUrl: oauthResponse.state ?
-                oauthResponse.state :
-                "/"
-        };
+                return {
+                    sourceUrl: oauthResponse.state ?
+                        oauthResponse.state :
+                        "/"
+                };
+            }).catch(error => Promise.reject(new Error("Not able to login the user. Reason: " + error.message)));
     }
 }

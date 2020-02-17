@@ -52,15 +52,18 @@ describe("LoginService", () => {
 
                 });
                 describe("error response", () => {
-                    // TODO: marmer 16.02.2020
+                    it("should reject with an appropriate error message", async () => {
+                        UserService.setCurrentuser = jest.fn();
+                        SearchStringService.parse = jest.fn().mockReturnValue({
+                            ...googleOAuthSuccessResponseBase,
+                            state: undefined
+                        } as GoogleOAuthSuccessResponse);
+                        GoogleUserInfoCrudService.getUserInfo = jest.fn().mockRejectedValue(new Error("Error while loading user infos."));
+
+                        await expect(LoginService.loginBySearchString("someSearchString")).rejects.toStrictEqual(new Error("Not able to login the user. Reason: Error while loading user infos."));
+                    });
                 });
             });
-            describe("error search string", () => {
-                // TODO: marmer 16.02.2020
-            });
-        });
-        describe("invalid search string", () => {
-            // TODO: marmer 16.02.2020
         });
     });
 });
