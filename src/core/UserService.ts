@@ -1,5 +1,6 @@
 import WindowService from "./WindowService";
 import UserRepository from "../local/UserRepository";
+import SearchStringService from "./SearchStringService";
 
 export interface User {
     email: string;
@@ -36,15 +37,8 @@ export default class UserService {
         };
 
         const redirectUrl = (process.env.REACT_APP_OAUTH_AUTHORIZATION_URL ? process.env.REACT_APP_OAUTH_AUTHORIZATION_URL : "") +
-            "?" + Object.keys(requestProps)
-                .map((key: string) => {
-                    return key + "=" + requestProps[key]
-                }).reduce((previousValue, currentValue) =>
-                    previousValue ?
-                        previousValue + "&" + currentValue :
-                        currentValue);
+            SearchStringService.toSearchString(requestProps);
 
-        // TODO: marmer 16.02.2020 move the last part of the url creation into the search string service?
         WindowService.redirectTo(redirectUrl);
     }
 

@@ -12,6 +12,20 @@ export default class SearchStringService {
                 , {} as { [key: string]: string }) as any;
     }
 
+    static toSearchString(requestProps: { [p: string]: string | number | boolean }) {
+
+        if (!Object.keys(requestProps).length)
+            return "?";
+
+        return "?" + Object.keys(requestProps)
+            .map((key: string) => {
+                return key + "=" + encodeURIComponent(requestProps[key])
+            }).reduce((previousValue, currentValue) =>
+                previousValue ?
+                    previousValue + "&" + currentValue :
+                    currentValue);
+    }
+
     private static removeSearchStringOpening(searchString: string) {
         return searchString.replace(/^\?/, "");
     }
