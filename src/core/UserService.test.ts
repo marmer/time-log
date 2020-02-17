@@ -47,7 +47,7 @@ describe("UserService", () => {
                     "scope=email&" +
                     "include_granted_scopes=true&" +
                     "response_type=token&" +
-                    "state=/&" +
+                    "state=%2F&" +
                     "redirect_uri=" + oAuthRedirectUrl + "&" +
                     "client_id=" + oAuthClientId);
             });
@@ -66,7 +66,7 @@ describe("UserService", () => {
                     "scope=email&" +
                     "include_granted_scopes=true&" +
                     "response_type=token&" +
-                    "state=/&" +
+                    "state=%2F&" +
                     "redirect_uri=&" +
                     "client_id=");
             });

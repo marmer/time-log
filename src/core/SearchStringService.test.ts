@@ -64,4 +64,20 @@ describe("SearchStringService", () => {
             });
         });
     });
+
+    describe("toSearchString", () => {
+        it("should serve a search string with all properties", async () => {
+            expect(SearchStringService.toSearchString({k1: "v1", k2: "v2"})).toStrictEqual("?k1=v1&k2=v2")
+        });
+
+        it("should url encode property values", async () => {
+            expect(SearchStringService.toSearchString({k1: "a B,C%D:e?f/g\\h"})).toStrictEqual("?k1=a%20B%2CC%25D%3Ae%3Ff%2Fg%5Ch")
+        });
+        it("should be possible to return an empty search string if the given object has no keys", async () => {
+            expect(SearchStringService.toSearchString({})).toStrictEqual("?")
+        });
+        it("should set boolean properties explicitely", async () => {
+            expect(SearchStringService.toSearchString({someProp: true})).toStrictEqual("?someProp=true")
+        });
+    });
 });
