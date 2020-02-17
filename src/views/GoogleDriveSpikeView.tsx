@@ -166,6 +166,23 @@ ${file.content}
         });
 }
 
+
+// ---- updateExample: ----
+// curl --request PATCH \
+//   --url 'https://www.googleapis.com/upload/drive/v3/files/1J0v7U2B_GswHPo3Vbuu67jYvtls4uaIQ?uploadType=media' \
+//   --header 'accept: application/json' \
+//   --header 'authorization: Bearer ya29.Il-9ByIRxhjOLylx88WfEC6W1uLG42J16nXiAhVTXUkfoh5LLvGUZyN4aMEwh3rBc0RlV8ncjksxy8dzZ31hqEBuaxh9-fTKqsPoweE8uJonGoYIb6doE-6hgRGfClYS3w' \
+//   --header 'content-type: application/json' \
+//   --data '{
+// "newKey":"withNewValue"
+// }'
+
+// ---- search for filename example ----
+// curl --request GET \
+//   --url 'https://www.googleapis.com/drive/v3/files?q=name%20contains%20'\''Verzeichnis'\''' \
+//   --header 'accept: application/json' \
+//   --header 'authorization: Bearer ya29.Il-9ByIRxhjOLylx88WfEC6W1uLG42J16nXiAhVTXUkfoh5LLvGUZyN4aMEwh3rBc0RlV8ncjksxy8dzZ31hqEBuaxh9-fTKqsPoweE8uJonGoYIb6doE-6hgRGfClYS3w'
+
 export default () => {
     const [driveFiles, setDriveFiles] = useState<{ [id: string]: File }>({});
     const [newFileContent, setNewFileContent] = useState<string>('{\n  "some": "content"\n}');
