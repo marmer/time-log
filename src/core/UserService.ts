@@ -26,7 +26,7 @@ export default class UserService {
         return result;
     }
 
-    static performLogin() {
+    static redirectToLogin() {
         const requestProps: { [key: string]: any; } = {
             scope: encodeURI("email"),
             include_granted_scopes: true,

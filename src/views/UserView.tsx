@@ -17,7 +17,7 @@ export default () => {
         </section>
     ) : (
         <section>
-            <button onClick={() => UserService.performLogin()}>
+            <button onClick={() => UserService.redirectToLogin()}>
                 Login
             </button>
         </section>
