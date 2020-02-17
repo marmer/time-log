@@ -49,22 +49,6 @@ function FileRespoinseView(props: { files: { [id: string]: File }, deleteCallbac
     </div>
 }
 
-function addFileMetadataFor(file: File, setFiles: (value: (((prevState: { [p: string]: File }) => { [p: string]: File }) | { [p: string]: File })) => void) {
-    fetch(`https://www.googleapis.com/drive/v3/files/${file.id}`, {
-        "method": "GET",
-        "headers": {
-            "authorization": "Bearer " + UserService.getCurrentUser()?.accessToken
-        }
-    })
-        .then(response => {
-            response.json()
-        })
-        .catch(err => {
-            console.log(err);
-        });
-    ;
-}
-
 function loadFiles(setDriveFiles: (value: (((prevState: { [p: string]: File }) => { [p: string]: File }) | { [p: string]: File })) => void) {
     if (UserService.getCurrentUser())
         fetch("https://www.googleapis.com/drive/v3/files?=", {
@@ -190,7 +174,7 @@ export default () => {
 
     useEffect(() => {
         loadFiles(setDriveFiles);
-    }, [driveFiles.length]);
+    }, [driveFiles, setDriveFiles]);
 
     return <div>
         <label>File List of google drive files List metadata<FileRespoinseView files={driveFiles}
