@@ -17,7 +17,7 @@ interface GoogleFileListResponseDto {
     "files": FileListResponseEntryDto[]
 }
 
-function FileRespoinseView(props: { files: { [id: string]: File } }) {
+function FileRespoinseView(props: { files: { [id: string]: File }, deleteCallback: (file: File) => void }) {
     return <div>
         <table>
             <thead>
@@ -25,10 +25,10 @@ function FileRespoinseView(props: { files: { [id: string]: File } }) {
                 <th>id</th>
                 <th>name</th>
                 <th>content</th>
+                <th>action</th>
             </tr>
             </thead>
             <tbody>
-            <tr>
                 {Object.keys(props.files)
                     .map(key => props.files[key])
                     .map(file =>
@@ -36,8 +36,14 @@ function FileRespoinseView(props: { files: { [id: string]: File } }) {
                             <td>{file.id}</td>
                             <td>{file.name}</td>
                             <td>{file.content}</td>
+                            <td>
+                                <button onClick={() => {
+                                    deleteDriveFile(file.id)
+                                        .then(() => props.deleteCallback(file));
+                                }}>delete
+                                </button>
+                            </td>
                         </tr>)}
-            </tr>
             </tbody>
         </table>
     </div>
@@ -113,6 +119,23 @@ function loadFileContentFor(driveFiles: { [id: string]: File }, setDriveFiles: (
             });
 }
 
+function deleteDriveFile(id: string) {
+    return fetch(`https://www.googleapis.com/drive/v3/files/${id}`, {
+        "method": "DELETE",
+        "headers": {
+            "accept": "application/json",
+            "authorization": `Bearer ${UserService.getCurrentUser()?.accessToken}`
+        }
+    });
+}
+
+function deleteDriveFiles(driveFiles: { [p: string]: File }): Promise<any> {
+    if (UserService.getCurrentUser())
+        return Promise.all(Object.keys(driveFiles)
+            .map(id => deleteDriveFile(id)))
+    return Promise.resolve();
+}
+
 export default () => {
     const [driveFiles, setDriveFiles] = useState<{ [id: string]: File }>({});
 
@@ -120,7 +143,20 @@ export default () => {
         loadFiles(setDriveFiles);
     }, [driveFiles.length]);
 
-    return <div><label>File List of google drive files List metadata<FileRespoinseView files={driveFiles}/></label>
+    return <div>
+        <label>File List of google drive files List metadata<FileRespoinseView files={driveFiles}
+                                                                               deleteCallback={file => {
+                                                                                   const df = {...driveFiles}
+                                                                                   delete df[file.id];
+                                                                                   setDriveFiles(df);
+                                                                               }
+                                                                               }/></label>
+        <button onClick={() => {
+            deleteDriveFiles(driveFiles)
+                .then(() => setDriveFiles({}));
+        }}>
+            Delete all!
+        </button>
     </div>
 }
 
