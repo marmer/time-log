@@ -1,3 +1,8 @@
 .fullWidth {
     width: 100%;
 }
+
+.devMode {
+    border-color: lightcoral;
+    border-style: dashed;
+}
