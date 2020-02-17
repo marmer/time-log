@@ -136,8 +136,40 @@ function deleteDriveFiles(driveFiles: { [p: string]: File }): Promise<any> {
     return Promise.resolve();
 }
 
+function createFile(file: { name: string; content: string }): Promise<any> {
+    return fetch("https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart", {
+        "method": "POST",
+        "headers": {
+            "accept": "application/json",
+            "content-type": "multipart/related; boundary=nice_boundary_name",
+            "authorization": `Bearer ${UserService.getCurrentUser()?.accessToken}`
+        },
+        "body": `--nice_boundary_name
+Content-Type: application/json; charset=UTF-8
+
+{
+  "name": "${file.name}"
+}
+
+--nice_boundary_name
+Content-Type: application/json; charset=UTF-8
+
+${file.content}
+
+--nice_boundary_name--`
+    })
+        .then(response => {
+            console.log(response);
+        })
+        .catch(err => {
+            console.log(err);
+        });
+}
+
 export default () => {
     const [driveFiles, setDriveFiles] = useState<{ [id: string]: File }>({});
+    const [newFileContent, setNewFileContent] = useState<string>('{\n  "some": "content"\n}');
+    const [newFileName, setNewFileName] = useState<string>(`${Math.random()}.json`);
 
     useEffect(() => {
         loadFiles(setDriveFiles);
@@ -156,6 +188,17 @@ export default () => {
                 .then(() => setDriveFiles({}));
         }}>
             Delete all!
+        </button>
+        <label>
+            File name
+            <input value={newFileName} onChange={event => setNewFileName(event.target.value)}/>
+        </label>
+        <label>
+            File content
+            <textarea value={newFileContent} onChange={event => setNewFileContent(event.target.value)}/>
+        </label>
+        <button onClick={() => createFile({name: newFileName, content: newFileContent})
+            .then(() => loadFiles(setDriveFiles))}>add
         </button>
     </div>
 }
