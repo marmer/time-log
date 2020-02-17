@@ -50,14 +50,14 @@ describe("UserView", () => {
 
     describe("functionality", () => {
         it("should trigger the login process if the login button is triggered", async () => {
-            UserService.performLogin = jest.fn();
+            UserService.redirectToLogin = jest.fn();
             UserService.getCurrentUser = jest.fn().mockReturnValue(null);
 
             const underTest = reactTest.render(<UserView/>);
 
             userEvent.click(underTest.getByText("Login"));
 
-            expect(UserService.performLogin).toBeCalled();
+            expect(UserService.redirectToLogin).toBeCalled();
         });
     });
 });

@@ -28,7 +28,7 @@ describe("UserService", () => {
         resetCustomEnvironmentVariables();
     });
 
-    describe("performLogin", () => {
+    describe("redirectToLogin", () => {
         describe("all environment variables set", () => {
             it("should redirect to google with all the necessary values", async () => {
                 let authauthorizationUrl = "oauthAuthorizationUrl";
@@ -41,7 +41,7 @@ describe("UserService", () => {
 
                 WindowService.redirectTo = jest.fn();
 
-                UserService.performLogin();
+                UserService.redirectToLogin();
 
                 expect(WindowService.redirectTo).toBeCalledWith(authauthorizationUrl + "?" +
                     "scope=email&" +
@@ -60,7 +60,7 @@ describe("UserService", () => {
 
                 WindowService.redirectTo = jest.fn();
 
-                UserService.performLogin();
+                UserService.redirectToLogin();
 
                 expect(WindowService.redirectTo).toBeCalledWith("?" +
                     "scope=email&" +
