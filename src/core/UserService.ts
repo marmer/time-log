@@ -3,7 +3,8 @@ import UserRepository from "../local/UserRepository";
 import SearchStringService from "./SearchStringService";
 
 export interface User {
-    email: string;
+    email: string
+    accessToken: string
 }
 
 export default class UserService {

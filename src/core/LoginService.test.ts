@@ -5,8 +5,8 @@ import SearchStringService from "./SearchStringService";
 import GoogleUserInfoCrudService, {GoogleUserInfo} from "../google/oauth/GoogleUserInfoCrudService";
 
 const googleOAuthSuccessResponseBase: GoogleOAuthSuccessResponse = {
-    access_token: "access_token",
-    expires_in: "expires",
+    access_token: "1337_access",
+    expires_in: "42",
     state: "/some/where",
     token_type: "Bearer"
 };
@@ -32,6 +32,7 @@ describe("LoginService", () => {
                         expect(SearchStringService.parse).toBeCalledWith("someSearchString");
                         expect(UserService.setCurrentuser).toBeCalledWith({
                             email: "some@one.there",
+                            accessToken: googleOAuthSuccessResponseBase.access_token
                         } as User);
                         expect(GoogleUserInfoCrudService.getUserInfo).toBeCalledWith(googleOAuthSuccessResponseBase.access_token);
                         expect(result).toStrictEqual({sourceUrl: googleOAuthSuccessResponseBase.state} as LoginResult);
