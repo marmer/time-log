@@ -174,7 +174,7 @@ export default () => {
 
     useEffect(() => {
         loadFiles(setDriveFiles);
-    }, [driveFiles, setDriveFiles]);
+    }, []);
 
     return <div>
         <label>File List of google drive files List metadata<FileRespoinseView files={driveFiles}
