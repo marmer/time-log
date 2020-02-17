@@ -5,11 +5,10 @@ export default class SearchStringService {
             .split("&")
             .filter(kvPairs => kvPairs[0])
             .map(kvPair => kvPair.split("="))
-            .reduce((result, kvPair) => {
-                    result[kvPair[0]] = kvPair[1] ? decodeURIComponent(kvPair[1]) : "";
-                    return result;
-                }
-                , {} as { [key: string]: string }) as any;
+            .map((([key, value]) =>
+                ({[key]: value ? decodeURIComponent(value) : ""})))
+            .reduce((aggregate, toAdd) =>
+                ({...aggregate, ...toAdd}), {}) as any;
     }
 
     static toSearchString(requestProps: { [p: string]: string | number | boolean }) {
@@ -18,12 +17,8 @@ export default class SearchStringService {
             return "?";
 
         return "?" + Object.keys(requestProps)
-            .map((key: string) => {
-                return key + "=" + encodeURIComponent(requestProps[key])
-            }).reduce((previousValue, currentValue) =>
-                previousValue ?
-                    previousValue + "&" + currentValue :
-                    currentValue);
+            .map((key: string) => key + "=" + encodeURIComponent(requestProps[key]))
+            .reduce((previousValue, currentValue) => previousValue + "&" + currentValue);
     }
 
     private static removeSearchStringOpening(searchString: string) {
