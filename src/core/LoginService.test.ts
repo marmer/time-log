@@ -1,4 +1,4 @@
-import LoginService, {GoogleOAuthSuccessResponse, LoginResult} from "./LoginService";
+import RemoteLoginService, {GoogleOAuthSuccessResponse, LoginResult} from "./RemoteLoginService";
 import fetchMock from "fetch-mock";
 import UserService, {User} from "./UserService";
 import SearchStringService from "./SearchStringService";
@@ -11,7 +11,7 @@ const googleOAuthSuccessResponseBase: GoogleOAuthSuccessResponse = {
     token_type: "Bearer"
 };
 
-describe("LoginService", () => {
+describe("RemoteLoginService", () => {
     beforeEach(() => {
         fetchMock.reset();
         jest.resetAllMocks();
@@ -27,7 +27,7 @@ describe("LoginService", () => {
                         SearchStringService.parse = jest.fn().mockReturnValue({...googleOAuthSuccessResponseBase});
                         GoogleUserInfoCrudService.getUserInfo = jest.fn().mockResolvedValue({email: "some@one.there"} as GoogleUserInfo);
 
-                        const result = await LoginService.loginBySearchString("someSearchString");
+                        const result = await RemoteLoginService.loginBySearchString("someSearchString");
 
                         expect(SearchStringService.parse).toBeCalledWith("someSearchString");
                         expect(UserService.setCurrentuser).toBeCalledWith({
@@ -46,7 +46,7 @@ describe("LoginService", () => {
                         } as GoogleOAuthSuccessResponse);
                         GoogleUserInfoCrudService.getUserInfo = jest.fn().mockResolvedValue({email: "some@one.there"} as GoogleUserInfo);
 
-                        const result = await LoginService.loginBySearchString("someSearchString");
+                        const result = await RemoteLoginService.loginBySearchString("someSearchString");
 
                         expect(result).toStrictEqual({sourceUrl: "/"} as LoginResult);
                     });
@@ -61,7 +61,7 @@ describe("LoginService", () => {
                         } as GoogleOAuthSuccessResponse);
                         GoogleUserInfoCrudService.getUserInfo = jest.fn().mockRejectedValue(new Error("Error while loading user infos."));
 
-                        await expect(LoginService.loginBySearchString("someSearchString")).rejects.toStrictEqual(new Error("Not able to login the user. Reason: Error while loading user infos."));
+                        await expect(RemoteLoginService.loginBySearchString("someSearchString")).rejects.toStrictEqual(new Error("Not able to login the user. Reason: Error while loading user infos."));
                     });
                 });
             });

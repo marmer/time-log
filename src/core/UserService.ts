@@ -1,6 +1,7 @@
 import WindowService from "./WindowService";
 import UserRepository from "../local/UserRepository";
 import SearchStringService from "./SearchStringService";
+import RemoteLoginService from "./RemoteLoginService";
 
 export interface User {
     email: string
@@ -9,6 +10,7 @@ export interface User {
 
 export default class UserService {
     static logout() {
+        RemoteLoginService.logout();
         UserRepository.removeCurrentUser();
         WindowService.reload();
     }

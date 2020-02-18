@@ -19,7 +19,19 @@ export interface GoogleOAuthErrorResponse {
 
 interface GoogleOAuthResponse extends GoogleOAuthSuccessResponse, GoogleOAuthErrorResponse {
 }
-export default class LoginService {
+
+export default class RemoteLoginService {
+    static async logout() {
+        const currentUser = UserService.getCurrentUser();
+        return currentUser ?
+            fetch("https://oauth2.googleapis.com/revoke?token=" + UserService.getCurrentUser()?.accessToken, {
+                method: "GET",
+                headers: {
+                    "content-type": "application/x-www-form-urlencoded"
+                }
+            }) :
+            Promise.resolve()
+    }
 
     static async loginBySearchString(searchString: string): Promise<LoginResult> {
         const oauthResponse: GoogleOAuthResponse = SearchStringService.parse(searchString);
