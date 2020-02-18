@@ -11,7 +11,7 @@
     "coveragePathIgnorePatterns": [
       "/src/serviceWorker.ts",
       "/src/index.ts",
-      "**/__spikes__/**/*"
+      ".*__spikes__.*"
     ],
     "coverageReporters": [
       "cobertura",
