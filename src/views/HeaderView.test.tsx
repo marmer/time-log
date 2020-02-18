@@ -12,9 +12,4 @@ describe("HeaderView", () => {
         expect(underTest.getByText("time-log")).toBeVisible()
     });
 
-    it("should show the user view", async () => {
-        const underTest = reactTest.render(<HeaderView/>);
-
-        expect(underTest.getByText("UserView")).toBeVisible()
-    });
 });
