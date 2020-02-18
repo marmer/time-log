@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import UserService from "../core/UserService";
+import UserService from "../../core/UserService";
 
 interface File {
     id: string,
@@ -116,7 +116,7 @@ function deleteDriveFile(id: string) {
 function deleteDriveFiles(driveFiles: { [p: string]: File }): Promise<any> {
     if (UserService.getCurrentUser())
         return Promise.all(Object.keys(driveFiles)
-            .map(id => deleteDriveFile(id)))
+            .map(id => deleteDriveFile(id)));
     return Promise.resolve();
 }
 
@@ -179,7 +179,7 @@ export default () => {
     return <div>
         <label>File List of google drive files List metadata<FileRespoinseView files={driveFiles}
                                                                                deleteCallback={file => {
-                                                                                   const df = {...driveFiles}
+                                                                                   const df = {...driveFiles};
                                                                                    delete df[file.id];
                                                                                    setDriveFiles(df);
                                                                                }

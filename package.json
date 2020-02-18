@@ -10,7 +10,8 @@
   "jest": {
     "coveragePathIgnorePatterns": [
       "/src/serviceWorker.ts",
-      "/src/index.ts"
+      "/src/index.ts",
+      "**/__spikes__/**/*"
     ],
     "coverageReporters": [
       "cobertura",

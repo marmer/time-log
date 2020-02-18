@@ -6,7 +6,7 @@ import moment from "moment";
 import "bootstrap/dist/css/bootstrap.min.css";
 import LoginView from "./LoginView";
 import HeaderView from "./HeaderView";
-import DevModeView from "./DevModeView";
+import DevModeView from "./__spikes__/DevModeView";
 
 export default function App() {
     return (<>
