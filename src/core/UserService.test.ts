@@ -1,6 +1,7 @@
 import UserService, {User} from "./UserService";
 import WindowService from "./WindowService";
 import UserRepository from "../local/UserRepository";
+import RemoteLoginService from "./RemoteLoginService";
 
 type KeyValuePairs = { [key: string]: string | undefined; };
 
@@ -77,9 +78,11 @@ describe("UserService", () => {
         it("should delete the user information and reload the pages afterwards", async () => {
             UserRepository.removeCurrentUser = jest.fn();
             WindowService.reload = jest.fn();
+            RemoteLoginService.logout = jest.fn();
 
             UserService.logout();
 
+            expect(RemoteLoginService.logout).toBeCalled();
             expect(UserRepository.removeCurrentUser).toBeCalled();
             expect(WindowService.reload).toBeCalled();
         });

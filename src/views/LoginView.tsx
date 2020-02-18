@@ -1,5 +1,5 @@
 import React from "react";
-import LoginService, {LoginResult} from "../core/LoginService";
+import RemoteLoginService, {LoginResult} from "../core/RemoteLoginService";
 import {Redirect} from "react-router-dom";
 
 export interface LoginViewProps {
@@ -16,7 +16,7 @@ export default class LoginView extends React.Component<LoginViewProps, { loginRe
     }
 
     componentDidMount(): void {
-        LoginService.loginBySearchString(this.props.searchString)
+        RemoteLoginService.loginBySearchString(this.props.searchString)
             .then(loginResult => this.setState({
                 loginResult
             }))

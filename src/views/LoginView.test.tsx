@@ -1,7 +1,7 @@
 import LoginView from "./LoginView";
 import * as reactTest from "@testing-library/react"
 import React from "react";
-import LoginService, {LoginResult} from "../core/LoginService";
+import RemoteLoginService, {LoginResult} from "../core/RemoteLoginService";
 import {createMemoryHistory} from "history";
 import {MemoryRouter, Router} from "react-router-dom";
 
@@ -11,7 +11,7 @@ const loginResultBase: LoginResult = {sourceUrl: "somewhere"};
 describe("LoginView", () => {
     describe("User is not yet logged in", () => {
         it("should render some hint that the login is in progress", async () => {
-            LoginService.loginBySearchString = jest.fn().mockResolvedValue({...loginResultBase});
+            RemoteLoginService.loginBySearchString = jest.fn().mockResolvedValue({...loginResultBase});
 
             let underTest = reactTest.render(<MemoryRouter initialEntries={["i/dont/care"]}>
                 <LoginView searchString={"?some=searchString"}/></MemoryRouter>);
@@ -20,18 +20,18 @@ describe("LoginView", () => {
         });
 
         it("should try to log the user in by the given search string", async () => {
-            LoginService.loginBySearchString = jest.fn().mockResolvedValue({...loginResultBase});
+            RemoteLoginService.loginBySearchString = jest.fn().mockResolvedValue({...loginResultBase});
 
             const underTest = reactTest.render(<MemoryRouter initialEntries={["i/dont/care"]}>
                 <LoginView searchString={"?some=searchString"}/></MemoryRouter>);
 
-            expect(LoginService.loginBySearchString).toBeCalledWith("?some=searchString");
+            expect(RemoteLoginService.loginBySearchString).toBeCalledWith("?some=searchString");
         });
     });
 
     describe("It is possible to log the user in", () => {
         it("should redirect to the login result target", async () => {
-            LoginService.loginBySearchString = jest.fn().mockResolvedValue({
+            RemoteLoginService.loginBySearchString = jest.fn().mockResolvedValue({
                 ...loginResultBase,
                 sourceUrl: "/some/mystical/place"
             } as LoginResult)
@@ -51,7 +51,7 @@ describe("LoginView", () => {
 
     describe("User login denied", () => {
         it("should print an error for a few seconds and then redirect the user to home", async () => {
-            LoginService.loginBySearchString = jest.fn().mockRejectedValue(new Error("Access denied"))
+            RemoteLoginService.loginBySearchString = jest.fn().mockRejectedValue(new Error("Access denied"))
 
             const history = createMemoryHistory();
             history.push("/somewhere/i/dont/care/yet");
