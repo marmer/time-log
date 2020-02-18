@@ -109,8 +109,8 @@ describe("TimeLogTableView", () => {
                 const row = timelogIdCell.closest("tr");
 
                 const util = reactTest.within(row as any);
-                expect(util.getByDisplayValue(timeLog.description)).toBeVisible();
-                expect(util.getByDisplayValue(timeLog.durationInMinutes.toString())).toBeVisible();
+                expect(util.getByTitle("description")).toHaveValue(timeLog.description);
+                expect(util.getByTitle("duration")).toHaveValue(timeLog.durationInMinutes.toString());
             }
         });
     });
