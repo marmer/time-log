@@ -46,4 +46,12 @@ describe("UserRepository", () => {
             expect(storedCurrentUser).toStrictEqual({...userBase, email: "newMail"});
         });
     });
+
+    describe("removeCurrentUser", () => {
+        Lockr.set("user", {...userBase});
+
+        UserRepository.removeCurrentUser();
+
+        expect(localStorage.getItem("user")).toBeNull();
+    });
 });
