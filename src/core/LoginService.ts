@@ -26,7 +26,10 @@ export default class LoginService {
 
         return GoogleUserInfoCrudService.getUserInfo(oauthResponse.access_token)
             .then(userInfo => {
-                UserService.setCurrentuser(userInfo);
+                UserService.setCurrentuser({
+                    email: userInfo.email,
+                    accessToken: oauthResponse.access_token,
+                });
 
                 return {
                     sourceUrl: oauthResponse.state ?
