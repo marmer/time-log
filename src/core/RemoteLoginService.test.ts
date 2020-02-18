@@ -11,6 +11,10 @@ const googleOAuthSuccessResponseBase: GoogleOAuthSuccessResponse = {
     token_type: "Bearer"
 };
 
+const userBase: User = {
+    accessToken: "someToken",
+    email: "someMail"
+};
 describe("RemoteLoginService", () => {
     beforeEach(() => {
         fetchMock.reset();
@@ -65,6 +69,39 @@ describe("RemoteLoginService", () => {
                     });
                 });
             });
+        });
+    });
+
+    describe("logout", () => {
+        it("should logout a currently logged in user", async () => {
+            UserService.getCurrentUser = jest.fn().mockReturnValue({...userBase});
+
+            fetchMock.mock("https://oauth2.googleapis.com/revoke?token=" + userBase.accessToken, 200);
+
+            RemoteLoginService.logout();
+
+            expect(fetchMock.called("https://oauth2.googleapis.com/revoke?token=" + userBase.accessToken, {
+                method: "GET",
+                headers: {
+                    "content-type": "application/x-www-form-urlencoded"
+                }
+            })).toBeTruthy();
+
+        });
+
+        it("should not try to logout a user if no user is logged in", async () => {
+            UserService.getCurrentUser = jest.fn().mockReturnValue(null);
+
+            fetchMock.mock("https://oauth2.googleapis.com/revoke?token=" + userBase.accessToken, 200);
+
+            RemoteLoginService.logout();
+
+            expect(fetchMock.called("https://oauth2.googleapis.com/revoke?token=" + userBase.accessToken, {
+                method: "GET",
+                headers: {
+                    "content-type": "application/x-www-form-urlencoded"
+                }
+            })).toBeFalsy();
         });
     });
 });
