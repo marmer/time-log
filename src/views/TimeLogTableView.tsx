@@ -5,8 +5,13 @@ export interface TimeLogTableViewProps {
     day: Date;
 }
 
+interface TimelogInput {
+    duration: string;
+    description: string;
+}
+
 interface TimeLogTableViewState {
-    timeLogs: TimeLog[];
+    timeLogs: TimelogInput[];
     isLoadingTimeLogs: boolean;
 }
 
@@ -20,15 +25,31 @@ export default class TimeLogTableView extends React.Component<TimeLogTableViewPr
         }
     }
 
+    private static toTimelog(timelogInput: TimelogInput): TimeLog {
+        return {
+            description: timelogInput.description,
+            durationInMinutes: Number.parseInt(timelogInput.duration)
+        };
+    }
+
+    private static toTimelogInput({description, durationInMinutes}: TimeLog) {
+        return {
+            description,
+            duration: durationInMinutes.toString()
+        };
+    }
+
     componentDidMount(): void {
         this.setState({
             isLoadingTimeLogs: true
         });
         TimeLogService.getTimeLogsForDay(this.props.day)
-            .then(timeLogs => this.setState({
-                timeLogs,
-                isLoadingTimeLogs: false
-            }));
+            .then(timeLogs => {
+                this.setState({
+                    timeLogs: timeLogs.map((timeLog) => TimeLogTableView.toTimelogInput(timeLog)),
+                    isLoadingTimeLogs: false
+                });
+            });
     }
 
     render() {
@@ -57,7 +78,7 @@ export default class TimeLogTableView extends React.Component<TimeLogTableViewPr
                         <td><input disabled title="start time" placeholder="09:00"/></td>
                         <td><input className="fullWidth" title="duration" type="text"
                                    inputMode="numeric"
-                                   value={timeLog.durationInMinutes}
+                                   value={timeLog.duration}
                                    onChange={event => this.updateDuration(index, event.target.value)}/></td>
                         <td><input className="fullWidth" title="description" type="text" value={timeLog.description}
                                    onChange={event => this.updateDescription(index, event.target.value)}/>
@@ -102,9 +123,9 @@ export default class TimeLogTableView extends React.Component<TimeLogTableViewPr
     }
 
     private store() {
-        TimeLogService.saveTimeLogsForDay(this.props.day, this.state.timeLogs)
+        TimeLogService.saveTimeLogsForDay(this.props.day, this.state.timeLogs.map(timelogInput => (TimeLogTableView.toTimelog(timelogInput))))
             .then(timeLogs => this.setState({
-                timeLogs
+                timeLogs: timeLogs.map(timeLog => TimeLogTableView.toTimelogInput(timeLog))
             }));
     }
 
@@ -112,7 +133,7 @@ export default class TimeLogTableView extends React.Component<TimeLogTableViewPr
         const timeLogs = [...this.state.timeLogs];
         timeLogs.splice(index, 0, {
             description: "",
-            durationInMinutes: 0
+            duration: ""
         });
 
         this.setState({
@@ -131,7 +152,7 @@ export default class TimeLogTableView extends React.Component<TimeLogTableViewPr
 
     private updateDuration(index: number, value: string) {
         const timeLogs = [...this.state.timeLogs];
-        timeLogs[index].durationInMinutes = Number.parseInt(value);
+        timeLogs[index].duration = value;
         this.setState({
             timeLogs
         })

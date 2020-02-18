@@ -79,7 +79,7 @@ describe("TimeLogTableView", () => {
                 description: "as first description expected"
             };
             const secondExpectedEntry = {
-                durationInMinutes: 0,
+                durationInMinutes: "",
                 description: ""
             };
             const thirdExpectedEntry = {
