@@ -42,8 +42,11 @@ export default class TimeLogTableView extends React.Component<TimeLogTableViewPr
                     <thead>
                     <tr>
                         <th scope="col" className="text-sm-center">#</th>
+                        <th scope="col" className="text-sm-center">Start</th>
                         <th scope="col" className="text-sm-center">Duration in Minutes</th>
                         <th scope="col" className="text-sm-center">Description</th>
+                        <th scope="col" className="text-sm-center">Issue</th>
+                        <th scope="col" className="text-sm-center">Notes</th>
                         <th scope="col" className="text-sm-left">Actions</th>
                     </tr>
                     </thead>
@@ -51,6 +54,7 @@ export default class TimeLogTableView extends React.Component<TimeLogTableViewPr
                     {this.state.timeLogs.map((timeLog, index) => <tr
                         key={index}>
                         <th className="text-sm-center" title={"TimeLog " + index}>{index}</th>
+                        <td><input disabled title="start time" placeholder="09:00"/></td>
                         <td><input className="fullWidth" title="duration" type="text"
                                    inputMode="numeric"
                                    value={timeLog.durationInMinutes}
@@ -58,6 +62,8 @@ export default class TimeLogTableView extends React.Component<TimeLogTableViewPr
                         <td><input className="fullWidth" title="description" type="text" value={timeLog.description}
                                    onChange={event => this.updateDescription(index, event.target.value)}/>
                         </td>
+                        <td><input disabled title="issue"/></td>
+                        <td><input disabled title="notes"/></td>
                         <td>
                             <span className="btn-group actions">
                                 <button className="btn btn-outline-primary" title="add before"
@@ -72,16 +78,14 @@ export default class TimeLogTableView extends React.Component<TimeLogTableViewPr
                         </td>
                     </tr>)}
                     <tr>
-                        <th colSpan={4}>
+                        <th colSpan={6}>
                             <button className="btn btn-outline-primary fullWidth"
                                     type="button"
                                     title="add"
                                     onClick={() => this.addTimelog()}>+
                             </button>
                         </th>
-                    </tr>
-                    <tr>
-                        <th colSpan={4}>
+                        <th colSpan={1}>
                             <button className="btn btn-primary fullWidth" title="save"
                                     type={"submit"}
                             >save
