@@ -59,5 +59,16 @@ describe("UserView", () => {
 
             expect(UserService.redirectToLogin).toBeCalled();
         });
+
+        it("should logout the user on click of the logout button", async () => {
+            UserService.getCurrentUser = jest.fn().mockReturnValue({...baseUser});
+            UserService.logout = jest.fn();
+
+            const underTest = reactTest.render(<UserView/>);
+
+            userEvent.click(underTest.getByText("Logout"));
+
+            expect(UserService.logout).toBeCalled();
+        });
     });
 });
