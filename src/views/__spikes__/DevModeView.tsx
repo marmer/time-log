@@ -1,6 +1,6 @@
 import GoogleDriveSpikeView from "./GoogleDriveSpikeView";
 import React from "react";
-import UserView from "./UserView";
+import UserView from "../UserView";
 
 export default function DevModeView() {
     return localStorage.getItem("devMode") ? <div className="devMode">
