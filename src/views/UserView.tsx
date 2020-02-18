@@ -13,7 +13,9 @@ export default () => {
     return currentUser ? (
         <section>
             <p>{currentUser.email}</p>
-            <button>Logout</button>
+            <button onClick={() => UserService.logout()}>
+                Logout
+            </button>
         </section>
     ) : (
         <section>

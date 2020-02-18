@@ -8,6 +8,11 @@ export interface User {
 }
 
 export default class UserService {
+    static logout() {
+        UserRepository.removeCurrentUser();
+        WindowService.reload();
+    }
+
     static getCurrentUser(): User | null {
         return UserRepository.getCurrentUser();
     }
