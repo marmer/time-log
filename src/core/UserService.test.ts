@@ -73,6 +73,18 @@ describe("UserService", () => {
         });
     });
 
+    describe("logout", () => {
+        it("should delete the user information and reload the pages afterwards", async () => {
+            UserRepository.removeCurrentUser = jest.fn();
+            WindowService.reload = jest.fn();
+
+            UserService.logout();
+
+            expect(UserRepository.removeCurrentUser).toBeCalled();
+            expect(WindowService.reload).toBeCalled();
+        });
+    });
+
     describe("getMissingEnvironmentVariables", () => {
         describe("all variables are set", () => {
             it("should return an empty list of thoose variable names", async () => {
