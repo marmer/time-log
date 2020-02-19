@@ -4,6 +4,7 @@ import * as reactTest from "@testing-library/react";
 import TimeLogService, {TimeLog} from "../core/TimeLogService";
 import TimeLogTableView from "./TimeLogTableView";
 import userEvent from "@testing-library/user-event";
+import JiraTimeService from "../core/JiraTimeService";
 
 describe("TimeLogTableView", () => {
     describe("loading", () => {
@@ -139,6 +140,35 @@ describe("TimeLogTableView", () => {
             expect(secondRow).not.toBeInTheDocument();
             expect(underTest.getByDisplayValue(firstExpectedEntry.description)).toBeVisible();
         })
+    });
+
+    describe("validation", () => {
+        describe("duration", () => {
+            describe("invalid", () => {
+                it("should mark the duration input if the typed value is not a valid duration", async () => {
+                    const firstExpectedEntry = {
+                        durationInMinutes: 111,
+                        description: "as first description expected"
+                    };
+                    TimeLogService.getTimeLogsForDay = jest.fn().mockResolvedValue([firstExpectedEntry] as TimeLog[]);
+                    JiraTimeService.isValidJiraFormat = jest.fn().mockImplementation(input => input === "111");
+
+                    const underTest = reactTest.render(<TimeLogTableView day={new Date(2020, 2, 2)}/>);
+
+                    const durationField = await reactTest.waitForElement(() => underTest.getByDisplayValue("111"));
+
+                    expect(durationField.classList).not.toContain("invalid-format");
+
+                    userEvent.type(durationField, "invalid jira string")
+
+                    expect(durationField.classList).toContain("invalid-format");
+
+                    userEvent.type(durationField, "111")
+
+                    expect(durationField.classList).not.toContain("invalid-format");
+                });
+            });
+        });
     });
 
     describe("save", () => {

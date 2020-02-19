@@ -1,5 +1,6 @@
 import TimeLogService, {TimeLog} from "../core/TimeLogService";
 import React from "react";
+import JiraTimeService from "../core/JiraTimeService";
 
 export interface TimeLogTableViewProps {
     day: Date;
@@ -64,7 +65,7 @@ export default class TimeLogTableView extends React.Component<TimeLogTableViewPr
                     <tr>
                         <th scope="col" className="text-sm-center">#</th>
                         <th scope="col" className="text-sm-center">Start</th>
-                        <th scope="col" className="text-sm-center">Duration in Minutes</th>
+                        <th scope="col" className="text-sm-center">Duration</th>
                         <th scope="col" className="text-sm-center">Description</th>
                         <th scope="col" className="text-sm-center">Issue</th>
                         <th scope="col" className="text-sm-center">Notes</th>
@@ -76,10 +77,11 @@ export default class TimeLogTableView extends React.Component<TimeLogTableViewPr
                         key={index}>
                         <th className="text-sm-center" title={"TimeLog " + index}>{index}</th>
                         <td><input disabled title="start time" placeholder="09:00"/></td>
-                        <td><input className="fullWidth" title="duration" type="text"
-                                   inputMode="numeric"
-                                   value={timeLog.duration}
-                                   onChange={event => this.updateDuration(index, event.target.value)}/></td>
+                        <td><input
+                            className={"fullWidth" + (JiraTimeService.isValidJiraFormat(timeLog.duration) ? "" : " invalid-format")}
+                            title="duration" type="text"
+                            value={timeLog.duration}
+                            onChange={event => this.updateDuration(index, event.target.value)}/></td>
                         <td><input className="fullWidth" title="description" type="text" value={timeLog.description}
                                    onChange={event => this.updateDescription(index, event.target.value)}/>
                         </td>
@@ -117,7 +119,6 @@ export default class TimeLogTableView extends React.Component<TimeLogTableViewPr
                 </table>}</form>
 
     }
-
     private addTimelog() {
         this.addTimelogBefore(this.state.timeLogs.length + 1);
     }
