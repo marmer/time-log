@@ -7,8 +7,12 @@ import userEvent from "@testing-library/user-event";
 import JiraTimeService from "../core/JiraTimeService";
 
 describe("TimeLogTableView", () => {
-    JiraTimeService.minutesToJiraFormat = jest.fn().mockImplementation(minutes => minutes.toString());
-    JiraTimeService.jiraFormatToMinutes = jest.fn().mockImplementation(jiraFormat => Number.parseInt(jiraFormat));
+
+    beforeEach(() => {
+        jest.fn().mockReset();
+        JiraTimeService.minutesToJiraFormat = jest.fn().mockImplementation(minutes => minutes.toString());
+        JiraTimeService.jiraFormatToMinutes = jest.fn().mockImplementation(jiraFormat => Number.parseInt(jiraFormat));
+    });
 
     describe("loading", () => {
         it("should show some kind of loading state as long as the request has not been finished yet", async () => {
@@ -193,6 +197,7 @@ describe("TimeLogTableView", () => {
 
             TimeLogService.saveTimeLogsForDay = jest.fn().mockImplementation((_: Date, __: TimeLog[]) => Promise.resolve([entryAfterUpdate]));
             TimeLogService.getTimeLogsForDay = jest.fn().mockImplementation((_: Date) => Promise.resolve([entryBeforeUpdate] as TimeLog[]));
+            JiraTimeService.isValidJiraFormat = jest.fn().mockReturnValue(true);
 
             const day = new Date(2020, 2, 2);
             const underTest = reactTest.render(<TimeLogTableView day={day}/>);
@@ -235,6 +240,7 @@ describe("TimeLogTableView", () => {
 
             JiraTimeService.minutesToJiraFormat = jest.fn().mockImplementation(minutes => minutes + "x");
             JiraTimeService.jiraFormatToMinutes = jest.fn().mockImplementation(jiraFormat => Number.parseInt(jiraFormat));
+            JiraTimeService.isValidJiraFormat = jest.fn().mockReturnValue(true);
 
             const day = new Date(2020, 2, 2);
             const underTest = reactTest.render(<TimeLogTableView day={day}/>);
@@ -256,6 +262,35 @@ describe("TimeLogTableView", () => {
             expect(descriptionField).toHaveValue(entryAfterUpdate.description);
             expect(durationField).toHaveValue("45x");
 
+        });
+
+        it("should not be possible to submit if any duration is invaild", async () => {
+            const timeLog = {
+                durationInMinutes: 15,
+                description: "description before update"
+            };
+
+            TimeLogService.getTimeLogsForDay = jest.fn().mockResolvedValue([timeLog]);
+
+            JiraTimeService.isValidJiraFormat = jest.fn().mockImplementation(jiraString => jiraString !== "invalidJiraString");
+
+            const day = new Date(2020, 2, 2);
+            const underTest = reactTest.render(<TimeLogTableView day={day}/>);
+
+            const saveButton = await reactTest.waitForElement(() => underTest.getByText("save"));
+
+            expect(saveButton).toBeEnabled();
+
+            const durationField = await reactTest.waitForElement(() => underTest.getByDisplayValue("15"));
+            userEvent.type(durationField, "invalidJiraString");
+
+            expect(saveButton).toBeDisabled();
+            userEvent.type(durationField, "valid jira string");
+            expect(saveButton).toBeEnabled();
+
+            reactTest.fireEvent.submit(durationField);
+
+            expect(TimeLogService.saveTimeLogsForDay).not.toBeCalledWith();
         });
     });
 });
