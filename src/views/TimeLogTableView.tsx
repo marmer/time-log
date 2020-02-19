@@ -29,14 +29,14 @@ export default class TimeLogTableView extends React.Component<TimeLogTableViewPr
     private static toTimelog(timelogInput: TimelogInput): TimeLog {
         return {
             description: timelogInput.description,
-            durationInMinutes: Number.parseInt(timelogInput.duration)
+            durationInMinutes: JiraTimeService.jiraFormatToMinutes(timelogInput.duration)
         };
     }
 
     private static toTimelogInput({description, durationInMinutes}: TimeLog) {
         return {
             description,
-            duration: durationInMinutes.toString()
+            duration: JiraTimeService.minutesToJiraFormat(durationInMinutes)
         };
     }
 
