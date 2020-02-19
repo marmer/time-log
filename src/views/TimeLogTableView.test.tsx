@@ -7,6 +7,9 @@ import userEvent from "@testing-library/user-event";
 import JiraTimeService from "../core/JiraTimeService";
 
 describe("TimeLogTableView", () => {
+    JiraTimeService.minutesToJiraFormat = jest.fn().mockImplementation(minutes => minutes.toString());
+    JiraTimeService.jiraFormatToMinutes = jest.fn().mockImplementation(jiraFormat => Number.parseInt(jiraFormat));
+
     describe("loading", () => {
         it("should show some kind of loading state as long as the request has not been finished yet", async () => {
             const someDay = new Date(2020, 2, 2);
@@ -159,11 +162,11 @@ describe("TimeLogTableView", () => {
 
                     expect(durationField.classList).not.toContain("invalid-format");
 
-                    userEvent.type(durationField, "invalid jira string")
+                    userEvent.type(durationField, "invalid jira string");
 
                     expect(durationField.classList).toContain("invalid-format");
 
-                    userEvent.type(durationField, "111")
+                    userEvent.type(durationField, "111");
 
                     expect(durationField.classList).not.toContain("invalid-format");
                 });
@@ -215,32 +218,35 @@ describe("TimeLogTableView", () => {
 
         it("should should save the current state on submit", async () => {
             const entryBeforeUpdate = {
-                durationInMinutes: 111,
+                durationInMinutes: 15,
                 description: "description before update"
             };
             const entryWhileUpdate = {
-                durationInMinutes: 222,
+                durationInMinutes: 30,
                 description: "description while update"
             };
             const entryAfterUpdate = {
-                durationInMinutes: 333,
+                durationInMinutes: 45,
                 description: "description after update"
             };
 
-            TimeLogService.saveTimeLogsForDay = jest.fn().mockImplementation((_: Date, __: TimeLog[]) => Promise.resolve([entryAfterUpdate]));
-            TimeLogService.getTimeLogsForDay = jest.fn().mockImplementation((_: Date) => Promise.resolve([entryBeforeUpdate] as TimeLog[]));
+            TimeLogService.saveTimeLogsForDay = jest.fn().mockResolvedValue([entryAfterUpdate]);
+            TimeLogService.getTimeLogsForDay = jest.fn().mockResolvedValue([entryBeforeUpdate]);
+
+            JiraTimeService.minutesToJiraFormat = jest.fn().mockImplementation(minutes => minutes + "x");
+            JiraTimeService.jiraFormatToMinutes = jest.fn().mockImplementation(jiraFormat => Number.parseInt(jiraFormat));
 
             const day = new Date(2020, 2, 2);
             const underTest = reactTest.render(<TimeLogTableView day={day}/>);
 
             //loading finished
             const descriptionField = await reactTest.waitForElement(() => underTest.getByDisplayValue(entryBeforeUpdate.description));
-            const durationField = await reactTest.waitForElement(() => underTest.getByDisplayValue(entryBeforeUpdate.durationInMinutes.toString()));
+            const durationField = await reactTest.waitForElement(() => underTest.getByDisplayValue("15x"));
             userEvent.type(descriptionField, entryWhileUpdate.description);
-            userEvent.type(durationField, entryWhileUpdate.durationInMinutes.toString());
+            userEvent.type(durationField, "30x");
 
             expect(descriptionField).toHaveValue(entryWhileUpdate.description);
-            expect(durationField).toHaveValue(entryWhileUpdate.durationInMinutes.toString());
+            expect(durationField).toHaveValue("30x");
 
             reactTest.fireEvent.submit(durationField);
 
@@ -248,7 +254,7 @@ describe("TimeLogTableView", () => {
 
             await reactTest.waitForDomChange();
             expect(descriptionField).toHaveValue(entryAfterUpdate.description);
-            expect(durationField).toHaveValue(entryAfterUpdate.durationInMinutes.toString());
+            expect(durationField).toHaveValue("45x");
 
         });
     });
