@@ -55,7 +55,8 @@ export default class TimeLogTableView extends React.Component<TimeLogTableViewPr
 
     render() {
         return <form target="_self" onSubmit={() => {
-            this.store();
+            if (this.isEachTimeLogValid())
+                this.store();
             return false
         }}>{
             this.state.isLoadingTimeLogs ?
@@ -76,7 +77,7 @@ export default class TimeLogTableView extends React.Component<TimeLogTableViewPr
                     {this.state.timeLogs.map((timeLog, index) => <tr
                         key={index}>
                         <th className="text-sm-center" title={"TimeLog " + index}>{index}</th>
-                        <td><input disabled title="start time" placeholder="09:00"/></td>
+                        <td><input className={"fullWidth"} disabled title="start time" placeholder="09:00"/></td>
                         <td><input
                             className={"fullWidth" + (JiraTimeService.isValidJiraFormat(timeLog.duration) ? "" : " invalid-format alert-danger")}
                             title="duration" type="text"
@@ -85,8 +86,8 @@ export default class TimeLogTableView extends React.Component<TimeLogTableViewPr
                         <td><input className="fullWidth" title="description" type="text" value={timeLog.description}
                                    onChange={event => this.updateDescription(index, event.target.value)}/>
                         </td>
-                        <td><input disabled title="issue"/></td>
-                        <td><input disabled title="notes"/></td>
+                        <td><input className={"fullWidth"} disabled title="issue"/></td>
+                        <td><input className={"fullWidth"} disabled title="notes"/></td>
                         <td>
                             <span className="btn-group actions">
                                 <button className="btn btn-outline-primary" title="add before"
@@ -110,6 +111,7 @@ export default class TimeLogTableView extends React.Component<TimeLogTableViewPr
                         </th>
                         <th colSpan={1}>
                             <button className="btn btn-primary fullWidth" title="save"
+                                    disabled={this.isAnyTimelogInValid()}
                                     type={"submit"}
                             >save
                             </button>
@@ -165,5 +167,15 @@ export default class TimeLogTableView extends React.Component<TimeLogTableViewPr
         this.setState({
             timeLogs
         })
+    }
+
+    private isAnyTimelogInValid() {
+        return !this.isEachTimeLogValid();
+    }
+
+    private isEachTimeLogValid() {
+        return this.state.timeLogs
+            .map(timeLog => JiraTimeService.isValidJiraFormat(timeLog.duration))
+            .reduce((v1, v2) => v1 && v2, true);
     }
 }
