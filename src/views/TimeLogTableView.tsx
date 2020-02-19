@@ -78,7 +78,7 @@ export default class TimeLogTableView extends React.Component<TimeLogTableViewPr
                         <th className="text-sm-center" title={"TimeLog " + index}>{index}</th>
                         <td><input disabled title="start time" placeholder="09:00"/></td>
                         <td><input
-                            className={"fullWidth" + (JiraTimeService.isValidJiraFormat(timeLog.duration) ? "" : " invalid-format")}
+                            className={"fullWidth" + (JiraTimeService.isValidJiraFormat(timeLog.duration) ? "" : " invalid-format alert-danger")}
                             title="duration" type="text"
                             value={timeLog.duration}
                             onChange={event => this.updateDuration(index, event.target.value)}/></td>

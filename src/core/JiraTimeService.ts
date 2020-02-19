@@ -25,7 +25,7 @@ export default class JiraTimeService {
 
     public static isValidJiraFormat(jiraString: string): boolean {
         const unitSymbols: string = Object.keys(jiraSymbolFactorMap).join();
-        return new RegExp("^\\s*((\\d+[" + unitSymbols + "](\\s+\\d+[" + unitSymbols + "])*?)|(0+))?\\s*$").test(jiraString);
+        return new RegExp("^\\s*((\\d+[" + unitSymbols + "]?(\\s+\\d+[" + unitSymbols + "]?)*?)|(0+))?\\s*$").test(jiraString);
     }
 
     public static jiraFormatToMinutes(jiraString: string): number {
@@ -33,16 +33,9 @@ export default class JiraTimeService {
             throw new Error("'" + jiraString + "' is not a valid jira String");
         }
 
-        return Object.keys(jiraSymbolFactorMap)
-            .map(key => jiraSymbolFactorMap[key])
-            .map(unit => {
-                const match: RegExpMatchArray | null = jiraString.match(new RegExp("(\\d+)" + unit.symbol, "g"));
-                return !match ?
-                    0 :
-                    match.map(m => Number.parseInt(m.replace(unit.symbol, ""), 0) * unit.factor)
-                        .reduce(this.sum);
-            })
-            .reduce(this.sum);
+        return jiraString.split(/\s+/)
+            .map(this.toMinutes)
+            .reduce(toSum)
     }
 
     private static weeksOf(timeSpentInMinutes: number): number {
@@ -81,7 +74,22 @@ export default class JiraTimeService {
         return result === 0 ? "" : result + unit.symbol;
     }
 
-    private static sum(v1: number, v2: number): number {
-        return v1 + v2;
+    private static toMinutes(jiraStringPart: string): number {
+        return jiraStringPart.trim().match(/^\d+$/) ?
+            Number.parseInt(jiraStringPart) :
+            Object.keys(jiraSymbolFactorMap)
+                .map(key => jiraSymbolFactorMap[key])
+                .map(unit => {
+                    const match: RegExpMatchArray | null = jiraStringPart.match(new RegExp("(\\d+)" + unit.symbol, "g"));
+                    return !match ?
+                        0 :
+                        match.map(m => Number.parseInt(m.replace(unit.symbol, ""), 0) * unit.factor)
+                            .reduce(toSum);
+                })
+                .reduce(toSum);
     }
+}
+
+function toSum(v1: number, v2: number): number {
+    return v1 + v2;
 }
