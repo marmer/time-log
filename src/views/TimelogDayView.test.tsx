@@ -2,11 +2,11 @@ import React from 'react';
 import '@testing-library/jest-dom/extend-expect'
 import * as reactTest from "@testing-library/react";
 import TimeLogService, {TimeLog} from "../core/TimeLogService";
-import TimeLogTableView from "./TimeLogTableView";
+import TimelogDayView from "./TimelogDayView";
 import userEvent from "@testing-library/user-event";
 import JiraTimeService from "../core/JiraTimeService";
 
-describe("TimeLogTableView", () => {
+describe("TimelogDayView", () => {
 
     beforeEach(() => {
         jest.fn().mockReset();
@@ -18,7 +18,7 @@ describe("TimeLogTableView", () => {
         it("should show some kind of loading state as long as the request has not been finished yet", async () => {
             const someDay = new Date(2020, 2, 2);
 
-            const underTest = reactTest.render(<TimeLogTableView day={someDay}/>);
+            const underTest = reactTest.render(<TimelogDayView day={someDay}/>);
 
             expect(underTest.getByText("Loading..."))
         });
@@ -35,7 +35,7 @@ describe("TimeLogTableView", () => {
             }];
             TimeLogService.getTimeLogsForDay = jest.fn().mockImplementation((_: Date) => Promise.resolve(entries));
 
-            const underTest = reactTest.render(<TimeLogTableView day={someDay}/>);
+            const underTest = reactTest.render(<TimelogDayView day={someDay}/>);
 
 
             for (let index = 0; index < entries.length; index++) {
@@ -57,7 +57,7 @@ describe("TimeLogTableView", () => {
                 description: "fancy description for day " + someDay.toISOString()
             } as TimeLog]));
 
-            const underTest = reactTest.render(<TimeLogTableView day={someDay}/>);
+            const underTest = reactTest.render(<TimelogDayView day={someDay}/>);
             underTest.getByText("Loading...");
             await reactTest.waitForElementToBeRemoved(() => underTest.getByText("Loading..."));
         });
@@ -70,7 +70,7 @@ describe("TimeLogTableView", () => {
                 description: "existing description"
             } as TimeLog]));
 
-            const underTest = reactTest.render(<TimeLogTableView day={new Date(2020, 2, 2)}/>);
+            const underTest = reactTest.render(<TimelogDayView day={new Date(2020, 2, 2)}/>);
 
             //loading finished
             await reactTest.wait(() => expect(underTest.getByTitle("TimeLog 0")).toBeVisible());
@@ -96,7 +96,7 @@ describe("TimeLogTableView", () => {
             };
             TimeLogService.getTimeLogsForDay = jest.fn().mockImplementation((_: Date) => Promise.resolve([firstExpectedEntry, thirdExpectedEntry] as TimeLog[]));
 
-            const underTest = reactTest.render(<TimeLogTableView day={new Date(2020, 2, 2)}/>);
+            const underTest = reactTest.render(<TimelogDayView day={new Date(2020, 2, 2)}/>);
 
             //loading finished
             await reactTest.wait(() => expect(underTest.getByTitle("TimeLog 0")).toBeVisible());
@@ -135,7 +135,7 @@ describe("TimeLogTableView", () => {
             };
             TimeLogService.getTimeLogsForDay = jest.fn().mockImplementation((_: Date) => Promise.resolve([firstExpectedEntry, secondExpectedEntry] as TimeLog[]));
 
-            const underTest = reactTest.render(<TimeLogTableView day={new Date(2020, 2, 2)}/>);
+            const underTest = reactTest.render(<TimelogDayView day={new Date(2020, 2, 2)}/>);
 
             //loading finished
             await reactTest.wait(() => expect(underTest.getByTitle("TimeLog 0")).toBeVisible());
@@ -160,7 +160,7 @@ describe("TimeLogTableView", () => {
                     TimeLogService.getTimeLogsForDay = jest.fn().mockResolvedValue([firstExpectedEntry] as TimeLog[]);
                     JiraTimeService.isValidJiraFormat = jest.fn().mockImplementation(input => input === "111");
 
-                    const underTest = reactTest.render(<TimeLogTableView day={new Date(2020, 2, 2)}/>);
+                    const underTest = reactTest.render(<TimelogDayView day={new Date(2020, 2, 2)}/>);
 
                     const durationField = await reactTest.waitForElement(() => underTest.getByDisplayValue("111"));
 
@@ -200,7 +200,7 @@ describe("TimeLogTableView", () => {
             JiraTimeService.isValidJiraFormat = jest.fn().mockReturnValue(true);
 
             const day = new Date(2020, 2, 2);
-            const underTest = reactTest.render(<TimeLogTableView day={day}/>);
+            const underTest = reactTest.render(<TimelogDayView day={day}/>);
 
             //loading finished
             const descriptionField = await reactTest.waitForElement(() => underTest.getByDisplayValue(entryBeforeUpdate.description));
@@ -243,7 +243,7 @@ describe("TimeLogTableView", () => {
             JiraTimeService.isValidJiraFormat = jest.fn().mockReturnValue(true);
 
             const day = new Date(2020, 2, 2);
-            const underTest = reactTest.render(<TimeLogTableView day={day}/>);
+            const underTest = reactTest.render(<TimelogDayView day={day}/>);
 
             //loading finished
             const descriptionField = await reactTest.waitForElement(() => underTest.getByDisplayValue(entryBeforeUpdate.description));
@@ -275,7 +275,7 @@ describe("TimeLogTableView", () => {
             JiraTimeService.isValidJiraFormat = jest.fn().mockImplementation(jiraString => jiraString !== "invalidJiraString");
 
             const day = new Date(2020, 2, 2);
-            const underTest = reactTest.render(<TimeLogTableView day={day}/>);
+            const underTest = reactTest.render(<TimelogDayView day={day}/>);
 
             const saveButton = await reactTest.waitForElement(() => underTest.getByText("save"));
 

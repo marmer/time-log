@@ -2,7 +2,7 @@ import TimeLogService, {TimeLog} from "../core/TimeLogService";
 import React from "react";
 import JiraTimeService from "../core/JiraTimeService";
 
-export interface TimeLogTableViewProps {
+export interface TimelogDayViewProps {
     day: Date;
 }
 
@@ -11,12 +11,12 @@ interface TimelogInput {
     description: string;
 }
 
-interface TimeLogTableViewState {
+interface TimelogDayViewState {
     timeLogs: TimelogInput[];
     isLoadingTimeLogs: boolean;
 }
 
-export default class TimeLogTableView extends React.Component<TimeLogTableViewProps, TimeLogTableViewState> {
+export default class TimelogDayView extends React.Component<TimelogDayViewProps, TimelogDayViewState> {
 
     constructor(props: Readonly<{ day: Date }>) {
         super(props);
@@ -47,7 +47,7 @@ export default class TimeLogTableView extends React.Component<TimeLogTableViewPr
         TimeLogService.getTimeLogsForDay(this.props.day)
             .then(timeLogs => {
                 this.setState({
-                    timeLogs: timeLogs.map((timeLog) => TimeLogTableView.toTimelogInput(timeLog)),
+                    timeLogs: timeLogs.map((timeLog) => TimelogDayView.toTimelogInput(timeLog)),
                     isLoadingTimeLogs: false
                 });
             });
@@ -126,9 +126,9 @@ export default class TimeLogTableView extends React.Component<TimeLogTableViewPr
     }
 
     private store() {
-        TimeLogService.saveTimeLogsForDay(this.props.day, this.state.timeLogs.map(timelogInput => (TimeLogTableView.toTimelog(timelogInput))))
+        TimeLogService.saveTimeLogsForDay(this.props.day, this.state.timeLogs.map(timelogInput => (TimelogDayView.toTimelog(timelogInput))))
             .then(timeLogs => this.setState({
-                timeLogs: timeLogs.map(timeLog => TimeLogTableView.toTimelogInput(timeLog))
+                timeLogs: timeLogs.map(timeLog => TimelogDayView.toTimelogInput(timeLog))
             }));
     }
 
