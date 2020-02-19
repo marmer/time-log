@@ -180,8 +180,6 @@ describe("TimelogDayView", () => {
 
     describe("save", () => {
         it("should should save the current state if the save button is clicked", async () => {
-
-
             const entryBeforeUpdate = {
                 durationInMinutes: 111,
                 description: "description before update"
@@ -293,4 +291,42 @@ describe("TimelogDayView", () => {
             expect(TimeLogService.saveTimeLogsForDay).not.toBeCalledWith();
         });
     });
+
+    it("should should save the current state if the save shortcut has been triggered on the document", async () => {
+        const entry = {
+            durationInMinutes: 111,
+            description: "description before update"
+        };
+
+
+        TimeLogService.saveTimeLogsForDay = jest.fn().mockResolvedValue([entry]);
+        TimeLogService.getTimeLogsForDay = jest.fn().mockResolvedValue([entry]);
+        JiraTimeService.isValidJiraFormat = jest.fn().mockReturnValue(true);
+
+        const day = new Date(2020, 2, 2);
+        const underTest = reactTest.render(<TimelogDayView day={day}/>);
+
+        //loading finished
+        const descriptionField = await reactTest.waitForElement(() => underTest.getByDisplayValue(entry.description));
+        userEvent.type(descriptionField, "somethingNewDescriptionForUpdate");
+
+
+        // fail("Fire the key combination ctrl + s here (somehow oO) at the root element");
+
+        const basePanel = underTest.container;
+        basePanel.focus();
+
+        const keyDownEvent: any = new Event('keydown');
+        keyDownEvent.keyCode = 83;
+        keyDownEvent.key = 'ctrl';
+        // keyDownEvent.code = 83;
+
+        basePanel.dispatchEvent(keyDownEvent);
+
+
+        expect(TimeLogService.saveTimeLogsForDay).toBeCalledWith(day, [{
+            ...entry,
+            description: "somethingNewDescriptionForUpdate"
+        }]);
+    })
 });
