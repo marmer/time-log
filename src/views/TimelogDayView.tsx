@@ -54,41 +54,46 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
     }
 
     render() {
-        return <form target="_self" onSubmit={() => {
-            if (this.isEachTimeLogValid())
-                this.store();
-            return false
-        }}>{
-            this.state.isLoadingTimeLogs ?
-                <p>Loading...</p> :
-                <table className="table table-sm">
-                    <thead>
-                    <tr>
-                        <th scope="col" className="text-sm-center">#</th>
-                        <th scope="col" className="text-sm-center">Start</th>
-                        <th scope="col" className="text-sm-center">Duration</th>
-                        <th scope="col" className="text-sm-center">Description</th>
-                        <th scope="col" className="text-sm-center">Issue</th>
-                        <th scope="col" className="text-sm-center">Notes</th>
-                        <th scope="col" className="text-sm-left">Actions</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {this.state.timeLogs.map((timeLog, index) => <tr
-                        key={index}>
-                        <th className="text-sm-center" title={"TimeLog " + index}>{index}</th>
-                        <td><input className={"fullWidth"} disabled title="start time" placeholder="09:00"/></td>
-                        <td><input
-                            className={"fullWidth" + (JiraTimeService.isValidJiraFormat(timeLog.duration) ? "" : " invalid-format alert-danger")}
-                            title="duration" type="text"
-                            value={timeLog.duration}
-                            onChange={event => this.updateDuration(index, event.target.value)}/></td>
-                        <td><input className="fullWidth" title="description" type="text" value={timeLog.description}
-                                   onChange={event => this.updateDescription(index, event.target.value)}/>
-                        </td>
-                        <td><input className={"fullWidth"} disabled title="issue"/></td>
-                        <td><input className={"fullWidth"} disabled title="notes"/></td>
-                        <td>
+        return <div onKeyDown={e => {
+            if (e.ctrlKey && e.which === 83) {
+                alert("Weehah");
+            }
+        }}>
+            <form target="_self" onSubmit={() => {
+                if (this.isEachTimeLogValid())
+                    this.store();
+                return false
+            }}>{
+                this.state.isLoadingTimeLogs ?
+                    <p>Loading...</p> :
+                    <table className="table table-sm">
+                        <thead>
+                        <tr>
+                            <th scope="col" className="text-sm-center">#</th>
+                            <th scope="col" className="text-sm-center">Start</th>
+                            <th scope="col" className="text-sm-center">Duration</th>
+                            <th scope="col" className="text-sm-center">Description</th>
+                            <th scope="col" className="text-sm-center">Issue</th>
+                            <th scope="col" className="text-sm-center">Notes</th>
+                            <th scope="col" className="text-sm-left">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {this.state.timeLogs.map((timeLog, index) => <tr
+                            key={index}>
+                            <th className="text-sm-center" title={"TimeLog " + index}>{index}</th>
+                            <td><input className={"fullWidth"} disabled title="start time" placeholder="09:00"/></td>
+                            <td><input
+                                className={"fullWidth" + (JiraTimeService.isValidJiraFormat(timeLog.duration) ? "" : " invalid-format alert-danger")}
+                                title="duration" type="text"
+                                value={timeLog.duration}
+                                onChange={event => this.updateDuration(index, event.target.value)}/></td>
+                            <td><input className="fullWidth" title="description" type="text" value={timeLog.description}
+                                       onChange={event => this.updateDescription(index, event.target.value)}/>
+                            </td>
+                            <td><input className={"fullWidth"} disabled title="issue"/></td>
+                            <td><input className={"fullWidth"} disabled title="notes"/></td>
+                            <td>
                             <span className="btn-group actions">
                                 <button className="btn btn-outline-primary" title="add before"
                                         onClick={() => this.addTimelogBefore(index)}
@@ -99,26 +104,27 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
                                         type="button">-
                                 </button>
                             </span>
-                        </td>
-                    </tr>)}
-                    <tr>
-                        <th colSpan={6}>
-                            <button className="btn btn-outline-primary fullWidth"
-                                    type="button"
-                                    title="add"
-                                    onClick={() => this.addTimelog()}>+
-                            </button>
-                        </th>
-                        <th colSpan={1}>
-                            <button className="btn btn-primary fullWidth" title="save"
-                                    disabled={this.isAnyTimelogInValid()}
-                                    type={"submit"}
-                            >save
-                            </button>
-                        </th>
-                    </tr>
-                    </tbody>
-                </table>}</form>
+                            </td>
+                        </tr>)}
+                        <tr>
+                            <th colSpan={6}>
+                                <button className="btn btn-outline-primary fullWidth"
+                                        type="button"
+                                        title="add"
+                                        onClick={() => this.addTimelog()}>+
+                                </button>
+                            </th>
+                            <th colSpan={1}>
+                                <button className="btn btn-primary fullWidth" title="save"
+                                        disabled={this.isAnyTimelogInValid()}
+                                        type={"submit"}
+                                >save
+                                </button>
+                            </th>
+                        </tr>
+                        </tbody>
+                    </table>}</form>
+        </div>
 
     }
     private addTimelog() {
