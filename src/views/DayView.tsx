@@ -1,6 +1,6 @@
 import React from "react";
 import DayNavigator from "./DayNavigator";
-import TimeLogTableView from "./TimeLogTableView";
+import TimelogDayView from "./TimelogDayView";
 
 export interface DayViewProps {
     day: Date;
@@ -20,7 +20,7 @@ export default class DayView extends React.Component<DayViewProps> {
     render() {
         return <div>
             <DayNavigator day={this.props.day}/>
-            <TimeLogTableView day={this.props.day}/>
+            <TimelogDayView day={this.props.day}/>
         </div>
     }
 }
