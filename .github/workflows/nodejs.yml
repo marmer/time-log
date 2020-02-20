@@ -36,8 +36,6 @@ jobs:
         env:
          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         if: success()
-      
-
 
       - run: npm run build --if-present
         if: ${{ success() && github.ref == 'refs/heads/master' }}
@@ -50,3 +48,4 @@ jobs:
           FOLDER: build
           CLEAN: true
         if: ${{ success() && github.ref == 'refs/heads/master' }}
+        
