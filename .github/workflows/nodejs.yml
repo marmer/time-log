@@ -38,7 +38,7 @@ jobs:
         if: success()
 
       - run: npm run build --if-present
-        if: ( success() && ${{ github.ref }} == 'refs/heads/master' )
+        if: ( success() && github.ref == 'refs/heads/master' )
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@releases/v3
@@ -47,4 +47,4 @@ jobs:
           BRANCH: gh-pages
           FOLDER: build
           CLEAN: true
-        if: ( success() && ${{ github.ref }} == 'refs/heads/master' )
+        if: ( success() && github.ref == 'refs/heads/master' )
