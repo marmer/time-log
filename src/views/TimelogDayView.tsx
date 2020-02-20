@@ -22,7 +22,7 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
 
     private static readonly emptyTimelogInput = {
         description: "",
-        duration: "0m"
+        duration: ""
     };
 
     constructor(props: Readonly<{ day: Date }>) {
@@ -139,7 +139,10 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
     }
 
     private store() {
-        TimeLogService.saveTimeLogsForDay(this.props.day, this.state.timeLogs.map(timelogInput => (TimelogDayView.toTimelog(timelogInput))))
+        TimeLogService.saveTimeLogsForDay(this.props.day, this.state.timeLogs
+            // the last one is always empty ;)
+            .splice(this.state.timeLogs.length - 1)
+            .map(timelogInput => (TimelogDayView.toTimelog(timelogInput))))
             .then(timeLogs => this.setState({
                 timeLogs: timeLogs.map(timeLog => TimelogDayView.toTimelogInput(timeLog))
             }));

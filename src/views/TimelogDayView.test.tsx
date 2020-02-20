@@ -95,8 +95,6 @@ describe("TimelogDayView", () => {
             userEvent.click(addBeforeButton);
 
 
-            userEvent.click(underTest.getByTitle("add"));
-
             const outputExpectation = [firstExpectedEntry, secondExpectedEntry, thirdExpectedEntry];
 
             for (let index = 0; index < outputExpectation.length; index++) {
@@ -129,41 +127,40 @@ describe("TimelogDayView", () => {
 
             const underTest = reactTest.render(<TimelogDayView day={new Date(2020, 2, 2)}/>);
 
-            const secondEntryRow = await reactTest.waitForElement(() => underTest.getByTitle("TimeLog 1"));
-            expect(secondEntryRow).toBeVisible();
+            const secondEntryIndex = await reactTest.waitForElement(() => underTest.getByTitle("TimeLog 1"));
+            expect(secondEntryIndex).toBeVisible();
 
-            expect(() => underTest.queryByTitle("TimeLog 2")).not.toBeInTheDocument();
-
+            expect(underTest.queryByTitle("TimeLog 2")).not.toBeInTheDocument();
+            const secondEntryRow = secondEntryIndex.closest("tr") as any
             const descriptionFieldOfSecondInput = reactTest.getByTitle(secondEntryRow, "description");
             userEvent.type(descriptionFieldOfSecondInput, "a");
 
-            expect(await reactTest.waitForElement(() => underTest.getByTitle("TimeLog 2"))).toBeInTheDocument();
+            expect(await reactTest.waitForElement(() => underTest.getByTitle("TimeLog 2"))).toBeVisible();
         });
     });
 
     describe("Remove an element", () => {
         it("should remove an element the remove button has been clicked", async () => {
-            const firstExpectedEntry = {
+            const firstEntry = {
                 durationInMinutes: 111,
                 description: "as first description expected"
             };
-            const secondExpectedEntry = {
-                durationInMinutes: 333,
-                description: "as third description expected"
+            const secondEntry = {
+                durationInMinutes: 222,
+                description: "as second description expected"
             };
-            TimeLogService.getTimeLogsForDay = jest.fn().mockImplementation((_: Date) => Promise.resolve([firstExpectedEntry, secondExpectedEntry] as TimeLog[]));
+            TimeLogService.getTimeLogsForDay = jest.fn().mockImplementation((_: Date) => Promise.resolve([firstEntry, secondEntry] as TimeLog[]));
 
             const underTest = reactTest.render(<TimelogDayView day={new Date(2020, 2, 2)}/>);
 
             //loading finished
-            await reactTest.wait(() => expect(underTest.getByTitle("TimeLog 0")).toBeVisible());
+            const originalFirstRow = (await reactTest.waitForElement(() => underTest.getByTitle("TimeLog 0").closest("tr")));
+            expect(reactTest.within(originalFirstRow as any).getByDisplayValue(firstEntry.description)).toBeVisible();
+            const originalFirstRowRemoveButton = reactTest.within(originalFirstRow as any).getByTitle("remove");
+            userEvent.click(originalFirstRowRemoveButton);
 
-            const secondRow = (await reactTest.waitForElement(() => underTest.getByTitle("TimeLog 1").closest("tr")));
-            const addBeforeButton = reactTest.within(secondRow as any).getByTitle("remove");
-            userEvent.click(addBeforeButton);
-
-            expect(secondRow).not.toBeInTheDocument();
-            expect(underTest.getByDisplayValue(firstExpectedEntry.description)).toBeVisible();
+            const newFirstRow = (await reactTest.waitForElement(() => underTest.getByTitle("TimeLog 0").closest("tr")));
+            expect(reactTest.within(newFirstRow as any).getByDisplayValue(secondEntry.description)).toBeVisible();
         })
     });
 
