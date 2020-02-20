@@ -40,4 +40,15 @@
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
   </body>
+  <script>
+    function devMode() {
+      if (localStorage.getItem("devMode")) {
+        localStorage.removeItem("devMode");
+        window.location.reload()
+      } else {
+        localStorage.setItem("devMode", "true");
+        window.location.reload()
+      }
+    }
+  </script>
 </html>
