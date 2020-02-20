@@ -18,6 +18,11 @@ interface TimelogDayViewState {
 
 export default class TimelogDayView extends React.Component<TimelogDayViewProps, TimelogDayViewState> {
 
+    private static readonly emptyTimelogInput = {
+        description: "",
+        duration: ""
+    };
+
     constructor(props: Readonly<{ day: Date }>) {
         super(props);
         this.state = {
@@ -47,7 +52,7 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
         TimeLogService.getTimeLogsForDay(this.props.day)
             .then(timeLogs => {
                 this.setState({
-                    timeLogs: timeLogs.map((timeLog) => TimelogDayView.toTimelogInput(timeLog)),
+                    timeLogs: timeLogs.length === 0 ? [{...TimelogDayView.emptyTimelogInput}] : timeLogs.map((timeLog) => TimelogDayView.toTimelogInput(timeLog)),
                     isLoadingTimeLogs: false
                 });
             });
@@ -127,6 +132,7 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
         </div>
 
     }
+
     private addTimelog() {
         this.addTimelogBefore(this.state.timeLogs.length + 1);
     }
@@ -140,10 +146,7 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
 
     private addTimelogBefore(index: number) {
         const timeLogs = [...this.state.timeLogs];
-        timeLogs.splice(index, 0, {
-            description: "",
-            duration: ""
-        });
+        timeLogs.splice(index, 0, {...TimelogDayView.emptyTimelogInput});
 
         this.setState({
             timeLogs
