@@ -2,6 +2,8 @@ import TimeLogService, {TimeLog} from "../core/TimeLogService";
 import React from "react";
 import JiraTimeService from "../core/JiraTimeService";
 
+import deepEqual from "deep-equal"
+
 export interface TimelogDayViewProps {
     day: Date;
 }
@@ -20,7 +22,7 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
 
     private static readonly emptyTimelogInput = {
         description: "",
-        duration: ""
+        duration: "0m"
     };
 
     constructor(props: Readonly<{ day: Date }>) {
@@ -56,6 +58,12 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
                     isLoadingTimeLogs: false
                 });
             });
+    }
+
+    componentDidUpdate(prevProps: Readonly<TimelogDayViewProps>, prevState: Readonly<TimelogDayViewState>,): void {
+        if (!deepEqual(this.state.timeLogs[this.state.timeLogs.length - 1], TimelogDayView.emptyTimelogInput)) {
+            this.addTimelog();
+        }
     }
 
     render() {
@@ -112,14 +120,7 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
                             </td>
                         </tr>)}
                         <tr>
-                            <th colSpan={6}>
-                                <button className="btn btn-outline-primary fullWidth"
-                                        type="button"
-                                        title="add"
-                                        onClick={() => this.addTimelog()}>+
-                                </button>
-                            </th>
-                            <th colSpan={1}>
+                            <th colSpan={7}>
                                 <button className="btn btn-primary fullWidth" title="save"
                                         disabled={this.isAnyTimelogInValid()}
                                         type={"submit"}
