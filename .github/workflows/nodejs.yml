@@ -30,15 +30,15 @@ jobs:
         if: success()
         
       - run: npm install -g sonarqube-scanner
-        if: success()
+        if: success() && matrix.node-version == '10.x'
         
       - run: sonar-scanner -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{ secrets.SONAR_TOKEN }}
         env:
          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        if: success()
+        if: success() && matrix.node-version == '10.x'
 
       - run: npm run build --if-present
-        if: success() && github.ref == 'refs/heads/master'
+        if: success() && github.ref == 'refs/heads/master' && matrix.node-version == '10.x'
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@releases/v3
@@ -47,4 +47,4 @@ jobs:
           BRANCH: gh-pages
           FOLDER: build
           CLEAN: true
-        if: success() && github.ref == 'refs/heads/master' %% matrix.node-version == '10.x'
+        if: success() && github.ref == 'refs/heads/master' && matrix.node-version == '10.x'
