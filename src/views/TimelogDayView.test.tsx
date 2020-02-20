@@ -16,7 +16,7 @@ describe("TimelogDayView", () => {
     beforeEach(() => {
         jest.fn().mockReset();
         JiraTimeService.minutesToJiraFormat = jest.fn().mockImplementation(minutes => minutes.toString());
-        JiraTimeService.jiraFormatToMinutes = jest.fn().mockImplementation(jiraFormat => jiraFormat ? Number.parseInt(jiraFormat) : 0);
+        JiraTimeService.jiraFormatToMinutes = jest.fn().mockImplementation(jiraFormat => Number.parseInt(jiraFormat));
     });
 
     describe("loading", () => {
@@ -226,7 +226,7 @@ describe("TimelogDayView", () => {
 
             userEvent.click(underTest.getByText("save"));
 
-            expect(TimeLogService.saveTimeLogsForDay).toBeCalledWith(day, [entryWhileUpdate, emptyTimelog]);
+            expect(TimeLogService.saveTimeLogsForDay).toBeCalledWith(day, [entryWhileUpdate]);
 
             await reactTest.waitForDomChange();
             expect(descriptionField).toHaveValue(entryAfterUpdate.description);
@@ -269,7 +269,7 @@ describe("TimelogDayView", () => {
 
             reactTest.fireEvent.submit(durationField);
 
-            expect(TimeLogService.saveTimeLogsForDay).toBeCalledWith(day, [entryWhileUpdate, emptyTimelog]);
+            expect(TimeLogService.saveTimeLogsForDay).toBeCalledWith(day, [entryWhileUpdate]);
 
             await reactTest.waitForDomChange();
             expect(descriptionField).toHaveValue(entryAfterUpdate.description);
@@ -305,36 +305,35 @@ describe("TimelogDayView", () => {
 
             expect(TimeLogService.saveTimeLogsForDay).not.toBeCalledWith();
         });
+        it("should should save the current state if the save shortcut has been triggered on the document", async () => {
+            const entry = {
+                durationInMinutes: 111,
+                description: "description before update"
+            };
+
+
+            TimeLogService.saveTimeLogsForDay = jest.fn().mockResolvedValue([entry]);
+            TimeLogService.getTimeLogsForDay = jest.fn().mockResolvedValue([entry]);
+            JiraTimeService.isValidJiraFormat = jest.fn().mockReturnValue(true);
+
+            const day = new Date(2020, 2, 2);
+            const underTest = reactTest.render(<TimelogDayView day={day}/>);
+
+            //loading finished
+            const descriptionField = await reactTest.waitForElement(() => underTest.getByDisplayValue(entry.description));
+            userEvent.type(descriptionField, "somethingNewDescriptionForUpdate");
+
+            const basePanel = underTest.container.querySelectorAll("*")[0];
+
+            ReactTestUtils.Simulate.keyDown(basePanel, {
+                ctrlKey: true,
+                key: "s"
+            });
+
+            expect(TimeLogService.saveTimeLogsForDay).toBeCalledWith(day, [{
+                ...entry,
+                description: "somethingNewDescriptionForUpdate"
+            }]);
+        })
     });
-
-    it("should should save the current state if the save shortcut has been triggered on the document", async () => {
-        const entry = {
-            durationInMinutes: 111,
-            description: "description before update"
-        };
-
-
-        TimeLogService.saveTimeLogsForDay = jest.fn().mockResolvedValue([entry]);
-        TimeLogService.getTimeLogsForDay = jest.fn().mockResolvedValue([entry]);
-        JiraTimeService.isValidJiraFormat = jest.fn().mockReturnValue(true);
-
-        const day = new Date(2020, 2, 2);
-        const underTest = reactTest.render(<TimelogDayView day={day}/>);
-
-        //loading finished
-        const descriptionField = await reactTest.waitForElement(() => underTest.getByDisplayValue(entry.description));
-        userEvent.type(descriptionField, "somethingNewDescriptionForUpdate");
-
-        const basePanel = underTest.container.querySelectorAll("*")[0];
-
-        ReactTestUtils.Simulate.keyDown(basePanel, {
-            ctrlKey: true,
-            key: "s"
-        });
-
-        expect(TimeLogService.saveTimeLogsForDay).toBeCalledWith(day, [{
-            ...entry,
-            description: "somethingNewDescriptionForUpdate"
-        }, emptyTimelog]);
-    })
 });

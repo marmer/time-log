@@ -141,7 +141,7 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
     private store() {
         TimeLogService.saveTimeLogsForDay(this.props.day, this.state.timeLogs
             // the last one is always empty ;)
-            .splice(this.state.timeLogs.length - 1)
+            .slice(0, this.state.timeLogs.length - 1)
             .map(timelogInput => (TimelogDayView.toTimelog(timelogInput))))
             .then(timeLogs => this.setState({
                 timeLogs: timeLogs.map(timeLog => TimelogDayView.toTimelogInput(timeLog))
