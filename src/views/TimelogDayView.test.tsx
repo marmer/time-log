@@ -315,7 +315,7 @@ describe("TimelogDayView", () => {
 
         ReactTestUtils.Simulate.keyDown(basePanel, {
             ctrlKey: true,
-            which: 83
+            key: "s"
         });
 
         expect(TimeLogService.saveTimeLogsForDay).toBeCalledWith(day, [{
