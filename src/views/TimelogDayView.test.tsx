@@ -16,7 +16,7 @@ describe("TimelogDayView", () => {
     beforeEach(() => {
         jest.fn().mockReset();
         JiraTimeService.minutesToJiraFormat = jest.fn().mockImplementation(minutes => minutes.toString());
-        JiraTimeService.jiraFormatToMinutes = jest.fn().mockImplementation(jiraFormat => Number.parseInt(jiraFormat));
+        JiraTimeService.jiraFormatToMinutes = jest.fn().mockImplementation(jiraFormat => jiraFormat ? Number.parseInt(jiraFormat) : 0);
     });
 
     describe("loading", () => {
@@ -131,7 +131,7 @@ describe("TimelogDayView", () => {
             expect(secondEntryIndex).toBeVisible();
 
             expect(underTest.queryByTitle("TimeLog 2")).not.toBeInTheDocument();
-            const secondEntryRow = secondEntryIndex.closest("tr") as any
+            const secondEntryRow = secondEntryIndex.closest("tr") as any;
             const descriptionFieldOfSecondInput = reactTest.getByTitle(secondEntryRow, "description");
             userEvent.type(descriptionFieldOfSecondInput, "a");
 
