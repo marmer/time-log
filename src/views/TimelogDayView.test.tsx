@@ -7,6 +7,10 @@ import userEvent from "@testing-library/user-event";
 import JiraTimeService from "../core/JiraTimeService";
 import ReactTestUtils from 'react-dom/test-utils';
 
+const emptyTimelog: TimeLog = {
+    description: "",
+    durationInMinutes: 0
+};
 describe("TimelogDayView", () => {
 
     beforeEach(() => {
@@ -65,23 +69,6 @@ describe("TimelogDayView", () => {
     });
 
     describe("Add element", () => {
-        it("should add an element at the end it the last add button has been clicked", async () => {
-            TimeLogService.getTimeLogsForDay = jest.fn().mockImplementation((_: Date) => Promise.resolve([{
-                durationInMinutes: 1234,
-                description: "existing description"
-            } as TimeLog]));
-
-            const underTest = reactTest.render(<TimelogDayView day={new Date(2020, 2, 2)}/>);
-
-            //loading finished
-            await reactTest.wait(() => expect(underTest.getByTitle("TimeLog 0")).toBeVisible());
-            expect(underTest.queryByTitle("TimeLog 1")).not.toBeInTheDocument();
-
-            userEvent.click(underTest.getByTitle("add"));
-
-            const timeLogIdField = underTest.getByTitle("TimeLog 1");
-            expect(timeLogIdField).toBeVisible()
-        });
         it("should add an element before the clicked add button row", async () => {
             const firstExpectedEntry = {
                 durationInMinutes: 111,
@@ -122,12 +109,35 @@ describe("TimelogDayView", () => {
                 expect(util.getByTitle("duration")).toHaveValue(timeLog.durationInMinutes.toString());
             }
         });
-        it("should add automatically an empty timelog at the end if no timelogs exist on mount", async () => {
+        it("should add automatically a timelog at the end if no timelogs exist on mount", async () => {
             TimeLogService.getTimeLogsForDay = jest.fn().mockResolvedValue([]);
 
             const underTest = reactTest.render(<TimelogDayView day={new Date(2020, 2, 2)}/>);
 
             expect(await reactTest.waitForElement(() => underTest.getByTitle("TimeLog 0"))).toBeVisible();
+
+            expect(underTest.queryByTitle("TimeLog 1")).not.toBeInTheDocument();
+        });
+
+        it("should add automatically a timelog at the end if any input value exist on the last element", async () => {
+            const firstEntry = {
+                durationInMinutes: 111,
+                description: "as first description expected"
+            };
+
+            TimeLogService.getTimeLogsForDay = jest.fn().mockResolvedValue([firstEntry]);
+
+            const underTest = reactTest.render(<TimelogDayView day={new Date(2020, 2, 2)}/>);
+
+            const secondEntryRow = await reactTest.waitForElement(() => underTest.getByTitle("TimeLog 1"));
+            expect(secondEntryRow).toBeVisible();
+
+            expect(() => underTest.queryByTitle("TimeLog 2")).not.toBeInTheDocument();
+
+            const descriptionFieldOfSecondInput = reactTest.getByTitle(secondEntryRow, "description");
+            userEvent.type(descriptionFieldOfSecondInput, "a");
+
+            expect(await reactTest.waitForElement(() => underTest.getByTitle("TimeLog 2"))).toBeInTheDocument();
         });
     });
 
@@ -219,7 +229,7 @@ describe("TimelogDayView", () => {
 
             userEvent.click(underTest.getByText("save"));
 
-            expect(TimeLogService.saveTimeLogsForDay).toBeCalledWith(day, [entryWhileUpdate]);
+            expect(TimeLogService.saveTimeLogsForDay).toBeCalledWith(day, [entryWhileUpdate, emptyTimelog]);
 
             await reactTest.waitForDomChange();
             expect(descriptionField).toHaveValue(entryAfterUpdate.description);
@@ -262,7 +272,7 @@ describe("TimelogDayView", () => {
 
             reactTest.fireEvent.submit(durationField);
 
-            expect(TimeLogService.saveTimeLogsForDay).toBeCalledWith(day, [entryWhileUpdate]);
+            expect(TimeLogService.saveTimeLogsForDay).toBeCalledWith(day, [entryWhileUpdate, emptyTimelog]);
 
             await reactTest.waitForDomChange();
             expect(descriptionField).toHaveValue(entryAfterUpdate.description);
@@ -328,6 +338,6 @@ describe("TimelogDayView", () => {
         expect(TimeLogService.saveTimeLogsForDay).toBeCalledWith(day, [{
             ...entry,
             description: "somethingNewDescriptionForUpdate"
-        }]);
+        }, emptyTimelog]);
     })
 });
