@@ -48,5 +48,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: gh-pages
           FOLDER: build
-          # CLEAN: true
+          CLEAN: true
         if: ${{ success() && github.ref == 'refs/heads/master' }}
