@@ -122,6 +122,13 @@ describe("TimelogDayView", () => {
                 expect(util.getByTitle("duration")).toHaveValue(timeLog.durationInMinutes.toString());
             }
         });
+        it("should add automatically an empty timelog at the end if no timelogs exist on mount", async () => {
+            TimeLogService.getTimeLogsForDay = jest.fn().mockResolvedValue([]);
+
+            const underTest = reactTest.render(<TimelogDayView day={new Date(2020, 2, 2)}/>);
+
+            expect(await reactTest.waitForElement(() => underTest.getByTitle("TimeLog 0"))).toBeVisible();
+        });
     });
 
     describe("Remove an element", () => {
