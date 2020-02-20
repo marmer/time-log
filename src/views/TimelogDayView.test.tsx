@@ -5,6 +5,7 @@ import TimeLogService, {TimeLog} from "../core/TimeLogService";
 import TimelogDayView from "./TimelogDayView";
 import userEvent from "@testing-library/user-event";
 import JiraTimeService from "../core/JiraTimeService";
+import ReactTestUtils from 'react-dom/test-utils';
 
 describe("TimelogDayView", () => {
 
@@ -310,19 +311,12 @@ describe("TimelogDayView", () => {
         const descriptionField = await reactTest.waitForElement(() => underTest.getByDisplayValue(entry.description));
         userEvent.type(descriptionField, "somethingNewDescriptionForUpdate");
 
+        const basePanel = underTest.container.querySelectorAll("*")[0];
 
-        // fail("Fire the key combination ctrl + s here (somehow oO) at the root element");
-
-        const basePanel = underTest.container;
-        basePanel.focus();
-
-        const keyDownEvent: any = new Event('keydown');
-        keyDownEvent.keyCode = 83;
-        keyDownEvent.key = 'ctrl';
-        // keyDownEvent.code = 83;
-
-        basePanel.dispatchEvent(keyDownEvent);
-
+        ReactTestUtils.Simulate.keyDown(basePanel, {
+            ctrlKey: true,
+            which: 83
+        });
 
         expect(TimeLogService.saveTimeLogsForDay).toBeCalledWith(day, [{
             ...entry,

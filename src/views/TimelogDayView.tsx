@@ -56,7 +56,7 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
     render() {
         return <div onKeyDown={e => {
             if (e.ctrlKey && e.which === 83) {
-                alert("Weehah");
+                this.store();
             }
         }}>
             <form target="_self" onSubmit={() => {
