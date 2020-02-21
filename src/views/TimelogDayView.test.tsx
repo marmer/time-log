@@ -11,6 +11,12 @@ const emptyTimelog: TimeLog = {
     description: "",
     durationInMinutes: 0
 };
+
+const baseTimeLog: TimeLog = {
+    ...emptyTimelog,
+    description: "vacation",
+    durationInMinutes: 42
+};
 describe("TimelogDayView", () => {
 
     beforeEach(() => {
@@ -33,9 +39,11 @@ describe("TimelogDayView", () => {
             const someDay = new Date(2020, 2, 2);
 
             const entries: TimeLog[] = [{
+                ...baseTimeLog,
                 durationInMinutes: 1234,
                 description: "fancy description for day " + someDay.toISOString()
             }, {
+                ...baseTimeLog,
                 durationInMinutes: 4321,
                 description: "fancy other description"
             }];
@@ -59,6 +67,7 @@ describe("TimelogDayView", () => {
             const someDay = new Date(2020, 2, 2);
 
             TimeLogService.getTimeLogsForDay = jest.fn().mockImplementation((_: Date) => Promise.resolve([{
+                ...baseTimeLog,
                 durationInMinutes: 1234,
                 description: "fancy description for day " + someDay.toISOString()
             } as TimeLog]));
@@ -72,14 +81,17 @@ describe("TimelogDayView", () => {
     describe("Add element", () => {
         it("should add an element before the clicked add button row", async () => {
             const firstExpectedEntry = {
+                ...baseTimeLog,
                 durationInMinutes: 111,
                 description: "as first description expected"
             };
             const secondExpectedEntry = {
+                ...baseTimeLog,
                 durationInMinutes: "",
                 description: ""
             };
             const thirdExpectedEntry = {
+                ...baseTimeLog,
                 durationInMinutes: 333,
                 description: "as third description expected"
             };
@@ -120,6 +132,7 @@ describe("TimelogDayView", () => {
 
         it("should add automatically a timelog at the end if any input value exist on the last element", async () => {
             const firstEntry = {
+                ...baseTimeLog,
                 durationInMinutes: 111,
                 description: "as first description expected"
             };
@@ -143,10 +156,12 @@ describe("TimelogDayView", () => {
     describe("Remove an element", () => {
         it("should remove an element the remove button has been clicked", async () => {
             const firstEntry = {
+                ...baseTimeLog,
                 durationInMinutes: 111,
                 description: "as first description expected"
             };
             const secondEntry = {
+                ...baseTimeLog,
                 durationInMinutes: 222,
                 description: "as second description expected"
             };
@@ -197,14 +212,17 @@ describe("TimelogDayView", () => {
     describe("save", () => {
         it("should should save the current state if the save button is clicked", async () => {
             const entryBeforeUpdate = {
+                ...baseTimeLog,
                 durationInMinutes: 111,
                 description: "description before update"
             };
             const entryWhileUpdate = {
+                ...baseTimeLog,
                 durationInMinutes: 222,
                 description: "description while update"
             };
             const entryAfterUpdate = {
+                ...baseTimeLog,
                 durationInMinutes: 333,
                 description: "description after update"
             };
@@ -237,14 +255,17 @@ describe("TimelogDayView", () => {
 
         it("should should save the current state on submit", async () => {
             const entryBeforeUpdate = {
+                ...baseTimeLog,
                 durationInMinutes: 15,
                 description: "description before update"
             };
             const entryWhileUpdate = {
+                ...baseTimeLog,
                 durationInMinutes: 30,
                 description: "description while update"
             };
             const entryAfterUpdate = {
+                ...baseTimeLog,
                 durationInMinutes: 45,
                 description: "description after update"
             };
@@ -280,6 +301,7 @@ describe("TimelogDayView", () => {
 
         it("should not be possible to submit if any duration is invaild", async () => {
             const timeLog = {
+                ...baseTimeLog,
                 durationInMinutes: 15,
                 description: "description before update"
             };
@@ -308,6 +330,7 @@ describe("TimelogDayView", () => {
         });
         it("should should save the current state if the save shortcut has been triggered on the document", async () => {
             const entry = {
+                ...baseTimeLog,
                 durationInMinutes: 111,
                 description: "description before update"
             };
@@ -341,10 +364,12 @@ describe("TimelogDayView", () => {
     describe("statistics", () => {
         it("should show the sum of all the currently worked time somewhere", async () => {
             const entry1 = {
+                ...baseTimeLog,
                 durationInMinutes: 15,
                 description: "description before update"
             };
             const entry2 = {
+                ...baseTimeLog,
                 durationInMinutes: 32,
                 description: "description before update"
             };
@@ -366,10 +391,12 @@ describe("TimelogDayView", () => {
 
         it("should show the sum of valid values but ignores invalid ones", async () => {
             const entry1 = {
+                ...baseTimeLog,
                 durationInMinutes: 15,
                 description: "description before update"
             };
             const entry2 = {
+                ...baseTimeLog,
                 durationInMinutes: 32,
                 description: "description before update"
             };
