@@ -4,7 +4,6 @@ on: [push, pull_request]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     strategy:
@@ -48,3 +47,4 @@ jobs:
           FOLDER: build
           # CLEAN: true
         if: success() && github.ref == 'refs/heads/master' && matrix.node-version == '10.x'
+        
