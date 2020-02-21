@@ -134,7 +134,7 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
                         </tr>
                         <tr>
                             <th colSpan={7}>
-                                Work to be done today: 5h 10m
+                                Overtime: 5h 10m
                             </th>
                         </tr>
                         </tbody>
