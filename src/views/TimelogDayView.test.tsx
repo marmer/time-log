@@ -449,7 +449,6 @@ describe("TimelogDayView", () => {
 
                 expect(overtimeField).toHaveValue("30");
             });
-            // TODO: marmer 21.02.2020 handle negative values
         });
     });
 });
