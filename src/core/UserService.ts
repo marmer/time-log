@@ -36,11 +36,11 @@ export default class UserService {
 
     static redirectToLogin() {
         const requestProps: { [key: string]: any; } = {
-            scope: encodeURI("email"),
+            scope: "email https://www.googleapis.com/auth/drive.file",
             include_granted_scopes: true,
             response_type: "token",
             state: "/",
-            redirect_uri: encodeURI(process.env.REACT_APP_OAUTH_REDIRECT_URL ? process.env.REACT_APP_OAUTH_REDIRECT_URL : ""),
+            redirect_uri: process.env.REACT_APP_OAUTH_REDIRECT_URL ? process.env.REACT_APP_OAUTH_REDIRECT_URL : "",
             client_id: process.env.REACT_APP_OAUTH_CLIENT_ID ? process.env.REACT_APP_OAUTH_CLIENT_ID : ""
         };
 

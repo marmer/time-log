@@ -45,7 +45,7 @@ describe("UserService", () => {
                 UserService.redirectToLogin();
 
                 expect(WindowService.redirectTo).toBeCalledWith(authauthorizationUrl + "?" +
-                    "scope=email&" +
+                    "scope=email%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fdrive.file&" +
                     "include_granted_scopes=true&" +
                     "response_type=token&" +
                     "state=%2F&" +
@@ -64,7 +64,7 @@ describe("UserService", () => {
                 UserService.redirectToLogin();
 
                 expect(WindowService.redirectTo).toBeCalledWith("?" +
-                    "scope=email&" +
+                    "scope=email%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fdrive.file&" +
                     "include_granted_scopes=true&" +
                     "response_type=token&" +
                     "state=%2F&" +
