@@ -85,7 +85,7 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
                         <tr>
                             <th scope="col" className="text-sm-center">#</th>
                             <th scope="col" className="text-sm-center">Start Time</th>
-                            <th scope="col" className="text-sm-center">Duration <em>1h 17m</em></th>
+                            <th scope="col" className="text-sm-center">Duration <em>{this.getDurationSum()}</em></th>
                             <th scope="col" className="text-sm-center">Description</th>
                             <th scope="col" className="text-sm-center">Issue</th>
                             <th scope="col" className="text-sm-center">Notes</th>
@@ -204,5 +204,20 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
         return this.state.timeLogs
             .map(timeLog => JiraTimeService.isValidJiraFormat(timeLog.duration))
             .reduce((v1, v2) => v1 && v2, true);
+    }
+
+    private getDurationSum() {
+        const timeSpentInMinutes = this.state.timeLogs
+            .map(({duration}) => this.getJiraFormatToMinutes(duration))
+            .reduce((d1, d2) => d1 + d2);
+        return this.minutesToJiraFormat(timeSpentInMinutes);
+    }
+
+    private minutesToJiraFormat(timeSpentInMinutes: number) {
+        return JiraTimeService.minutesToJiraFormat(timeSpentInMinutes);
+    }
+
+    private getJiraFormatToMinutes(duration: string) {
+        return JiraTimeService.jiraFormatToMinutes(duration);
     }
 }
