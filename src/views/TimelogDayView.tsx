@@ -84,7 +84,7 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
                         <tr>
                             <th scope="col" className="text-sm-center">#</th>
                             <th scope="col" className="text-sm-center">Start Time</th>
-                            <th scope="col" className="text-sm-center">Duration</th>
+                            <th scope="col" className="text-sm-center">Duration <em>1h 17m</em></th>
                             <th scope="col" className="text-sm-center">Description</th>
                             <th scope="col" className="text-sm-center">Issue</th>
                             <th scope="col" className="text-sm-center">Notes</th>
@@ -134,7 +134,7 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
                         </tr>
                         <tr>
                             <th colSpan={7}>
-                                Overtime: 5h 10m
+                                Overtime: <em>5h 10m</em>
                             </th>
                         </tr>
                         </tbody>
