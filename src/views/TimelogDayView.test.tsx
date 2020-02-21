@@ -6,6 +6,7 @@ import TimelogDayView from "./TimelogDayView";
 import userEvent from "@testing-library/user-event";
 import JiraTimeService from "../core/JiraTimeService";
 import ReactTestUtils from 'react-dom/test-utils';
+import SettingsService from "../core/SettingsService";
 
 const emptyTimelog: TimeLog = {
     description: "",
@@ -24,6 +25,7 @@ describe("TimelogDayView", () => {
         JiraTimeService.minutesToJiraFormat = jest.fn().mockImplementation(minutes => minutes.toString());
         JiraTimeService.jiraFormatToMinutes = jest.fn().mockImplementation(jiraFormat => jiraFormat ? Number.parseInt(jiraFormat) : 0);
         JiraTimeService.isValidJiraFormat = jest.fn().mockReturnValue(true);
+        SettingsService.getExpectedDailyTimelogInMinutesFor = jest.fn().mockResolvedValue(42);
     });
 
     describe("loading", () => {
@@ -425,6 +427,29 @@ describe("TimelogDayView", () => {
             userEvent.type(durationField, "invalidValue");
 
             expect(await reactTest.waitForElement(() => underTest.getByText("15")));
+        });
+    });
+
+    describe("Overtime Calculation", () => {
+        describe("today", () => {
+            it("should calculate the overtime based on the configured expected daily time to log and the already logged time", async () => {
+                TimeLogService.getTimeLogsForDay = jest.fn().mockResolvedValue([{
+                    ...baseTimeLog,
+                    durationInMinutes: 70
+                } as TimeLog]);
+
+                const day = new Date(2020, 2, 2);
+                SettingsService.getExpectedDailyTimelogInMinutesFor = jest.fn().mockImplementation(d => d === day ?
+                    Promise.resolve(100) :
+                    Promise.reject(new Error("unexpected call")));
+
+                const underTest = reactTest.render(<TimelogDayView day={day}/>);
+
+                const overtimeField = await reactTest.waitForElement(() => underTest.getByTitle("time left today only"));
+
+                expect(overtimeField).toHaveValue("30");
+            });
+            // TODO: marmer 21.02.2020 handle negative values
         });
     });
 });

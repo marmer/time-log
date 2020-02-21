@@ -4,6 +4,7 @@ import JiraTimeService from "../core/JiraTimeService";
 import "./TimelogDayView.css"
 
 import deepEqual from "deep-equal"
+import SettingsService from "../core/SettingsService";
 
 export interface TimelogDayViewProps {
     day: Date;
@@ -17,6 +18,7 @@ interface TimelogInput {
 interface TimelogDayViewState {
     timeLogs: TimelogInput[];
     isLoadingTimeLogs: boolean;
+    expectedDailyTimeToLogInMinutes?: number;
 }
 
 export default class TimelogDayView extends React.Component<TimelogDayViewProps, TimelogDayViewState> {
@@ -56,9 +58,13 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
             .then(timeLogs => {
                 this.setState({
                     timeLogs: timeLogs.length === 0 ? [{...TimelogDayView.emptyTimelogInput}] : timeLogs.map((timeLog) => TimelogDayView.toTimelogInput(timeLog)),
-                    isLoadingTimeLogs: false
+                    isLoadingTimeLogs: false,
                 });
             });
+        SettingsService.getExpectedDailyTimelogInMinutesFor(this.props.day)
+            .then(expectedTime => this.setState({
+                expectedDailyTimeToLogInMinutes: expectedTime
+            }))
     }
 
     componentDidUpdate(prevProps: Readonly<TimelogDayViewProps>, prevState: Readonly<TimelogDayViewState>,): void {
@@ -85,7 +91,8 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
                         <tr>
                             <th scope="col" className="text-sm-center">#</th>
                             <th scope="col" className="text-sm-center">Start Time</th>
-                            <th scope="col" className="text-sm-center">Duration <em>{this.getDurationSum()}</em></th>
+                            <th scope="col"
+                                className="text-sm-center">Duration <em>{this.getDurationSumAsJiraFormat()}</em></th>
                             <th scope="col" className="text-sm-center">Description</th>
                             <th scope="col" className="text-sm-center">Issue</th>
                             <th scope="col" className="text-sm-center">Notes</th>
@@ -138,17 +145,15 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
                     </table>}</form>
 
             <section className="stats">
-                <label>
-                    Overtime today only: <input disabled title={"Overtime today only"} value={"5h 10m"}/>
-                </label>
-                <label>
-                    Overtime this month only: <input disabled title={"Overtime this month only"} value={"30m"}/>
-                </label>
+                {this.state.expectedDailyTimeToLogInMinutes === undefined ? <></> :
+                    <label>
+                        Time to log by daily expectation: <input disabled title={"time left today only"}
+                                                                 value={JiraTimeService.minutesToJiraFormat(this.state.expectedDailyTimeToLogInMinutes - this.getDurationSum())}/>
+                    </label>}
             </section>
         </div>
 
     }
-
     private addTimelog() {
         this.addTimelogBefore(this.state.timeLogs.length + 1);
     }
@@ -207,9 +212,13 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
             .reduce((v1, v2) => v1 && v2, true);
     }
 
+    private getDurationSumAsJiraFormat() {
+        return JiraTimeService.minutesToJiraFormat(this.getDurationSum());
+    }
+
     private getDurationSum() {
-        return JiraTimeService.minutesToJiraFormat(this.state.timeLogs
+        return this.state.timeLogs
             .map(({duration}) => JiraTimeService.isValidJiraFormat(duration) ? JiraTimeService.jiraFormatToMinutes(duration) : 0)
-            .reduce((d1, d2) => d1 + d2));
+            .reduce((d1, d2) => d1 + d2);
     }
 }
