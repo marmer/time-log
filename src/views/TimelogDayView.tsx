@@ -83,7 +83,7 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
                         <thead>
                         <tr>
                             <th scope="col" className="text-sm-center">#</th>
-                            <th scope="col" className="text-sm-center">Start</th>
+                            <th scope="col" className="text-sm-center">Start Time</th>
                             <th scope="col" className="text-sm-center">Duration</th>
                             <th scope="col" className="text-sm-center">Description</th>
                             <th scope="col" className="text-sm-center">Issue</th>
@@ -95,17 +95,21 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
                         {this.state.timeLogs.map((timeLog, index) => <tr
                             key={index}>
                             <th className="text-sm-center" title={"TimeLog " + index}>{index}</th>
-                            <td><input className={"fullWidth"} disabled title="start time" placeholder="09:00"/></td>
+                            <td><input className={"fullWidth"} disabled title="start time" placeholder="09:15"/></td>
                             <td><input
                                 className={"fullWidth" + (JiraTimeService.isValidJiraFormat(timeLog.duration) ? "" : " invalid-format alert-danger")}
                                 title="duration" type="text"
+                                placeholder={"5h 15m"}
                                 value={timeLog.duration}
                                 onChange={event => this.updateDuration(index, event.target.value)}/></td>
-                            <td><input className="fullWidth" title="description" type="text" value={timeLog.description}
+                            <td><input className="fullWidth" title="description" type="text"
+                                       placeholder={"What did you to here"} value={timeLog.description}
                                        onChange={event => this.updateDescription(index, event.target.value)}/>
                             </td>
-                            <td><input className={"fullWidth"} disabled title="issue"/></td>
-                            <td><input className={"fullWidth"} disabled title="notes"/></td>
+                            <td><input className={"fullWidth"} disabled title="issue"
+                                       placeholder={"e.g. ISSUEID-123"}/></td>
+                            <td><input className={"fullWidth"} disabled title="notes"
+                                       placeholder={"Not supposed to get exported"}/></td>
                             <td>
                             <span className="btn-group actions">
                                 <button className="btn btn-outline-primary" title="add before"
