@@ -132,6 +132,11 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
                                 </button>
                             </th>
                         </tr>
+                        <tr>
+                            <th colSpan={7}>
+                                Work to be done today: 5h 10m
+                            </th>
+                        </tr>
                         </tbody>
                     </table>}</form>
         </div>
