@@ -1,6 +1,7 @@
 import TimeLogService, {TimeLog} from "../core/TimeLogService";
 import React from "react";
 import JiraTimeService from "../core/JiraTimeService";
+import "./TimelogDayView.css"
 
 import deepEqual from "deep-equal"
 
@@ -135,8 +136,14 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
                         </tbody>
                     </table>}</form>
 
-            <div><strong>Overtime today: </strong><em>5h 10m</em></div>
-            <div><strong>Overtime month: </strong><em>30m</em></div>
+            <section className="stats">
+                <label>
+                    Overtime today: <input disabled value={"5h 10m"}/>
+                </label>
+                <label>
+                    Overtime month: <input disabled value={"30m"}/>
+                </label>
+            </section>
         </div>
 
     }
