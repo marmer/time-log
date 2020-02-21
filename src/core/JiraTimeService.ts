@@ -20,12 +20,14 @@ export default class JiraTimeService {
             .trim();
         return resultString === "" ?
             "0" + minute.symbol :
-            resultString;
+            timeSpentInMinutes < 0 ?
+                "-" + resultString :
+                resultString;
     }
 
     public static isValidJiraFormat(jiraString: string): boolean {
         const unitSymbols: string = Object.keys(jiraSymbolFactorMap).join();
-        return new RegExp("^\\s*((\\d+[" + unitSymbols + "]?(\\s+\\d+[" + unitSymbols + "]?)*?)|(0+))?\\s*$").test(jiraString);
+        return new RegExp("^-?\\s*((\\d+[" + unitSymbols + "]?(\\s+\\d+[" + unitSymbols + "]?)*?)|(0+))?\\s*$").test(jiraString);
     }
 
     public static jiraFormatToMinutes(jiraString: string): number {

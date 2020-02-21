@@ -14,7 +14,7 @@ describe("JiraTimeFormatter", () => {
             {timeSpentInMinutes: 4799, expectedJiraString: "1w 4d 7h 59m"},
             {timeSpentInMinutes: 4800, expectedJiraString: "2w"},
             {timeSpentInMinutes: 2459, expectedJiraString: "1w 59m"},
-            {timeSpentInMinutes: -4799, expectedJiraString: "1w 4d 7h 59m"},
+            {timeSpentInMinutes: -4799, expectedJiraString: "-1w 4d 7h 59m"},
         ].forEach(parameter => {
             it("should split transform " + parameter.timeSpentInMinutes + ' into the jira string "' + parameter.expectedJiraString + '"', () => {
                 expect(JiraTimeFormatter.minutesToJiraFormat(parameter.timeSpentInMinutes)).toBe(parameter.expectedJiraString);
@@ -35,6 +35,7 @@ describe("JiraTimeFormatter", () => {
             {input: "1m", isJiraFormat: true},
             {input: "1h", isJiraFormat: true},
             {input: "1h 15", isJiraFormat: true},
+            {input: "-1h 15", isJiraFormat: true},
             {input: "1d", isJiraFormat: true},
             {input: "1w", isJiraFormat: true},
             {input: " 1h 1m 1w 1d", isJiraFormat: true},
@@ -67,6 +68,10 @@ describe("JiraTimeFormatter", () => {
             {jiraString: "   59m   ", expectedTimeSpentInMinutes: 59},
             {jiraString: "1h", expectedTimeSpentInMinutes: 60},
             {jiraString: "1h 15", expectedTimeSpentInMinutes: 75},
+            {jiraString: "-1h 15m", expectedTimeSpentInMinutes: -75},
+            {jiraString: "-1h 15", expectedTimeSpentInMinutes: -75},
+            {jiraString: "-1 15m", expectedTimeSpentInMinutes: -75},
+            {jiraString: "-1 15", expectedTimeSpentInMinutes: -75},
             {jiraString: "15 1h", expectedTimeSpentInMinutes: 75},
             {jiraString: "1h 5m 2h", expectedTimeSpentInMinutes: 185},
             {jiraString: "7h 59m", expectedTimeSpentInMinutes: 479},
