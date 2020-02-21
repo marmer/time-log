@@ -24,6 +24,7 @@ describe("JiraTimeFormatter", () => {
 
     describe("isValidJiraFormat()", () => {
         [
+            {input: "", isJiraFormat: true},
             {input: "  \t ", isJiraFormat: true},
             {input: " ", isJiraFormat: true},
             {input: "42", isJiraFormat: true},

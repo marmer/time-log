@@ -15,7 +15,7 @@ const week: Unit = jiraSymbolFactorMap.w = {symbol: "w", factor: 5 * day.factor}
 export default class JiraTimeService {
     public static minutesToJiraFormat(timeSpentInMinutes: number) {
         const absoluteTimeSpendInMinutes = Math.abs(timeSpentInMinutes);
-        const resultString = `${this.weekPartOf(absoluteTimeSpendInMinutes)} ${this.dayPartOf(absoluteTimeSpendInMinutes)} ${this.hourPartOf(absoluteTimeSpendInMinutes)} ${this.minutePartOf(absoluteTimeSpendInMinutes)}`
+        const resultString = `${JiraTimeService.weekPartOf(absoluteTimeSpendInMinutes)} ${JiraTimeService.dayPartOf(absoluteTimeSpendInMinutes)} ${JiraTimeService.hourPartOf(absoluteTimeSpendInMinutes)} ${JiraTimeService.minutePartOf(absoluteTimeSpendInMinutes)}`
             .replace(/\s+/, " ")
             .trim();
         return resultString === "" ?
@@ -29,12 +29,12 @@ export default class JiraTimeService {
     }
 
     public static jiraFormatToMinutes(jiraString: string): number {
-        if (!this.isValidJiraFormat(jiraString)) {
+        if (!JiraTimeService.isValidJiraFormat(jiraString)) {
             throw new Error("'" + jiraString + "' is not a valid jira String");
         }
 
         return jiraString.split(/\s+/)
-            .map(this.toMinutes)
+            .map(JiraTimeService.toMinutes)
             .reduce(toSum)
     }
 
@@ -55,19 +55,19 @@ export default class JiraTimeService {
     }
 
     private static minutePartOf(timeSpentInMinutes: number): string {
-        return this.unitStringFor(this.minutesOf(timeSpentInMinutes), minute);
+        return JiraTimeService.unitStringFor(JiraTimeService.minutesOf(timeSpentInMinutes), minute);
     }
 
     private static hourPartOf(timeSpentInMinutes: number): string {
-        return this.unitStringFor(this.hoursOf(timeSpentInMinutes), hour);
+        return JiraTimeService.unitStringFor(JiraTimeService.hoursOf(timeSpentInMinutes), hour);
     }
 
     private static dayPartOf(timeSpentInMinutes: number): string {
-        return this.unitStringFor(this.daysOf(timeSpentInMinutes), day);
+        return JiraTimeService.unitStringFor(JiraTimeService.daysOf(timeSpentInMinutes), day);
     }
 
     private static weekPartOf(timeSpentInMinutes: number): string {
-        return this.unitStringFor(this.weeksOf(timeSpentInMinutes), week);
+        return JiraTimeService.unitStringFor(JiraTimeService.weeksOf(timeSpentInMinutes), week);
     }
 
     private static unitStringFor(result: number, unit: Unit): string {

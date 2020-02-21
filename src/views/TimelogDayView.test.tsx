@@ -16,7 +16,7 @@ describe("TimelogDayView", () => {
     beforeEach(() => {
         jest.fn().mockReset();
         JiraTimeService.minutesToJiraFormat = jest.fn().mockImplementation(minutes => minutes.toString());
-        JiraTimeService.jiraFormatToMinutes = jest.fn().mockImplementation(jiraFormat => Number.parseInt(jiraFormat));
+        JiraTimeService.jiraFormatToMinutes = jest.fn().mockImplementation(jiraFormat => jiraFormat ? Number.parseInt(jiraFormat) : 0);
     });
 
     describe("loading", () => {
@@ -335,7 +335,26 @@ describe("TimelogDayView", () => {
                 description: "somethingNewDescriptionForUpdate"
             }]);
         })
+    });
 
+    describe("statistics", () => {
+        it("should show the sum of the currently worked time somewhere", async () => {
+            const entry1 = {
+                durationInMinutes: 15,
+                description: "description before update"
+            };
+            const entry2 = {
+                durationInMinutes: 32,
+                description: "description before update"
+            };
 
+            TimeLogService.getTimeLogsForDay = jest.fn().mockResolvedValue([entry1, entry2]);
+            const day = new Date(2020, 2, 2);
+            const underTest = reactTest.render(<TimelogDayView day={day}/>);
+
+            expect(await reactTest.waitForElement(() => underTest.getByText("47"))).toBeVisible();
+        });
+
+        // TODO: marmer 21.02.2020 how to sum up invalid values
     });
 });
