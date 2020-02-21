@@ -104,7 +104,7 @@ describe("TimelogDayView", () => {
 
 
             const secondRow = (await reactTest.waitForElement(() => underTest.getByTitle("TimeLog 1").closest("tr")));
-            const addBeforeButton = reactTest.within(secondRow as any).getByTitle("add before");
+            const addBeforeButton = reactTest.within(secondRow as any).getByTitle("add before this entry");
             userEvent.click(addBeforeButton);
 
 
@@ -172,12 +172,22 @@ describe("TimelogDayView", () => {
             //loading finished
             const originalFirstRow = (await reactTest.waitForElement(() => underTest.getByTitle("TimeLog 0").closest("tr")));
             expect(reactTest.within(originalFirstRow as any).getByDisplayValue(firstEntry.description)).toBeVisible();
-            const originalFirstRowRemoveButton = reactTest.within(originalFirstRow as any).getByTitle("remove");
+            const originalFirstRowRemoveButton = reactTest.within(originalFirstRow as any).getByTitle("remove this entry");
             userEvent.click(originalFirstRowRemoveButton);
 
             const newFirstRow = (await reactTest.waitForElement(() => underTest.getByTitle("TimeLog 0").closest("tr")));
             expect(reactTest.within(newFirstRow as any).getByDisplayValue(secondEntry.description)).toBeVisible();
-        })
+        });
+
+        it("should not show a remove button if it's the last element in the list", async () => {
+            TimeLogService.getTimeLogsForDay = jest.fn().mockResolvedValue([]);
+
+            const underTest = reactTest.render(<TimelogDayView day={new Date(2020, 2, 2)}/>);
+
+            await reactTest.waitForElement(() => underTest.getByTitle("TimeLog 0"));
+
+            expect(underTest.queryByTitle("remove this entry")).not.toBeInTheDocument();
+        });
     });
 
     describe("validation", () => {

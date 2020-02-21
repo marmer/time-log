@@ -113,14 +113,15 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
                                        placeholder={"Not supposed to get exported"}/></td>
                             <td>
                             <span className="btn-group actions">
-                                <button className="btn btn-outline-primary" title="add before"
+                                <button className="btn btn-outline-primary" title="add before this entry"
                                         onClick={() => this.addTimelogBefore(index)}
                                         type="button">+
                                 </button>
-                                <button className="btn btn-outline-primary" title="remove"
-                                        onClick={() => this.removeTimelogAt(index)}
-                                        type="button">-
-                                </button>
+                                {index < this.state.timeLogs.length - 1 ?
+                                    <button className="btn btn-outline-primary" title="remove this entry"
+                                            onClick={() => this.removeTimelogAt(index)}
+                                            type="button">-
+                                    </button> : <></>}
                             </span>
                             </td>
                         </tr>)}
