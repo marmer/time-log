@@ -132,13 +132,11 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
                                 </button>
                             </th>
                         </tr>
-                        <tr>
-                            <th colSpan={7}>
-                                Overtime: <em>5h 10m</em>
-                            </th>
-                        </tr>
                         </tbody>
                     </table>}</form>
+
+            <div><strong>Overtime today: </strong><em>5h 10m</em></div>
+            <div><strong>Overtime month: </strong><em>30m</em></div>
         </div>
 
     }

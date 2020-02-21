@@ -335,5 +335,7 @@ describe("TimelogDayView", () => {
                 description: "somethingNewDescriptionForUpdate"
             }]);
         })
+
+
     });
 });
