@@ -17,6 +17,7 @@ describe("TimelogDayView", () => {
         jest.fn().mockReset();
         JiraTimeService.minutesToJiraFormat = jest.fn().mockImplementation(minutes => minutes.toString());
         JiraTimeService.jiraFormatToMinutes = jest.fn().mockImplementation(jiraFormat => jiraFormat ? Number.parseInt(jiraFormat) : 0);
+        JiraTimeService.isValidJiraFormat = jest.fn().mockReturnValue(true);
     });
 
     describe("loading", () => {
@@ -338,7 +339,7 @@ describe("TimelogDayView", () => {
     });
 
     describe("statistics", () => {
-        it("should show the sum of the currently worked time somewhere", async () => {
+        it("should show the sum of all the currently worked time somewhere", async () => {
             const entry1 = {
                 durationInMinutes: 15,
                 description: "description before update"
@@ -349,12 +350,44 @@ describe("TimelogDayView", () => {
             };
 
             TimeLogService.getTimeLogsForDay = jest.fn().mockResolvedValue([entry1, entry2]);
+
             const day = new Date(2020, 2, 2);
             const underTest = reactTest.render(<TimelogDayView day={day}/>);
 
             expect(await reactTest.waitForElement(() => underTest.getByText("47"))).toBeVisible();
+
+            const durationField = underTest.getByDisplayValue("32");
+            expect(durationField).toHaveAttribute("title", "duration");
+
+            userEvent.type(durationField, "8");
+
+            expect(await reactTest.waitForElement(() => underTest.getByText("23")));
         });
 
-        // TODO: marmer 21.02.2020 how to sum up invalid values
+        it("should show the sum of valid values but ignores invalid ones", async () => {
+            const entry1 = {
+                durationInMinutes: 15,
+                description: "description before update"
+            };
+            const entry2 = {
+                durationInMinutes: 32,
+                description: "description before update"
+            };
+
+            TimeLogService.getTimeLogsForDay = jest.fn().mockResolvedValue([entry1, entry2]);
+            JiraTimeService.isValidJiraFormat = jest.fn().mockImplementation(v => v !== "invalidValue");
+
+            const day = new Date(2020, 2, 2);
+            const underTest = reactTest.render(<TimelogDayView day={day}/>);
+
+            expect(await reactTest.waitForElement(() => underTest.getByText("47"))).toBeVisible();
+
+            const durationField = underTest.getByDisplayValue("32");
+            expect(durationField).toHaveAttribute("title", "duration");
+
+            userEvent.type(durationField, "invalidValue");
+
+            expect(await reactTest.waitForElement(() => underTest.getByText("15")));
+        });
     });
 });

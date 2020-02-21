@@ -207,17 +207,8 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
     }
 
     private getDurationSum() {
-        const timeSpentInMinutes = this.state.timeLogs
-            .map(({duration}) => this.getJiraFormatToMinutes(duration))
-            .reduce((d1, d2) => d1 + d2);
-        return this.minutesToJiraFormat(timeSpentInMinutes);
-    }
-
-    private minutesToJiraFormat(timeSpentInMinutes: number) {
-        return JiraTimeService.minutesToJiraFormat(timeSpentInMinutes);
-    }
-
-    private getJiraFormatToMinutes(duration: string) {
-        return JiraTimeService.jiraFormatToMinutes(duration);
+        return JiraTimeService.minutesToJiraFormat(this.state.timeLogs
+            .map(({duration}) => JiraTimeService.isValidJiraFormat(duration) ? JiraTimeService.jiraFormatToMinutes(duration) : 0)
+            .reduce((d1, d2) => d1 + d2));
     }
 }
