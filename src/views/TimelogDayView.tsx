@@ -139,10 +139,10 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
 
             <section className="stats">
                 <label>
-                    Overtime today only: <input disabled value={"5h 10m"}/>
+                    Overtime today only: <input disabled title={"Overtime today only"} value={"5h 10m"}/>
                 </label>
                 <label>
-                    Overtime this month only: <input disabled value={"30m"}/>
+                    Overtime this month only: <input disabled title={"Overtime this month only"} value={"30m"}/>
                 </label>
             </section>
         </div>
