@@ -3,7 +3,8 @@ import {User} from "../core/UserService";
 import Lockr from "lockr";
 
 const userBase: User = {
-    email: "me@you.com"
+    email: "me@you.com",
+    accessToken: "123"
 };
 describe("UserRepository", () => {
     beforeEach(() => {
