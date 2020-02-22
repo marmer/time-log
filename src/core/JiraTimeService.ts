@@ -35,9 +35,10 @@ export default class JiraTimeService {
             throw new Error("'" + jiraString + "' is not a valid jira String");
         }
 
-        return jiraString.split(/\s+/)
+        const isNegative = jiraString.startsWith("-");
+        return (isNegative ? jiraString.substr(1, jiraString.length) : jiraString).split(/\s+/)
             .map(JiraTimeService.toMinutes)
-            .reduce(toSum)
+            .reduce(toSum) * (isNegative ? -1 : 1);
     }
 
     private static weeksOf(timeSpentInMinutes: number): number {
