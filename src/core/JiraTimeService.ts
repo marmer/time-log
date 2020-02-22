@@ -9,12 +9,11 @@ const jiraSymbolFactorMap: {
 
 const minute: Unit = jiraSymbolFactorMap.m = {symbol: "m", factor: 1};
 const hour: Unit = jiraSymbolFactorMap.h = {symbol: "h", factor: 60 * minute.factor};
-const day: Unit = jiraSymbolFactorMap.d = {symbol: "d", factor: 8 * hour.factor};
 
 export default class JiraTimeService {
     public static minutesToJiraFormat(timeSpentInMinutes: number) {
         const absoluteTimeSpendInMinutes = Math.abs(timeSpentInMinutes);
-        const resultString = `${JiraTimeService.dayPartOf(absoluteTimeSpendInMinutes)} ${JiraTimeService.hourPartOf(absoluteTimeSpendInMinutes)} ${JiraTimeService.minutePartOf(absoluteTimeSpendInMinutes)}`
+        const resultString = `${JiraTimeService.hourPartOf(absoluteTimeSpendInMinutes)} ${JiraTimeService.minutePartOf(absoluteTimeSpendInMinutes)}`
             .replace(/\s+/, " ")
             .trim();
         return resultString === "" ?
@@ -40,12 +39,8 @@ export default class JiraTimeService {
             .reduce(toSum) * (isNegative ? -1 : 1);
     }
 
-    private static daysOf(timeSpentInMinutes: number): number {
-        return Math.floor((timeSpentInMinutes / day.factor) / day.factor);
-    }
-
     private static hoursOf(timeSpentInMinutes: number): number {
-        return Math.floor((timeSpentInMinutes % day.factor) / hour.factor);
+        return Math.floor((timeSpentInMinutes / hour.factor));
     }
 
     private static minutesOf(timeSpentInMinutes: number): number {
@@ -58,10 +53,6 @@ export default class JiraTimeService {
 
     private static hourPartOf(timeSpentInMinutes: number): string {
         return JiraTimeService.unitStringFor(JiraTimeService.hoursOf(timeSpentInMinutes), hour);
-    }
-
-    private static dayPartOf(timeSpentInMinutes: number): string {
-        return JiraTimeService.unitStringFor(JiraTimeService.daysOf(timeSpentInMinutes), day);
     }
 
     private static unitStringFor(result: number, unit: Unit): string {
