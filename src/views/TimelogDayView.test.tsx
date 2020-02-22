@@ -439,9 +439,7 @@ describe("TimelogDayView", () => {
                 } as TimeLog]);
 
                 const day = new Date(2020, 2, 2);
-                SettingsService.getExpectedDailyTimelogInMinutes = jest.fn().mockImplementation(d => d === day ?
-                    Promise.resolve(100) :
-                    Promise.reject(new Error("unexpected call")));
+                SettingsService.getExpectedDailyTimelogInMinutes = jest.fn().mockResolvedValue(100);
 
                 const underTest = reactTest.render(<TimelogDayView day={day}/>);
 
