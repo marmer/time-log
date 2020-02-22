@@ -25,7 +25,7 @@ describe("TimelogDayView", () => {
         JiraTimeService.minutesToJiraFormat = jest.fn().mockImplementation(minutes => minutes.toString());
         JiraTimeService.jiraFormatToMinutes = jest.fn().mockImplementation(jiraFormat => jiraFormat ? Number.parseInt(jiraFormat) : 0);
         JiraTimeService.isValidJiraFormat = jest.fn().mockReturnValue(true);
-        SettingsService.getExpectedDailyTimelogInMinutesFor = jest.fn().mockResolvedValue(42);
+        SettingsService.getExpectedDailyTimelogInMinutes = jest.fn().mockResolvedValue(42);
     });
 
     describe("loading", () => {
@@ -439,7 +439,7 @@ describe("TimelogDayView", () => {
                 } as TimeLog]);
 
                 const day = new Date(2020, 2, 2);
-                SettingsService.getExpectedDailyTimelogInMinutesFor = jest.fn().mockImplementation(d => d === day ?
+                SettingsService.getExpectedDailyTimelogInMinutes = jest.fn().mockImplementation(d => d === day ?
                     Promise.resolve(100) :
                     Promise.reject(new Error("unexpected call")));
 
