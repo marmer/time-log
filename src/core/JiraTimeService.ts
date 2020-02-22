@@ -10,12 +10,11 @@ const jiraSymbolFactorMap: {
 const minute: Unit = jiraSymbolFactorMap.m = {symbol: "m", factor: 1};
 const hour: Unit = jiraSymbolFactorMap.h = {symbol: "h", factor: 60 * minute.factor};
 const day: Unit = jiraSymbolFactorMap.d = {symbol: "d", factor: 8 * hour.factor};
-const week: Unit = jiraSymbolFactorMap.w = {symbol: "w", factor: 5 * day.factor};
 
 export default class JiraTimeService {
     public static minutesToJiraFormat(timeSpentInMinutes: number) {
         const absoluteTimeSpendInMinutes = Math.abs(timeSpentInMinutes);
-        const resultString = `${JiraTimeService.weekPartOf(absoluteTimeSpendInMinutes)} ${JiraTimeService.dayPartOf(absoluteTimeSpendInMinutes)} ${JiraTimeService.hourPartOf(absoluteTimeSpendInMinutes)} ${JiraTimeService.minutePartOf(absoluteTimeSpendInMinutes)}`
+        const resultString = `${JiraTimeService.dayPartOf(absoluteTimeSpendInMinutes)} ${JiraTimeService.hourPartOf(absoluteTimeSpendInMinutes)} ${JiraTimeService.minutePartOf(absoluteTimeSpendInMinutes)}`
             .replace(/\s+/, " ")
             .trim();
         return resultString === "" ?
@@ -41,12 +40,8 @@ export default class JiraTimeService {
             .reduce(toSum) * (isNegative ? -1 : 1);
     }
 
-    private static weeksOf(timeSpentInMinutes: number): number {
-        return Math.floor(timeSpentInMinutes / week.factor);
-    }
-
     private static daysOf(timeSpentInMinutes: number): number {
-        return Math.floor((timeSpentInMinutes % week.factor) / day.factor);
+        return Math.floor((timeSpentInMinutes / day.factor) / day.factor);
     }
 
     private static hoursOf(timeSpentInMinutes: number): number {
@@ -67,10 +62,6 @@ export default class JiraTimeService {
 
     private static dayPartOf(timeSpentInMinutes: number): string {
         return JiraTimeService.unitStringFor(JiraTimeService.daysOf(timeSpentInMinutes), day);
-    }
-
-    private static weekPartOf(timeSpentInMinutes: number): string {
-        return JiraTimeService.unitStringFor(JiraTimeService.weeksOf(timeSpentInMinutes), week);
     }
 
     private static unitStringFor(result: number, unit: Unit): string {
