@@ -38,6 +38,9 @@ jobs:
 
       - run: npm run build --if-present
         if: success() && github.ref == 'refs/heads/master' && matrix.node-version == '10.x'
+        
+      - run: cp build/index.html build/404.html
+        if: success() && github.ref == 'refs/heads/master' && matrix.node-version == '10.x'
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@releases/v3
