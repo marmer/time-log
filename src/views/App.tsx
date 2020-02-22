@@ -18,31 +18,16 @@ export default function App() {
                     return <Switch>
                         <Route exact path="/login/:provider"
                                render={loginRoutProps => <LoginView searchString={loginRoutProps.location.search}/>}/>
-                        <Route exact path="/time-log/login/:provider"
-                               render={loginRoutProps => <LoginView searchString={loginRoutProps.location.search}/>}/>
                         <Route exact path="/">
                             <Redirect to={"/days"}/>
-                        </Route>
-                        <Route exact path="/time-log">
-                            <Redirect to={"/time-log/days"}/>
                         </Route>
                         <Route exact path="/days">
                             <Redirect to={"/days/today"}/>
                         </Route>
-                        <Route exact path="/time-log/days">
-                            <Redirect to={"/time-log/days/today"}/>
-                        </Route>
                         <Route exact path="/days/today">
                             <DayView day={new Date()}/>
                         </Route>
-                        <Route exact path="/time-log/days/today">
-                            <DayView day={new Date()}/>
-                        </Route>
                         <Route exact path="/days/:day" render={dayRouteProps =>
-                            moment(dayRouteProps.match.params.day).isValid() ?
-                                <DayView day={moment(dayRouteProps.match.params.day).toDate()}/> :
-                                <NotFoundView location={dayRouteProps.location.pathname}/>}/>
-                        <Route exact path="/time-log/days/:day" render={dayRouteProps =>
                             moment(dayRouteProps.match.params.day).isValid() ?
                                 <DayView day={moment(dayRouteProps.match.params.day).toDate()}/> :
                                 <NotFoundView location={dayRouteProps.location.pathname}/>}/>
