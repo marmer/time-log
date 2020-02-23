@@ -18,7 +18,7 @@ export default class DayView extends React.Component<DayViewProps> {
     }
 
     render() {
-        return <div className="">
+        return <div className="card">
             <div className="card-header d-flex justify-content-center">
                 <DayNavigator day={this.props.day}/>
             </div>
