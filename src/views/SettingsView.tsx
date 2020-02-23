@@ -32,15 +32,15 @@ export default () => {
                 SettingsService.setExpectedDailyTimelogInMinutes(JiraTimeService.jiraFormatToMinutes(expectedDailyTimelogInMinutes.value));
                 return false;
             }}>
-                <label htmlFor="expectedTimeToLog">Expected Time to log per day</label>
-                <input id="expectedTimeToLog" type="text"
-                       className={"form-control" + (JiraTimeService.isValidJiraFormat(expectedDailyTimelogInMinutes.value) ? "" : " invalid-format border-danger btn-outline-danger")}
-                       disabled={expectedDailyTimelogInMinutes.isLoading}
-                       value={expectedDailyTimelogInMinutes.value}
-                       onChange={({target}) => setExpectedDailyTimelogInMinutes({
-                           ...expectedDailyTimelogInMinutes, value: target.value
-                       })}
-                       placeholder="e.g. 7h 30m"/>
+                <label>Expected Time to log per day <input id="expectedTimeToLog" type="text"
+                                                           className={(JiraTimeService.isValidJiraFormat(expectedDailyTimelogInMinutes.value) ? "" : " invalid-format alert-danger")}
+                                                           disabled={expectedDailyTimelogInMinutes.isLoading}
+                                                           value={expectedDailyTimelogInMinutes.value}
+                                                           onChange={({target}) => setExpectedDailyTimelogInMinutes({
+                                                               ...expectedDailyTimelogInMinutes, value: target.value
+                                                           })}
+                                                           placeholder="e.g. 7h 30m"/>
+                </label>
                 <button className="btn btn-primary fullWidth" title="save"
                         disabled={!JiraTimeService.isValidJiraFormat(expectedDailyTimelogInMinutes.value)}
                         type={"submit"}><i className="fa fa-save"/> save
