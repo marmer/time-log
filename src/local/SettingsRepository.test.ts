@@ -34,7 +34,7 @@ describe("SettingsRepository", () => {
             SettingsRepository.setExpectedDailyTimelogInMinutes(42);
 
             expect(Lockr.get("timelogSettings")).toHaveProperty("expectedDailyTimelogInMinutes", 42);
-            expect(Lockr.get("timelogSettings")).toHaveProperty("differentProp", "someValue")
+            expect(Lockr.get("timelogSettings")).toHaveProperty("differentProp", "someValue");
         });
     });
 });
