@@ -139,7 +139,7 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
                                 <button className="btn btn-primary fullWidth" title="save"
                                         disabled={this.isAnyTimelogInValid()}
                                         type={"submit"}
-                                >save
+                                ><i className="fa fa-save"/> save
                                 </button>
                             </th>
                         </tr>
