@@ -8,6 +8,7 @@ import "font-awesome/css/font-awesome.min.css";
 import LoginView from "./LoginView";
 import HeaderView from "./HeaderView";
 import DevModeView from "./__spikes__/DevModeView";
+import SettingsView from "./SettingsView";
 
 export default function App() {
     return (<>
@@ -32,6 +33,9 @@ export default function App() {
                             moment(dayRouteProps.match.params.day).isValid() ?
                                 <DayView day={moment(dayRouteProps.match.params.day).toDate()}/> :
                                 <NotFoundView location={dayRouteProps.location.pathname}/>}/>
+                        <Route exact path="/settings">
+                            <SettingsView/>
+                        </Route>
                         <Route render={routeProps =>
                             <NotFoundView location={routeProps.location.pathname}/>
                         }/>

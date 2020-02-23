@@ -21,6 +21,7 @@ jest.mock("./NotFoundView", () => (props: NotFoundViewProps): React.ReactNode =>
 </div>);
 
 jest.mock("./HeaderView", () => (): React.ReactNode => <div>fancy header view</div>);
+jest.mock("./SettingsView", () => (): React.ReactNode => <div>fancy settings view</div>);
 
 jest.mock("./LoginView", () => (props: LoginViewProps): React.ReactNode => <div>
     <h1>fancy login view</h1>
@@ -42,6 +43,16 @@ describe("App", () => {
             expect(wrapper.getByText(moment().format("YYYY-MM-DD"))).toBeVisible();
             expect(history.location.pathname).toStrictEqual("/days/today");
         });
+    });
+
+    describe("settings route", () => {
+        const wrapper = reactTest.render(
+            <MemoryRouter initialEntries={["/settings"]}>
+                <App/>
+            </MemoryRouter>
+        );
+
+        expect(wrapper.getByText("fancy settings view")).toBeVisible();
     });
 
     describe("day routes", () => {
