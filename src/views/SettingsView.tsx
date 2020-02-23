@@ -7,9 +7,9 @@ export default () => {
                 Day Settings
             </div>
             <div className="form-group row card-body">
-                <label htmlFor="expectedTimeToLog">Expected Time to log per day in Minutes</label>
+                <label htmlFor="expectedTimeToLog">Expected Time to log per day</label>
                 <input id="expectedTimeToLog" type="number" className="form-control"
-                       placeholder="e.g. 480 for 8 hours"/>
+                       placeholder="e.g. 7h 30m"/>
             </div>
         </div>
         <button className="btn btn-primary fullWidth" title="save"
