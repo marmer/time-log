@@ -340,7 +340,7 @@ describe("TimelogDayView", () => {
 
             expect(TimeLogService.saveTimeLogsForDay).not.toBeCalledWith();
         });
-        it("should should save the current state if the save shortcut has been triggered on the document", async () => {
+        it("should save the current state if the save shortcut has been triggered on the document", async () => {
             const entry = {
                 ...baseTimeLog,
                 durationInMinutes: 111,
@@ -370,7 +370,25 @@ describe("TimelogDayView", () => {
                 ...entry,
                 description: "somethingNewDescriptionForUpdate"
             }]);
+        });
+
+        it("should save even if no timelogs are there to save", async () => {
+
+            TimeLogService.saveTimeLogsForDay = jest.fn().mockResolvedValue([]);
+            TimeLogService.getTimeLogsForDay = jest.fn().mockResolvedValue([]);
+            JiraTimeService.isValidJiraFormat = jest.fn().mockReturnValue(true);
+
+            const day = new Date(2020, 2, 2);
+            const underTest = reactTest.render(<TimelogDayView day={day}/>);
+
+            //loading finished
+            await reactTest.waitForElement(() => underTest.getByTitle("TimeLog 0"));
+
+            userEvent.click(underTest.getByText("save"));
+
+            expect(TimeLogService.saveTimeLogsForDay).toBeCalledWith(day, []);
         })
+
     });
 
     describe("statistics", () => {
