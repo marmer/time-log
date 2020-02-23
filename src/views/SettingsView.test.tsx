@@ -24,9 +24,7 @@ describe("SettingsView", () => {
         const underTest = reactTest.render(<SettingsView/>);
 
         const dailyTimelogField = underTest.getByLabelText("Expected Time to log per day");
-        console.log(reactTest.prettyDOM(dailyTimelogField));
         await reactTest.waitForDomChange({container: dailyTimelogField});
-        console.log(reactTest.prettyDOM(dailyTimelogField));
         expect(dailyTimelogField).toBeEnabled();
         expect(dailyTimelogField).toHaveValue("8h");
         expect(underTest.getByTitle("save")).toBeEnabled()
