@@ -28,9 +28,13 @@ export default () => {
             Day Settings
         </div>
         <div className="form-group row card-body">
-            <form onSubmit={_ => false}>
+            <form onSubmit={_ => {
+                SettingsService.setExpectedDailyTimelogInMinutes(JiraTimeService.jiraFormatToMinutes(expectedDailyTimelogInMinutes.value));
+                return false;
+            }}>
                 <label htmlFor="expectedTimeToLog">Expected Time to log per day</label>
-                <input id="expectedTimeToLog" type="text" className="form-control"
+                <input id="expectedTimeToLog" type="text"
+                       className={"form-control" + (JiraTimeService.isValidJiraFormat(expectedDailyTimelogInMinutes.value) ? "" : " invalid-format border-danger btn-outline-danger")}
                        disabled={expectedDailyTimelogInMinutes.isLoading}
                        value={expectedDailyTimelogInMinutes.value}
                        onChange={({target}) => setExpectedDailyTimelogInMinutes({
@@ -39,8 +43,7 @@ export default () => {
                        placeholder="e.g. 7h 30m"/>
                 <button className="btn btn-primary fullWidth" title="save"
                         disabled={!JiraTimeService.isValidJiraFormat(expectedDailyTimelogInMinutes.value)}
-                        type={"submit"}
-                ><i className="fa fa-save"/> save
+                        type={"submit"}><i className="fa fa-save"/> save
                 </button>
             </form>
             </div>
