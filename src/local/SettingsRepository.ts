@@ -15,4 +15,11 @@ export default class SettingsRepository {
         return expectedDailyTimelogInMinutes ? expectedDailyTimelogInMinutes : null;
     }
 
+    static setExpectedDailyTimelogInMinutes(value: number) {
+        const timelogSettings = Lockr.get(SettingsRepository.settingsObjectKey, SettingsRepository.emptySettings);
+        Lockr.set("timelogSettings", {
+            ...timelogSettings,
+            expectedDailyTimelogInMinutes: value
+        })
+    }
 }

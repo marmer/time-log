@@ -21,4 +21,20 @@ describe("SettingsRepository", () => {
             expect(SettingsRepository.getExpectedDailyTimelogInMinutes()).toBe(42);
         });
     });
+
+    describe("setExpectedDailyTimelogInMinutes", () => {
+        it("should store the value with new settings if they don't exist", async () => {
+            SettingsRepository.setExpectedDailyTimelogInMinutes(42);
+
+            expect(Lockr.get("timelogSettings")).toHaveProperty("expectedDailyTimelogInMinutes", 42)
+        });
+
+        it("should update an existing value without to change different properties", async () => {
+            Lockr.set("timelogSettings", {expectedDailyTimelogInMinutes: 123, differentProp: "someValue"});
+            SettingsRepository.setExpectedDailyTimelogInMinutes(42);
+
+            expect(Lockr.get("timelogSettings")).toHaveProperty("expectedDailyTimelogInMinutes", 42);
+            expect(Lockr.get("timelogSettings")).toHaveProperty("differentProp", "someValue")
+        });
+    });
 });
