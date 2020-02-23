@@ -6,7 +6,7 @@ import {Link, NavLink} from "react-router-dom";
 export default () => <header>
     <nav className="navbar navbar-dark bg-dark">
         <Link to={"/days/today"} className="navbar-brand">
-            <img src="/logo192.png" width="30" height="30"
+            <img src="/time-log/logo192.png" width="30" height="30"
                  className="d-inline-block align-top" alt="logo">
             </img> {projectConfiguration.name}</Link>
         <div className="navbar-expand">
