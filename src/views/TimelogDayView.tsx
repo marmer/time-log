@@ -170,6 +170,7 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
             .then(timeLogs => this.setState({
                 timeLogs: timeLogs.map(timeLog => TimelogDayView.toTimelogInput(timeLog))
             }));
+        // TODO: marmer 23.02.2020 error handling!
     }
 
     private addTimelogBefore(index: number) {
