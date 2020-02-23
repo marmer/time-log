@@ -12,5 +12,9 @@ export default () => {
                        placeholder="e.g. 480 for 8 hours"/>
             </div>
         </div>
+        <button className="btn btn-primary fullWidth" title="save"
+                type={"submit"}
+        >save
+        </button>
     </form>
 }
