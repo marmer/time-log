@@ -18,9 +18,14 @@ export default class DayView extends React.Component<DayViewProps> {
     }
 
     render() {
-        return <div>
-            <DayNavigator day={this.props.day}/>
-            <TimelogDayView day={this.props.day}/>
+        return <div className="card">
+            <div className="card-header">
+                <DayNavigator day={this.props.day}/>
+            </div>
+
+            <div className="card-body">
+                <TimelogDayView day={this.props.day}/>
+            </div>
         </div>
     }
 }
