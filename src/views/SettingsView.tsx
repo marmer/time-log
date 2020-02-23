@@ -14,7 +14,7 @@ export default () => {
         </div>
         <button className="btn btn-primary fullWidth" title="save"
                 type={"submit"}
-        >save
+        ><i className="fa fa-save"/> save
         </button>
     </form>
 }
