@@ -122,12 +122,14 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
                             <span className="btn-group actions">
                                 <button className="btn btn-outline-primary" title="add before this entry"
                                         onClick={() => this.addTimelogBefore(index)}
-                                        type="button">+
+                                        type="button">
+                                    <i className="fa fa-plus-circle"/>
                                 </button>
                                 {index < this.state.timeLogs.length - 1 ?
                                     <button className="btn btn-outline-primary" title="remove this entry"
                                             onClick={() => this.removeTimelogAt(index)}
-                                            type="button">-
+                                            type="button">
+                                        <i className="fa fa-minus-circle"/>
                                     </button> : <></>}
                             </span>
                             </td>
