@@ -1,5 +1,6 @@
 import Lockr from "lockr";
 
+
 interface TimelogSettings {
     expectedDailyTimelogInMinutes?: number;
 }

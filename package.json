@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "bootstrap": "^4.4.1",
+    "font-awesome": "^4.7.0",
     "lockr": "^0.8.5",
     "moment": "^2.24.0",
     "npm": "^6.13.7",
