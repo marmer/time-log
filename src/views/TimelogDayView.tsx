@@ -61,10 +61,12 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
                     isLoadingTimeLogs: false,
                 });
             });
+        // TODO: marmer 23.02.2020 Errorhandling!
         SettingsService.getExpectedDailyTimelogInMinutes()
             .then(expectedTime => this.setState({
                 expectedDailyTimeToLogInMinutes: expectedTime
             }))
+        // TODO: marmer 23.02.2020 Errorhandling!
     }
 
     componentDidUpdate(prevProps: Readonly<TimelogDayViewProps>, prevState: Readonly<TimelogDayViewState>,): void {
