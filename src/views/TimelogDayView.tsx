@@ -221,6 +221,6 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
     private getDurationSum() {
         return this.state.timeLogs
             .map(({duration}) => JiraTimeService.isValidJiraFormat(duration) ? JiraTimeService.jiraFormatToMinutes(duration) : 0)
-            .reduce((d1, d2) => d1 + d2);
+            .reduce((d1, d2) => d1 + d2, 0);
     }
 }
