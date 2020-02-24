@@ -14,4 +14,9 @@ export default class TimeLogService {
         return Promise.resolve(TimeLogRepository.getTimeLogsForDay(date));
     }
 
+
+    public static async getExpectedTimeToLogDeltaInMonthInMinutesUntill(dayInclusive: Date): Promise<number> {
+        // TODO: marmer 24.02.2020 implement me!
+        return 0;
+    }
 }

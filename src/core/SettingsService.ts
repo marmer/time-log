@@ -10,8 +10,4 @@ export default class SettingsService {
         const configuredHoursToWorkPerDay = SettingsRepository.getExpectedDailyTimelogInMinutes();
         return Promise.resolve(configuredHoursToWorkPerDay ? configuredHoursToWorkPerDay : eightHours);
     }
-
-    static async getExpectedTimeToLogDeltaInMonthInMinutesUntill(dayInclusive: Date) {
-// TODO: marmer 24.02.2020 implement me!
-    }
 }
