@@ -12,7 +12,11 @@ export interface DayNavigatorProps {
 export default function DayNavigator(props: DayNavigatorProps) {
     return <Route render={({history}) =>
         <div>
-            <button title="day back"><i className="fa fa-arrow-left"/></button>
+            <button title="go day back" onClick={() => {
+                history.push(`/days/${moment(props.day).subtract(1, "day").format("YYYY-MM-DD")}`);
+                window.location.reload();
+            }
+            }><i className="fa fa-arrow-left"/></button>
             <DatePicker
                 dropdownMode={"scroll"}
                 showMonthDropdown
@@ -29,6 +33,10 @@ export default function DayNavigator(props: DayNavigatorProps) {
                     }
                 }}
             />
-            <button title="day forward"><i className="fa fa-arrow-right"/></button>
+            <button title="go day forward" onClick={() => {
+                history.push(`/days/${moment(props.day).add(1, "day").format("YYYY-MM-DD")}`);
+                window.location.reload();
+            }
+            }><i className="fa fa-arrow-right"/></button>
         </div>}/>;
 }
