@@ -33,7 +33,7 @@ export default () => {
                 return false;
             }}>
                 <label>Expected Time to log per day <input id="expectedTimeToLog" type="text"
-                                                           className={(JiraTimeService.isValidJiraFormat(expectedDailyTimelogInMinutes.value) ? "" : " invalid-format alert-danger")}
+                                                           className={(JiraTimeService.isValidJiraFormat(expectedDailyTimelogInMinutes.value) ? "" : " invalid-format")}
                                                            disabled={expectedDailyTimelogInMinutes.isLoading}
                                                            value={expectedDailyTimelogInMinutes.value}
                                                            onChange={({target}) => setExpectedDailyTimelogInMinutes({
