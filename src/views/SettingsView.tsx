@@ -1,10 +1,10 @@
 import React from "react";
-import DailyTimelogSettings from "./DailyTimelogSettings";
+import DailyTimelogSettingsView from "./DailyTimelogSettingsView";
 
 
 export default () => {
     return <section>
-        <DailyTimelogSettings/>
+        <DailyTimelogSettingsView/>
     </section>
 }
 

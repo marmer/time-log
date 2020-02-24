@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import SettingsService from "../core/SettingsService";
 import JiraTimeService from "../core/JiraTimeService";
 
-export default function DailyTimelogSettings() {
+export default function DailyTimelogSettingsView() {
     const loadingPlaceholder = "Loading...";
 
     const [expectedDailyTimelogInMinutes, setExpectedDailyTimelogInMinutes] = useState<{
