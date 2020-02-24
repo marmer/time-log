@@ -11,7 +11,7 @@ describe("TimeLogRepository", () => {
 
     describe("getTimeLogsForDay", () => {
         it("should serve all existing timelogs related to the given day", async () => {
-            Lockr.set("TimeLog", {
+            Lockr.set("TimeLog-2020-05", {
                 "2020-05-03": [{
                     durationInMinutes: 42,
                     description: "Some description"
@@ -19,7 +19,7 @@ describe("TimeLogRepository", () => {
                     durationInMinutes: 43,
                     description: "Some otherdescription"
                 }] as TimeLog[],
-                "2020-06-03": [{
+                "2020-05-04": [{
                     durationInMinutes: 44,
                     description: "some entry of another day"
                 }] as TimeLog[]
@@ -38,7 +38,7 @@ describe("TimeLogRepository", () => {
         });
 
         it("should serve an empty array if no timelogs exist yet for the related day", async () => {
-            Lockr.set(timeLogStoreKey, {
+            Lockr.set(timeLogStoreKey + "-2020-05", {
                 "2020-06-03": [{
                     durationInMinutes: 44,
                     description: "some entry of another day"
@@ -61,18 +61,9 @@ describe("TimeLogRepository", () => {
     describe("saveTimelogs", () => {
         it("should save the given timeLogs at the specific day when nothing has been saved before", async () => {
             const timelogToSave = {durationInMinutes: 42, description: "to Save"};
-            TimeLogRepository.saveTimelogs(new Date(1985, 0, 2), [timelogToSave]);
-
-            const storedTimelog = (Lockr.get(timeLogStoreKey) as any)["1985-01-02"];
-            expect(storedTimelog).toStrictEqual([timelogToSave]);
-        });
-
-
-        it("should save the given timeLogs at the specific day when nothing has been saved before", async () => {
-            const timelogToSave = {durationInMinutes: 42, description: "to Save"};
             const result = TimeLogRepository.saveTimelogs(new Date(1985, 0, 2), [timelogToSave]);
 
-            const storedTimelog = (Lockr.get(timeLogStoreKey) as any)["1985-01-02"];
+            const storedTimelog = (Lockr.get(timeLogStoreKey + "-1985-01") as any)["1985-01-02"];
             expect(storedTimelog).toStrictEqual([timelogToSave]);
             expect(result).toStrictEqual([timelogToSave]);
         });
@@ -102,13 +93,13 @@ describe("TimeLogRepository", () => {
                 durationInMinutes: 42,
                 description: "some entry"
             };
-            Lockr.set(timeLogStoreKey, {
+            Lockr.set(timeLogStoreKey + "-2020-06", {
                 "2020-06-03": [existingTimelog]
             });
             const timelogToSave = {durationInMinutes: 42, description: "to Save"};
             const result = TimeLogRepository.saveTimelogs(new Date(2020, 5, 3), [timelogToSave]);
 
-            const storedOtherTimelog = (Lockr.get(timeLogStoreKey) as any)["2020-06-03"];
+            const storedOtherTimelog = (Lockr.get(timeLogStoreKey + "-2020-06") as any)["2020-06-03"];
             expect(storedOtherTimelog).toStrictEqual([timelogToSave]);
             expect(result).toStrictEqual([timelogToSave]);
         });

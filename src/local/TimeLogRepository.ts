@@ -9,20 +9,26 @@ interface TimeLogDbo {
 export default class TimeLogRepository {
     private static readonly STORE_KEY = "TimeLog";
 
+    // private static readonly STORE_KEY = "TimeLogs-2018-02";
+
     public static saveTimelogs(date: Date, timeLogs: TimeLog[]): TimeLog[] {
-        const dbo: TimeLogDbo = Lockr.get(this.STORE_KEY, {});
+        const dbo: TimeLogDbo = Lockr.get(this.getTimelogKeyForMonthOf(date), {});
         dbo[TimeLogRepository.timelogKeyFor(date)] = timeLogs;
-        Lockr.set(TimeLogRepository.STORE_KEY, dbo);
+        Lockr.set(this.getTimelogKeyForMonthOf(date), dbo);
         return timeLogs;
     }
 
     public static getTimeLogsForDay(date: Date): TimeLog[] {
 
-        const timeLog: TimeLogDbo = Lockr.get(this.STORE_KEY, {});
+        const timeLog: TimeLogDbo = Lockr.get(this.getTimelogKeyForMonthOf(date), {});
 
         const key = this.timelogKeyFor(date);
         const timelogs = timeLog[key];
         return timelogs ? timelogs : [];
+    }
+
+    private static getTimelogKeyForMonthOf(date: Date) {
+        return TimeLogRepository.STORE_KEY + moment(date).format("-YYYY-MM");
     }
 
     private static timelogKeyFor(date: Date) {
