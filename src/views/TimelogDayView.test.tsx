@@ -449,22 +449,39 @@ describe("TimelogDayView", () => {
     });
 
     describe("Overtime Calculation", () => {
-        describe("today", () => {
-            it("should calculate the overtime based on the configured expected daily time to log and the already logged time", async () => {
-                TimeLogService.getTimeLogsForDay = jest.fn().mockResolvedValue([{
-                    ...baseTimeLog,
-                    durationInMinutes: 70
-                } as TimeLog]);
+        it("should calculate the overtime based on the configured expected daily time to log and the already logged time today", async () => {
+            TimeLogService.getTimeLogsForDay = jest.fn().mockResolvedValue([{
+                ...baseTimeLog,
+                durationInMinutes: 70
+            } as TimeLog]);
 
-                const day = new Date(2020, 2, 2);
-                SettingsService.getExpectedDailyTimelogInMinutes = jest.fn().mockResolvedValue(100);
+            const day = new Date(2020, 2, 2);
+            SettingsService.getExpectedDailyTimelogInMinutes = jest.fn().mockResolvedValue(100);
 
-                const underTest = reactTest.render(<TimelogDayView day={day}/>);
+            const underTest = reactTest.render(<TimelogDayView day={day}/>);
 
-                const overtimeField = await reactTest.waitForElement(() => underTest.getByTitle("time left today only"));
+            const overtimeField = await reactTest.waitForElement(() => underTest.getByTitle("time left today only"));
 
-                expect(overtimeField).toHaveValue("30");
-            });
+            expect(overtimeField).toHaveValue("30");
         });
+
+        it("should calculete the overtime based on the configured expected daily time to log and the allready logged time this month", async () => {
+            TimeLogService.getTimeLogsForDay = jest.fn().mockResolvedValue([{
+                ...baseTimeLog,
+                durationInMinutes: 70
+            } as TimeLog]);
+
+            const day = new Date(2020, 2, 2);
+            SettingsService.getExpectedDailyTimelogInMinutes = jest.fn().mockResolvedValue(100);
+            SettingsService.getExpectedTimeToLogDeltaInMonthInMinutesUntill = jest.fn().mockImplementation(d => d === new Date(2020, 2, 1) ? Promise.resolve(20) : Promise.reject(new Error("Unexpected value: " + d)));
+
+            const underTest = reactTest.render(<TimelogDayView day={day}/>);
+
+            const overtimeField = await reactTest.waitForElement(() => underTest.getByTitle("time left monthly"));
+
+            expect(overtimeField).toHaveValue("50");
+        });
+
+        // TODO: marmer 24.02.2020 handling the first of month as well
     });
 });
