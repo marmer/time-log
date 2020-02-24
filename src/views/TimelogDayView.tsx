@@ -5,6 +5,7 @@ import "./TimelogDayView.css"
 
 import deepEqual from "deep-equal"
 import SettingsService from "../core/SettingsService";
+import moment from "moment";
 
 export interface TimelogDayViewProps {
     day: Date;
@@ -19,6 +20,7 @@ interface TimelogDayViewState {
     timeLogs: TimelogInput[];
     isLoadingTimeLogs: boolean;
     expectedDailyTimeToLogInMinutes?: number;
+    expectedTimeToLogDeltaInMonthInMinutesUntill?: number
 }
 
 export default class TimelogDayView extends React.Component<TimelogDayViewProps, TimelogDayViewState> {
@@ -67,6 +69,12 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
                 expectedDailyTimeToLogInMinutes: expectedTime
             }))
         // TODO: marmer 23.02.2020 Errorhandling!
+
+        TimeLogService.getExpectedTimeToLogDeltaInMonthInMinutesUntill(this.dayBefore(this.props.day))
+            .then(delta => this.setState({
+                expectedTimeToLogDeltaInMonthInMinutesUntill: delta
+            }))
+        // TODO: marmer 24.02.2020 Errorhandling!
     }
 
     componentDidUpdate(prevProps: Readonly<TimelogDayViewProps>, prevState: Readonly<TimelogDayViewState>,): void {
@@ -149,18 +157,33 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
                     </table>}</form>
 
             <section className="stats">
-                {this.state.expectedDailyTimeToLogInMinutes === undefined ? <></> :
-                    <label>
-                        Time to log by daily expectation: <input disabled title={"time left today only"}
-                                                                 value={JiraTimeService.minutesToJiraFormat(this.state.expectedDailyTimeToLogInMinutes - this.getDurationSum())}/>
-                    </label>}
                 <label>
-                    Time to log by monthly expectation: <input disabled title={"time left monthly"}/>
-                </label>}
+                    Time to log by daily expectation: <input disabled title={"time left today only"}
+                                                             value={JiraTimeService.minutesToJiraFormat(this.getExpectedTimeToLogTodayOnly())}/>
+                </label>
+                <label>
+                    Time to log by monthly expectation: <input disabled title={"time left monthly"}
+                                                               value={JiraTimeService.minutesToJiraFormat(this.getExpectedTimeToLogConsideringTheWholeMonthTillToday())}/>
+                </label>
             </section>
         </div>
 
     }
+
+    private getExpectedTimeToLogTodayOnly() {
+        // TODO: marmer 24.02.2020 handle this when the value is unset
+        return this.state.expectedDailyTimeToLogInMinutes! - this.getDurationSum();
+    }
+
+    private getExpectedTimeToLogConsideringTheWholeMonthTillToday() {
+        // TODO: marmer 24.02.2020 handle this if any value is unset
+        return this.state.expectedTimeToLogDeltaInMonthInMinutesUntill! + this.getExpectedTimeToLogTodayOnly();
+    }
+
+    private dayBefore(date: Date) {
+        return moment(date).subtract(1, "day").toDate();
+    }
+
     private addTimelog() {
         this.addTimelogBefore(this.state.timeLogs.length + 1);
     }

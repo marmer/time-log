@@ -472,16 +472,23 @@ describe("TimelogDayView", () => {
             } as TimeLog]);
 
             const day = new Date(2020, 2, 2);
-            SettingsService.getExpectedDailyTimelogInMinutes = jest.fn().mockResolvedValue(100);
-            SettingsService.getExpectedTimeToLogDeltaInMonthInMinutesUntill = jest.fn().mockImplementation(d => d === new Date(2020, 2, 1) ? Promise.resolve(20) : Promise.reject(new Error("Unexpected value: " + d)));
+            const dayBeforeCurrent = new Date(2020, 2, 1);
 
+// TODO: marmer 24.02.2020 handle error here in a different test
+            SettingsService.getExpectedDailyTimelogInMinutes = jest.fn().mockResolvedValue(100);
+// TODO: marmer 24.02.2020 handle error here in a different test
+            TimeLogService.getExpectedTimeToLogDeltaInMonthInMinutesUntill = jest.fn().mockImplementation(d => isEqualDate(d, dayBeforeCurrent) ? Promise.resolve(20) : Promise.reject(new Error("Unexpected value: " + d)));
             const underTest = reactTest.render(<TimelogDayView day={day}/>);
 
             const overtimeField = await reactTest.waitForElement(() => underTest.getByTitle("time left monthly"));
 
             expect(overtimeField).toHaveValue("50");
-        });
 
+        });
         // TODO: marmer 24.02.2020 handling the first of month as well
     });
 });
+
+function isEqualDate(date1: Date, date2: Date) {
+    return date1 <= date2 && date1 >= date2;
+}
