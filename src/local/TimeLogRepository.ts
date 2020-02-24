@@ -9,8 +9,6 @@ interface TimeLogDbo {
 export default class TimeLogRepository {
     private static readonly STORE_KEY = "TimeLog";
 
-    // private static readonly STORE_KEY = "TimeLogs-2018-02";
-
     public static saveTimelogs(date: Date, timeLogs: TimeLog[]): TimeLog[] {
         const dbo: TimeLogDbo = Lockr.get(this.getTimelogKeyForMonthOf(date), {});
         dbo[TimeLogRepository.timelogKeyFor(date)] = timeLogs;
