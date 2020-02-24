@@ -11,20 +11,24 @@ export interface DayNavigatorProps {
 
 export default function DayNavigator(props: DayNavigatorProps) {
     return <Route render={({history}) =>
-        <DatePicker
-            dropdownMode={"scroll"}
-            showMonthDropdown
-            showYearDropdown
-            useShortMonthInDropdown
-            showWeekNumbers
-            todayButton="today"
-            dateFormat="yyyy-MM-dd"
-            selected={props.day}
-            onChange={day => {
-                if (day) {
-                    history.push(`/days/${moment(day).format("YYYY-MM-DD")}`);
-                    window.location.reload();
-                }
-            }}
-        />}/>;
+        <div>
+            <button title="day back"><i className="fa fa-arrow-left"/></button>
+            <DatePicker
+                dropdownMode={"scroll"}
+                showMonthDropdown
+                showYearDropdown
+                useShortMonthInDropdown
+                showWeekNumbers
+                todayButton="today"
+                dateFormat="yyyy-MM-dd"
+                selected={props.day}
+                onChange={day => {
+                    if (day) {
+                        history.push(`/days/${moment(day).format("YYYY-MM-DD")}`);
+                        window.location.reload();
+                    }
+                }}
+            />
+            <button title="day forward"><i className="fa fa-arrow-right"/></button>
+        </div>}/>;
 }
