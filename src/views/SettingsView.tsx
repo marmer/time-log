@@ -2,8 +2,17 @@ import React, {useEffect, useState} from "react";
 import SettingsService from "../core/SettingsService";
 import JiraTimeService from "../core/JiraTimeService";
 
-const loadingPlaceholder = "Loading...";
+
 export default () => {
+    return <section>
+        <DailyTimelogSettings/>
+    </section>
+
+}
+
+const DailyTimelogSettings = () => {
+    const loadingPlaceholder = "Loading...";
+
     const [expectedDailyTimelogInMinutes, setExpectedDailyTimelogInMinutes] = useState<{
         value: string,
         isLoading: boolean
@@ -22,7 +31,6 @@ export default () => {
                 });
             })
     }, []);
-
     return <div className="card">
         <div className="card-header">
             Day Settings
@@ -46,7 +54,6 @@ export default () => {
                         type={"submit"}><i className="fa fa-save"/> save
                 </button>
             </form>
-            </div>
         </div>
-
-}
+    </div>
+};
