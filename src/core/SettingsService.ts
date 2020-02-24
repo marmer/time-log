@@ -11,4 +11,7 @@ export default class SettingsService {
         return Promise.resolve(configuredHoursToWorkPerDay ? configuredHoursToWorkPerDay : eightHours);
     }
 
+    static async getExpectedTimeToLogDeltaInMonthInMinutesUntill(dayInclusive: Date) {
+// TODO: marmer 24.02.2020 implement me!
+    }
 }

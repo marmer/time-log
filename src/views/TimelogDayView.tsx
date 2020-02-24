@@ -154,6 +154,9 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
                         Time to log by daily expectation: <input disabled title={"time left today only"}
                                                                  value={JiraTimeService.minutesToJiraFormat(this.state.expectedDailyTimeToLogInMinutes - this.getDurationSum())}/>
                     </label>}
+                <label>
+                    Time to log by monthly expectation: <input disabled title={"time left monthly"}/>
+                </label>}
             </section>
         </div>
 
