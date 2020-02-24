@@ -107,7 +107,7 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
                             <th className="text-sm-center" title={"TimeLog " + index}>{index}</th>
                             <td><input className={"fullWidth"} disabled title="start time" placeholder="09:15"/></td>
                             <td><input
-                                className={"fullWidth" + (JiraTimeService.isValidJiraFormat(timeLog.duration) ? "" : " invalid-format alert-danger")}
+                                className={"fullWidth" + (JiraTimeService.isValidJiraFormat(timeLog.duration) ? "" : " invalid-format")}
                                 title="duration" type="text"
                                 placeholder={"5h 15m"}
                                 value={timeLog.duration}
