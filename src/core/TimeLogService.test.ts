@@ -8,14 +8,14 @@ describe("TimeLogService", () => {
             const expectedTimeLog = {
                 description: "some description",
                 durationInMinutes: 42,
-                day: new Date(2020, 2, 2)
+                day: new Date(2020, 2, 1)
             };
-            TimeLogRepository.getTimeLogsForDay = jest.fn().mockImplementation((_: Date) => [expectedTimeLog]);
+            TimeLogRepository.getTimeLogsForDay = jest.fn().mockImplementation((_: Date) => Promise.resolve([expectedTimeLog]));
 
 
             const result = TimeLogService.getTimeLogsForDay(new Date(2020, 2, 2));
 
-            expect(result).resolves.toStrictEqual([expectedTimeLog]);
+            await expect(result).resolves.toStrictEqual([expectedTimeLog]);
             expect(TimeLogRepository.getTimeLogsForDay).toBeCalledWith(new Date(2020, 2, 2));
         });
     });
@@ -30,11 +30,11 @@ describe("TimeLogService", () => {
                 description: "stored",
                 durationInMinutes: 2,
             };
-            TimeLogRepository.saveTimelogs = jest.fn().mockImplementation((_: Date, __: TimeLog[]) => [savedTimelog]);
+            TimeLogRepository.saveTimelogs = jest.fn().mockImplementation((_: Date, __: TimeLog[]) => Promise.resolve([savedTimelog]));
 
             const result = TimeLogService.saveTimeLogsForDay(new Date(2020, 2, 2), [timelogToSave]);
 
-            expect(result).resolves.toStrictEqual([savedTimelog]);
+            await expect(result).resolves.toStrictEqual([savedTimelog]);
             expect(TimeLogRepository.saveTimelogs).toBeCalledWith(new Date(2020, 2, 2), [timelogToSave]);
         });
     });
