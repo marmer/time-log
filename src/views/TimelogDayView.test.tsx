@@ -477,7 +477,7 @@ describe("TimelogDayView", () => {
 // TODO: marmer 24.02.2020 handle error here in a different test
             SettingsService.getExpectedDailyTimelogInMinutes = jest.fn().mockResolvedValue(100);
 // TODO: marmer 24.02.2020 handle error here in a different test
-            TimeLogService.getExpectedTimeToLogDeltaInMonthInMinutesUntill = jest.fn().mockImplementation(d => isEqualDate(d, dayBeforeCurrent) ? Promise.resolve(20) : Promise.reject(new Error("Unexpected value: " + d)));
+            TimeLogService.getExpectedTimeToLogDeltaInMonthInMinutesUntil = jest.fn().mockImplementation(d => isEqualDate(d, dayBeforeCurrent) ? Promise.resolve(20) : Promise.reject(new Error("Unexpected value: " + d)));
             const underTest = reactTest.render(<TimelogDayView day={day}/>);
 
             const overtimeField = await reactTest.waitForElement(() => underTest.getByTitle("time left monthly"));

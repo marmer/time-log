@@ -75,7 +75,7 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
         // TODO: marmer 23.02.2020 Errorhandling!
 
         if (this.props.day.getDate() !== 1) {
-            TimeLogService.getExpectedTimeToLogDeltaInMonthInMinutesUntill(TimelogDayView.dayBefore(this.props.day))
+            TimeLogService.getExpectedTimeToLogDeltaInMonthInMinutesUntil(TimelogDayView.dayBefore(this.props.day))
                 .then(delta => this.setState({
                     expectedTimeToLogDeltaInMonthInMinutesUntil: delta
                 }))
