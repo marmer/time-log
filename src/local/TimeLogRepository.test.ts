@@ -11,7 +11,7 @@ describe("TimeLogRepository", () => {
     describe("getTimeLogsForDay", () => {
         it("should serve all existing timelogs related to the given day", async () => {
             await db.timelogDay.bulkPut([{
-                day: new Date(2020, 4, 3), timelogs: [{
+                day: "2020-05-03", timelogs: [{
                     durationInMinutes: 42,
                     description: "Some description"
                 }, {
@@ -19,7 +19,7 @@ describe("TimeLogRepository", () => {
                     description: "Some otherdescription"
                 }]
             }, {
-                day: new Date(2020, 4, 4),
+                day: "2020-05-04",
                 timelogs: [{
                     durationInMinutes: 44,
                     description: "some entry of another day"
@@ -39,7 +39,7 @@ describe("TimeLogRepository", () => {
 
         it("should serve an empty array if no timelogs exist yet for the related day", async () => {
             await db.timelogDay.put({
-                day: new Date(2020, 5, 3),
+                day: "2020-06-03",
                 timelogs: [{
                     durationInMinutes: 44,
                     description: "some entry of another day"
@@ -65,9 +65,9 @@ describe("TimeLogRepository", () => {
             const result = await TimeLogRepository.saveTimelogs(day, [timelogToSave]);
 
 
-            const storedTimelog = await db.timelogDay.get(day);
+            const storedTimelog = await db.timelogDay.get("1985-01-02");
             expect(storedTimelog).toStrictEqual({
-                day, timelogs: [timelogToSave]
+                day: "1985-01-02", timelogs: [timelogToSave]
             });
             expect(result).toStrictEqual([timelogToSave]);
         });
@@ -78,19 +78,19 @@ describe("TimeLogRepository", () => {
                 description: "some entry of another day"
             };
             db.timelogDay.put({
-                day: new Date(1985, 5, 3),
+                day: "1985-06-03",
                 timelogs: [timelogOfADifferentDay]
             });
             const timelogToSave = {durationInMinutes: 42, description: "to Save"};
             const day = new Date(1985, 5, 2);
             const result = await TimeLogRepository.saveTimelogs(day, [timelogToSave]);
 
-            const storedTimelog = await db.timelogDay.get(day);
-            expect(storedTimelog).toStrictEqual({day, timelogs: [timelogToSave]});
+            const storedTimelog = await db.timelogDay.get("1985-06-02");
+            expect(storedTimelog).toStrictEqual({day: "1985-06-02", timelogs: [timelogToSave]});
             expect(result).toStrictEqual([timelogToSave]);
 
-            const storedOtherTimelog = await db.timelogDay.get(new Date(1985, 5, 3));
-            expect(storedOtherTimelog).toStrictEqual({day: new Date(1985, 5, 3), timelogs: [timelogOfADifferentDay]});
+            const storedOtherTimelog = await db.timelogDay.get("1985-06-03");
+            expect(storedOtherTimelog).toStrictEqual({day: "1985-06-03", timelogs: [timelogOfADifferentDay]});
 
         });
 
@@ -102,15 +102,15 @@ describe("TimeLogRepository", () => {
 
             const day = new Date(1985, 5, 3);
             db.timelogDay.put({
-                day,
+                day: "1985-06-03",
                 timelogs: [existingTimelog]
             });
 
             const timelogToSave = {durationInMinutes: 42, description: "to Save"};
             const result = await TimeLogRepository.saveTimelogs(day, [timelogToSave]);
 
-            const storedOtherTimelog = await db.timelogDay.get(day);
-            expect(storedOtherTimelog).toStrictEqual({day, timelogs: [timelogToSave]});
+            const storedOtherTimelog = await db.timelogDay.get("1985-06-03");
+            expect(storedOtherTimelog).toStrictEqual({day: "1985-06-03", timelogs: [timelogToSave]});
             expect(result).toStrictEqual([timelogToSave]);
         });
     });
