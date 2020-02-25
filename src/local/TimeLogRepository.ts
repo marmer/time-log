@@ -1,6 +1,6 @@
 import {TimeLog} from "../core/TimeLogService";
-import Lockr from "lockr";
 import moment from "moment";
+import TimeLogDatabase from "./TimeLogDatabase";
 
 interface TimeLogDbo {
     [day: string]: TimeLog[]
@@ -9,20 +9,15 @@ interface TimeLogDbo {
 export default class TimeLogRepository {
     private static readonly STORE_KEY = "TimeLog";
 
-    public static saveTimelogs(date: Date, timeLogs: TimeLog[]): TimeLog[] {
-        const dbo: TimeLogDbo = Lockr.get(this.getTimelogKeyForMonthOf(date), {});
-        dbo[TimeLogRepository.timelogKeyFor(date)] = timeLogs;
-        Lockr.set(this.getTimelogKeyForMonthOf(date), dbo);
-        return timeLogs;
+    private static readonly db = new TimeLogDatabase();
+
+    public static async saveTimelogs(date: Date, timeLogs: TimeLog[]): Promise<TimeLog[]> {
+        return Promise.resolve([]);
     }
 
-    public static getTimeLogsForDay(date: Date): TimeLog[] {
-
-        const timeLog: TimeLogDbo = Lockr.get(this.getTimelogKeyForMonthOf(date), {});
-
-        const key = this.timelogKeyFor(date);
-        const timelogs = timeLog[key];
-        return timelogs ? timelogs : [];
+    public static async getTimeLogsForDay(date: Date): Promise<TimeLog[]> {
+        const timelogDay = await TimeLogRepository.db.timelogDay.get(date);
+        return timelogDay?.timelogs!;
     }
 
     private static getTimelogKeyForMonthOf(date: Date) {
