@@ -1,5 +1,6 @@
 import TimeLogService, {TimeLog} from "./TimeLogService";
 import TimeLogRepository from "../local/TimeLogRepository";
+import SettingsService from "./SettingsService";
 
 
 describe("TimeLogService", () => {
@@ -38,4 +39,30 @@ describe("TimeLogService", () => {
             expect(TimeLogRepository.saveTimelogs).toBeCalledWith(new Date(2020, 2, 2), [timelogToSave]);
         });
     });
+
+    describe("getExpectedTimeToLogDeltaInMonthInMinutesUntil", () => {
+
+        it("should serve the delta between logged and expected work to log", async () => {
+            const day = new Date(2020, 5, 5);
+
+            SettingsService.getExpectedDailyTimelogInMinutes = jest.fn().mockResolvedValue(10);
+            TimeLogRepository.getSumOfTimeLoggedBetween = jest.fn().mockImplementation((from: Date, to: Date) => {
+                if (!isDateEqual(from, new Date(2020, 5, 1))) {
+                    throw new Error("Unexpected start: " + from);
+                }
+                if (!isDateEqual(to, day)) {
+                    throw new Error("Unexpected end: " + to);
+                }
+                return 8;
+            });
+
+            const delta = await TimeLogService.getExpectedTimeToLogDeltaInMonthInMinutesUntil(day);
+
+            expect(delta).toBe(42)
+        });
+    });
 });
+
+function isDateEqual(actual: Date, expected: Date) {
+    return actual <= expected && actual >= expected;
+}
