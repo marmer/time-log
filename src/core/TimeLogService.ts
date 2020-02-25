@@ -18,7 +18,7 @@ export default class TimeLogService {
 
 
     public static async getExpectedTimeToLogDeltaInMonthInMinutesUntil(dayInclusive: Date): Promise<number> {
-        const firstOfMonth = moment(dayInclusive).set("day", 1);
+        const firstOfMonth = moment(dayInclusive).set("date", 1);
         const numberOfDaysToTakeIntoAccount = moment(dayInclusive).diff(firstOfMonth, "day") + 1;
         const sumOfExpectedWorkToLog = await SettingsService.getExpectedDailyTimelogInMinutes();
         const loggedTimeSum: number = await TimeLogRepository.getSumOfTimeLoggedBetween(firstOfMonth.toDate(), dayInclusive);
