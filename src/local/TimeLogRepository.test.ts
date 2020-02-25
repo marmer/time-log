@@ -1,9 +1,5 @@
 import TimeLogRepository from "./TimeLogRepository";
-import {TimeLog} from "../core/TimeLogService";
-import Lockr from "lockr";
 import TimeLogDatabase from "./TimeLogDatabase";
-
-const timeLogStoreKey = "TimeLog";
 
 describe("TimeLogRepository", () => {
     let db: TimeLogDatabase = new TimeLogDatabase();
@@ -65,10 +61,14 @@ describe("TimeLogRepository", () => {
     describe("saveTimelogs", () => {
         it("should save the given timeLogs at the specific day when nothing has been saved before", async () => {
             const timelogToSave = {durationInMinutes: 42, description: "to Save"};
-            const result = TimeLogRepository.saveTimelogs(new Date(1985, 0, 2), [timelogToSave]);
+            const day = new Date(1985, 0, 2);
+            const result = await TimeLogRepository.saveTimelogs(day, [timelogToSave]);
 
-            const storedTimelog = (Lockr.get(timeLogStoreKey + "-1985-01") as any)["1985-01-02"];
-            expect(storedTimelog).toStrictEqual([timelogToSave]);
+
+            const storedTimelog = await db.timelogDay.get(day);
+            expect(storedTimelog).toStrictEqual({
+                day, timelogs: [timelogToSave]
+            });
             expect(result).toStrictEqual([timelogToSave]);
         });
 
@@ -77,18 +77,20 @@ describe("TimeLogRepository", () => {
                 durationInMinutes: 44,
                 description: "some entry of another day"
             };
-            Lockr.set(timeLogStoreKey + "-1985-06", {
-                "1985-06-03": [timelogOfADifferentDay]
+            db.timelogDay.put({
+                day: new Date(1985, 5, 3),
+                timelogs: [timelogOfADifferentDay]
             });
             const timelogToSave = {durationInMinutes: 42, description: "to Save"};
-            const result = TimeLogRepository.saveTimelogs(new Date(1985, 5, 2), [timelogToSave]);
+            const day = new Date(1985, 5, 2);
+            const result = await TimeLogRepository.saveTimelogs(day, [timelogToSave]);
 
-            const storedTimelog = (Lockr.get(timeLogStoreKey + "-1985-06") as any)["1985-06-02"];
-            expect(storedTimelog).toStrictEqual([timelogToSave]);
+            const storedTimelog = await db.timelogDay.get(day);
+            expect(storedTimelog).toStrictEqual({day, timelogs: [timelogToSave]});
             expect(result).toStrictEqual([timelogToSave]);
 
-            const storedOtherTimelog = (Lockr.get(timeLogStoreKey + "-1985-06") as any)["1985-06-03"];
-            expect(storedOtherTimelog).toStrictEqual([timelogOfADifferentDay]);
+            const storedOtherTimelog = await db.timelogDay.get(new Date(1985, 5, 3));
+            expect(storedOtherTimelog).toStrictEqual({day: new Date(1985, 5, 3), timelogs: [timelogOfADifferentDay]});
 
         });
 
@@ -97,14 +99,18 @@ describe("TimeLogRepository", () => {
                 durationInMinutes: 42,
                 description: "some entry"
             };
-            Lockr.set(timeLogStoreKey + "-2020-06", {
-                "2020-06-03": [existingTimelog]
-            });
-            const timelogToSave = {durationInMinutes: 42, description: "to Save"};
-            const result = TimeLogRepository.saveTimelogs(new Date(2020, 5, 3), [timelogToSave]);
 
-            const storedOtherTimelog = (Lockr.get(timeLogStoreKey + "-2020-06") as any)["2020-06-03"];
-            expect(storedOtherTimelog).toStrictEqual([timelogToSave]);
+            const day = new Date(1985, 5, 3);
+            db.timelogDay.put({
+                day,
+                timelogs: [existingTimelog]
+            });
+
+            const timelogToSave = {durationInMinutes: 42, description: "to Save"};
+            const result = await TimeLogRepository.saveTimelogs(day, [timelogToSave]);
+
+            const storedOtherTimelog = await db.timelogDay.get(day);
+            expect(storedOtherTimelog).toStrictEqual({day, timelogs: [timelogToSave]});
             expect(result).toStrictEqual([timelogToSave]);
         });
     });

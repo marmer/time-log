@@ -12,8 +12,8 @@ export default class TimeLogDatabase extends Dexie {
         this.timelogDay = this.table("timelogDay");
     }
 
-    public clearAllTables() {
-        this.timelogDay.clear();
+    public async clearAllTables() {
+        return this.timelogDay.clear();
     }
 }
 
