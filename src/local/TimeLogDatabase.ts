@@ -2,7 +2,7 @@ import Dexie from "dexie";
 import {TimeLog} from "../core/TimeLogService";
 
 export default class TimeLogDatabase extends Dexie {
-    timelogDay: Dexie.Table<TimelogDayDbo, Date>;
+    timelogDay: Dexie.Table<TimelogDayDbo, string>;
 
     constructor() {
         super("TimeLogDatabase");
@@ -18,6 +18,6 @@ export default class TimeLogDatabase extends Dexie {
 }
 
 export interface TimelogDayDbo {
-    day: Date;
+    day: string;
     timelogs: TimeLog[];
 }
