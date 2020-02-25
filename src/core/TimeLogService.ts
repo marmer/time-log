@@ -15,7 +15,7 @@ export default class TimeLogService {
     }
 
 
-    public static async getExpectedTimeToLogDeltaInMonthInMinutesUntill(dayInclusive: Date): Promise<number> {
+    public static async getExpectedTimeToLogDeltaInMonthInMinutesUntil(dayInclusive: Date): Promise<number> {
         // TODO: marmer 24.02.2020 implement me!
         return 0;
     }
