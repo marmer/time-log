@@ -17,6 +17,10 @@ export default class TimeLogRepository {
         return timelogDay ? timelogDay.timelogs : [];
     }
 
+    static getSumOfTimeLoggedBetween(startInclusive: Date, endInclusive: Date): number {
+        return 0;
+    }
+
     private static toKey(day: Date): string {
         return moment(day).format("YYYY-MM-DD");
     }

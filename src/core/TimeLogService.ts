@@ -1,4 +1,6 @@
 import TimeLogRepository from "../local/TimeLogRepository";
+import SettingsService from "./SettingsService";
+import moment from "moment";
 
 export interface TimeLog {
     durationInMinutes: number;
@@ -16,7 +18,10 @@ export default class TimeLogService {
 
 
     public static async getExpectedTimeToLogDeltaInMonthInMinutesUntil(dayInclusive: Date): Promise<number> {
-        // TODO: marmer 24.02.2020 implement me!
-        return 0;
+        const firstOfMonth = moment(dayInclusive).set("day", 1);
+        const numberOfDaysToTakeIntoAccount = moment(dayInclusive).diff(firstOfMonth, "day") + 1;
+        const sumOfExpectedWorkToLog = await SettingsService.getExpectedDailyTimelogInMinutes();
+        const loggedTimeSum: number = await TimeLogRepository.getSumOfTimeLoggedBetween(firstOfMonth.toDate(), dayInclusive);
+        return sumOfExpectedWorkToLog * numberOfDaysToTakeIntoAccount - loggedTimeSum;
     }
 }
