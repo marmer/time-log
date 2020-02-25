@@ -11,6 +11,10 @@ export default class TimeLogDatabase extends Dexie {
         });
         this.timelogDay = this.table("timelogDay");
     }
+
+    public clearAllTables() {
+        this.timelogDay.clear();
+    }
 }
 
 export interface TimelogDayDbo {
