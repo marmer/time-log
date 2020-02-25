@@ -1,6 +1,8 @@
 import TimeLogRepository from "./TimeLogRepository";
 import TimeLogDatabase from "./TimeLogDatabase";
+import {TimeLog} from "../core/TimeLogService";
 
+const timelogBase: TimeLog = {durationInMinutes: 42, description: "to Save"};
 describe("TimeLogRepository", () => {
     let db: TimeLogDatabase = new TimeLogDatabase();
 
@@ -112,6 +114,42 @@ describe("TimeLogRepository", () => {
             const storedOtherTimelog = await db.timelogDay.get("1985-06-03");
             expect(storedOtherTimelog).toStrictEqual({day: "1985-06-03", timelogs: [timelogToSave]});
             expect(result).toStrictEqual([timelogToSave]);
+        });
+    });
+
+    describe("getExpectedTimeToLogDeltaInMonthInMinutesUntil", () => {
+        it("should serve the sum of logged time for the relevant time only", async () => {
+            db.timelogDay.bulkPut([{
+                day: "2020-03-05",
+                timelogs: [{
+                    ...timelogBase,
+                    durationInMinutes: 3
+                }]
+            }, {
+                day: "2020-03-06",
+                timelogs: [{
+                    ...timelogBase,
+                    durationInMinutes: 5
+                }]
+            }, {
+                day: "2020-03-08",
+                timelogs: [{
+                    ...timelogBase,
+                    durationInMinutes: 7
+                }, {
+                    ...timelogBase,
+                    durationInMinutes: 11
+                }]
+            }, {
+                day: "2020-03-09",
+                timelogs: [{
+                    ...timelogBase,
+                    durationInMinutes: 13
+                }]
+            }]);
+
+            const result = await TimeLogRepository.getSumOfTimeLoggedBetween(new Date(2020, 2, 6), new Date(2020, 2, 8));
+            expect(result).toBe(23);
         });
     });
 });

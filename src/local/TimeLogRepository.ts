@@ -17,8 +17,16 @@ export default class TimeLogRepository {
         return timelogDay ? timelogDay.timelogs : [];
     }
 
-    static getSumOfTimeLoggedBetween(startInclusive: Date, endInclusive: Date): number {
-        return 0;
+    static async getSumOfTimeLoggedBetween(startInclusive: Date, endInclusive: Date): Promise<number> {
+        return TimeLogRepository.db.timelogDay
+            .where("day")
+            .between(this.toKey(startInclusive), this.toKey(endInclusive), true, true)
+            .toArray()
+            .then(dbos =>
+                dbos.map(dbo => dbo.timelogs)
+                    .reduce((a, b) => [...a, ...b], [])
+                    .map(timeLog => timeLog.durationInMinutes)
+                    .reduce((a, b) => a + b, 0));
     }
 
     private static toKey(day: Date): string {
