@@ -20,7 +20,7 @@ interface TimelogDayViewState {
     timeLogs: TimelogInput[];
     isLoadingTimeLogs: boolean;
     expectedDailyTimeToLogInMinutes?: number;
-    expectedTimeToLogDeltaInMonthInMinutesUntill?: number
+    expectedTimeToLogDeltaInMonthInMinutesUntil?: number
 }
 
 export default class TimelogDayView extends React.Component<TimelogDayViewProps, TimelogDayViewState> {
@@ -52,6 +52,10 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
         };
     }
 
+    private static dayBefore(date: Date) {
+        return moment(date).subtract(1, "day").toDate();
+    }
+
     componentDidMount(): void {
         this.setState({
             isLoadingTimeLogs: true
@@ -67,14 +71,20 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
         SettingsService.getExpectedDailyTimelogInMinutes()
             .then(expectedTime => this.setState({
                 expectedDailyTimeToLogInMinutes: expectedTime
-            }))
+            }));
         // TODO: marmer 23.02.2020 Errorhandling!
 
-        TimeLogService.getExpectedTimeToLogDeltaInMonthInMinutesUntill(this.dayBefore(this.props.day))
-            .then(delta => this.setState({
-                expectedTimeToLogDeltaInMonthInMinutesUntill: delta
-            }))
-        // TODO: marmer 24.02.2020 Errorhandling!
+        if (this.props.day.getDate() !== 1) {
+            TimeLogService.getExpectedTimeToLogDeltaInMonthInMinutesUntill(TimelogDayView.dayBefore(this.props.day))
+                .then(delta => this.setState({
+                    expectedTimeToLogDeltaInMonthInMinutesUntil: delta
+                }))
+            // TODO: marmer 24.02.2020 Errorhandling!
+        } else {
+            this.setState({
+                expectedTimeToLogDeltaInMonthInMinutesUntil: 0
+            })
+        }
     }
 
     componentDidUpdate(prevProps: Readonly<TimelogDayViewProps>, prevState: Readonly<TimelogDayViewState>,): void {
@@ -177,11 +187,7 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
 
     private getExpectedTimeToLogConsideringTheWholeMonthTillToday() {
         // TODO: marmer 24.02.2020 handle this if any value is unset
-        return this.state.expectedTimeToLogDeltaInMonthInMinutesUntill! + this.getExpectedTimeToLogTodayOnly();
-    }
-
-    private dayBefore(date: Date) {
-        return moment(date).subtract(1, "day").toDate();
+        return this.state.expectedTimeToLogDeltaInMonthInMinutesUntil! + this.getExpectedTimeToLogTodayOnly();
     }
 
     private addTimelog() {
