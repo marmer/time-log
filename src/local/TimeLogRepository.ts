@@ -17,6 +17,7 @@ export default class TimeLogRepository {
 
     public static async getTimeLogsForDay(date: Date): Promise<TimeLog[]> {
         const timelogDay = await TimeLogRepository.db.timelogDay.get(date);
+        if (!timelogDay) return [];
         return timelogDay?.timelogs!;
     }
 

@@ -6,16 +6,10 @@ import TimeLogDatabase from "./TimeLogDatabase";
 const timeLogStoreKey = "TimeLog";
 
 describe("TimeLogRepository", () => {
-    let db: TimeLogDatabase;
-    beforeEach(async () => {
-        localStorage.clear();
-        await new TimeLogDatabase().delete();
-        db = new TimeLogDatabase();
-    });
+    let db: TimeLogDatabase = new TimeLogDatabase();
 
-    afterEach(() => {
-        if (!db.hasBeenClosed())
-            db.close()
+    beforeEach(async () => {
+        await db.clearAllTables();
     });
 
     describe("getTimeLogsForDay", () => {
@@ -48,23 +42,23 @@ describe("TimeLogRepository", () => {
         });
 
         it("should serve an empty array if no timelogs exist yet for the related day", async () => {
-            await Lockr.set(timeLogStoreKey + "-2020-05", {
-                "2020-06-03": [{
+            await db.timelogDay.put({
+                day: new Date(2020, 5, 3),
+                timelogs: [{
                     durationInMinutes: 44,
                     description: "some entry of another day"
-                }] as TimeLog[]
-
+                }]
             });
 
             const result = TimeLogRepository.getTimeLogsForDay(new Date(2020, 4, 3));
 
-            expect(result).toStrictEqual([])
+            return expect(result).resolves.toStrictEqual([])
         });
 
         it("should serve an empty array if nothing has ever been stored yet", async () => {
             const result = TimeLogRepository.getTimeLogsForDay(new Date(2020, 4, 3));
 
-            expect(result).toStrictEqual([])
+            return expect(result).resolves.toStrictEqual([])
         });
     });
 
