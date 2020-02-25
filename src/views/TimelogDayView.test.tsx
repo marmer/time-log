@@ -485,7 +485,23 @@ describe("TimelogDayView", () => {
             expect(overtimeField).toHaveValue("50");
 
         });
-        // TODO: marmer 24.02.2020 handling the first of month as well
+
+        it("should calculete the overtime based on the configured expected daily time to log and the already logged time this month at the first of a month", async () => {
+            TimeLogService.getTimeLogsForDay = jest.fn().mockResolvedValue([{
+                ...baseTimeLog,
+                durationInMinutes: 70
+            } as TimeLog]);
+
+            const day = new Date(2020, 2, 1);
+
+            SettingsService.getExpectedDailyTimelogInMinutes = jest.fn().mockResolvedValue(100);
+            const underTest = reactTest.render(<TimelogDayView day={day}/>);
+
+            const overtimeField = await reactTest.waitForElement(() => underTest.getByTitle("time left monthly"));
+
+            expect(overtimeField).toHaveValue("30");
+
+        });
     });
 });
 
