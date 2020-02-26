@@ -1,25 +1,23 @@
-import Lockr from "lockr";
+import TimeLogDatabase, {TimlogExpectationSettings} from "./TimeLogDatabase";
+import moment from "moment";
 
 
-interface TimelogSettings {
-    expectedDailyTimelogInMinutes?: number;
-}
+const {timlogExpectationSettings} = new TimeLogDatabase();
 
+const initialKey = moment(new Date(0)).format("YYYY-MM-DD");
 export default class SettingsRepository {
-    private static readonly emptySettings: TimelogSettings = {};
+    static async getExpectedDailyTimelogInMinutes(): Promise<number | null> {
+        const settings = await timlogExpectationSettings.get(initialKey);
 
-    private static readonly settingsObjectKey = "timelogSettings";
-
-    static getExpectedDailyTimelogInMinutes(): number | null {
-        const {expectedDailyTimelogInMinutes} = Lockr.get(SettingsRepository.settingsObjectKey, SettingsRepository.emptySettings);
-        return expectedDailyTimelogInMinutes ? expectedDailyTimelogInMinutes : null;
+        return !settings || !settings.expectedDailyTimelogsInMinutes ?
+            null :
+            settings.expectedDailyTimelogsInMinutes;
     }
 
-    static setExpectedDailyTimelogInMinutes(value: number) {
-        const timelogSettings = Lockr.get(SettingsRepository.settingsObjectKey, SettingsRepository.emptySettings);
-        Lockr.set("timelogSettings", {
-            ...timelogSettings,
-            expectedDailyTimelogInMinutes: value
-        })
+    static async setExpectedDailyTimelogInMinutes(expectedDailyTimelogsInMinutes: number) {
+        timlogExpectationSettings.update(initialKey, {
+            validFrom: initialKey,
+            expectedDailyTimelogsInMinutes
+        } as TimlogExpectationSettings)
     }
 }
