@@ -15,9 +15,19 @@ export default class SettingsRepository {
     }
 
     static async setExpectedDailyTimelogInMinutes(expectedDailyTimelogsInMinutes: number) {
-        timlogExpectationSettings.update(initialKey, {
+        await this.prepareSettings();
+
+        return timlogExpectationSettings.update(initialKey, {
             validFrom: initialKey,
             expectedDailyTimelogsInMinutes
         } as TimlogExpectationSettings)
+    }
+
+    private static async prepareSettings() {
+        if (!(await timlogExpectationSettings.get(initialKey))) {
+            await timlogExpectationSettings.put({
+                validFrom: initialKey
+            })
+        }
     }
 }
