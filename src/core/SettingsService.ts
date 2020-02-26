@@ -7,7 +7,7 @@ export default class SettingsService {
 
     static async getExpectedDailyTimelogInMinutes(): Promise<number> {
         const eightHours = 480;
-        const configuredHoursToWorkPerDay = SettingsRepository.getExpectedDailyTimelogInMinutes();
+        const configuredHoursToWorkPerDay = await SettingsRepository.getExpectedDailyTimelogInMinutes();
         return Promise.resolve(configuredHoursToWorkPerDay ? configuredHoursToWorkPerDay : eightHours);
     }
 }

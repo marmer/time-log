@@ -4,7 +4,7 @@ import {TimeLog} from "../core/TimeLogService";
 
 const timelogBase: TimeLog = {durationInMinutes: 42, description: "to Save"};
 describe("TimeLogRepository", () => {
-    let db: TimeLogDatabase = new TimeLogDatabase();
+    const db: TimeLogDatabase = new TimeLogDatabase();
 
     beforeEach(async () => {
         await db.clearAllTables();
