@@ -48,7 +48,7 @@ describe("SettingsRepository", () => {
             } as any);
             await SettingsRepository.setExpectedDailyTimelogInMinutes(42);
 
-            expect(await db.timlogExpectationSettings.get(initialKey)).toHaveProperty("expectedDailyTimelogInMinutes", 42);
+            expect(await db.timlogExpectationSettings.get(initialKey)).toHaveProperty("expectedDailyTimelogsInMinutes", 42);
             expect(await db.timlogExpectationSettings.get(initialKey)).toHaveProperty("differentProp", "someValue");
         });
     });
