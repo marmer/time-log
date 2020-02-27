@@ -199,7 +199,7 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
                 </label>
                 <label>
                     Time to log by monthly expectation: <input disabled title={"time left monthly"}
-                                                               value={JiraTimeService.minutesToJiraFormat(this.getExpectedTimeToLogConsideringTheWholeMonthTillToday())}/>
+                                                               value={this.getExpectedTimeToLogConsideringTheWholeMonthTillTodayViewValue()}/>
                 </label>
             </section>
         </div>
@@ -207,7 +207,10 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
     }
 
     private getDailyExpectationViewValue() {
-        return JiraTimeService.minutesToJiraFormat(this.state.expectedTimeToLogDeltaInMonthInMinutesUntil.loadingState === "DONE" ? this.state.expectedTimeToLogDeltaInMonthInMinutesUntil.value - this.getDurationSum() : 0);
+        return JiraTimeService.minutesToJiraFormat(
+            this.state.expectedTimeToLogDeltaInMonthInMinutesUntil.loadingState === "DONE" ?
+                this.state.expectedTimeToLogDeltaInMonthInMinutesUntil.value - this.getDurationSum() :
+                0);
     }
 
     private getExpectedTimeToLogTodayOnly() {
@@ -217,11 +220,11 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
             0;
     }
 
-    private getExpectedTimeToLogConsideringTheWholeMonthTillToday() {
-        // TODO: marmer 24.02.2020 handle this if any value is unset
-        return this.state.expectedTimeToLogDeltaInMonthInMinutesUntil.loadingState === "DONE" ?
-            this.state.expectedTimeToLogDeltaInMonthInMinutesUntil.value + this.getExpectedTimeToLogTodayOnly() :
-            0;
+    private getExpectedTimeToLogConsideringTheWholeMonthTillTodayViewValue() {
+        return JiraTimeService.minutesToJiraFormat(
+            this.state.expectedTimeToLogDeltaInMonthInMinutesUntil.loadingState === "DONE" ?
+                this.state.expectedTimeToLogDeltaInMonthInMinutesUntil.value + this.getExpectedTimeToLogTodayOnly() :
+                0);
     }
 
     private addTimelog() {
