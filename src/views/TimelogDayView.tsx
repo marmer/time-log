@@ -198,8 +198,8 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
                                                              value={this.getDailyExpectationViewValue()}/>
                 </label>
                 <label>
-                    Time to log by monthly expectation: <input disabled title={"time left monthly"}
-                                                               value={this.getExpectedTimeToLogConsideringTheWholeMonthTillTodayViewValue()}/>
+                    Time to log by monthly expectation till today: <input disabled title={"time left monthly"}
+                                                                          value={this.getExpectedTimeToLogConsideringTheWholeMonthTillTodayViewValue()}/>
                 </label>
             </section>
         </div>
