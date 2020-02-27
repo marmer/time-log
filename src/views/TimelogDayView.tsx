@@ -90,8 +90,13 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
                     loadingState: "DONE",
                     value: expectedTime
                 }
+            }))
+            .catch(error => this.setState({
+                expectedDailyTimeToLogInMinutes: {
+                    loadingState: "ERROR",
+                    error
+                }
             }));
-        // TODO: marmer 23.02.2020 Errorhandling!
 
         if (this.props.day.getDate() !== 1) {
             TimeLogService.getExpectedTimeToLogDeltaInMonthInMinutesUntil(TimelogDayView.dayBefore(this.props.day))
@@ -207,10 +212,18 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
     }
 
     private getDailyExpectationViewValue() {
-        return JiraTimeService.minutesToJiraFormat(
-            this.state.expectedDailyTimeToLogInMinutes.loadingState === "DONE" ?
-                this.state.expectedDailyTimeToLogInMinutes.value - this.getDurationSum() :
-                0);
+
+        switch (this.state.expectedDailyTimeToLogInMinutes.loadingState) {
+            case "LOADING":
+                return "Loading...";
+            case "DONE":
+                return JiraTimeService.minutesToJiraFormat(
+                    this.state.expectedDailyTimeToLogInMinutes.value - this.getDurationSum()
+                );
+            case "ERROR":
+            default:
+                return this.state.expectedDailyTimeToLogInMinutes.error.message.toString();
+        }
     }
 
     private getExpectedTimeToLogTodayOnly() {
