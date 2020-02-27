@@ -208,8 +208,8 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
 
     private getDailyExpectationViewValue() {
         return JiraTimeService.minutesToJiraFormat(
-            this.state.expectedTimeToLogDeltaInMonthInMinutesUntil.loadingState === "DONE" ?
-                this.state.expectedTimeToLogDeltaInMonthInMinutesUntil.value - this.getDurationSum() :
+            this.state.expectedDailyTimeToLogInMinutes.loadingState === "DONE" ?
+                this.state.expectedDailyTimeToLogInMinutes.value - this.getDurationSum() :
                 0);
     }
 
