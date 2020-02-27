@@ -462,7 +462,7 @@ describe("TimelogDayView", () => {
 
             const overtimeField = await reactTest.waitForElement(() => underTest.getByTitle("time left today only"));
 
-            expect(overtimeField).toHaveValue("30");
+            await reactTest.wait(() => expect(overtimeField).toHaveValue("30"));
         });
 
         it("should calculete the overtime based on the configured expected daily time to log and the allready logged time this month", async () => {
