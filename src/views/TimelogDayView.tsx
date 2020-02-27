@@ -16,10 +16,20 @@ interface TimelogInput {
     description: string;
 }
 
+type AsyncValueType<T> = {
+    loadingState: "LOADING";
+} | {
+    loadingState: "ERROR";
+    error: Error;
+} | {
+    loadingState: "DONE";
+    value: T;
+};
+
 interface TimelogDayViewState {
     timeLogs: TimelogInput[];
     isLoadingTimeLogs: boolean;
-    expectedDailyTimeToLogInMinutes?: number;
+    expectedDailyTimeToLogInMinutes: AsyncValueType<number>;
     expectedTimeToLogDeltaInMonthInMinutesUntil?: number
 }
 
@@ -34,7 +44,10 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
         super(props);
         this.state = {
             timeLogs: [],
-            isLoadingTimeLogs: true
+            isLoadingTimeLogs: true,
+            expectedDailyTimeToLogInMinutes: {
+                loadingState: "LOADING"
+            }
         }
     }
 
@@ -70,7 +83,10 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
         // TODO: marmer 23.02.2020 Errorhandling!
         SettingsService.getExpectedDailyTimelogInMinutes()
             .then(expectedTime => this.setState({
-                expectedDailyTimeToLogInMinutes: expectedTime
+                expectedDailyTimeToLogInMinutes: {
+                    loadingState: "DONE",
+                    value: expectedTime
+                }
             }));
         // TODO: marmer 23.02.2020 Errorhandling!
 
@@ -182,7 +198,9 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
 
     private getExpectedTimeToLogTodayOnly() {
         // TODO: marmer 24.02.2020 handle this when the value is unset
-        return this.state.expectedDailyTimeToLogInMinutes! - this.getDurationSum();
+        return this.state.expectedDailyTimeToLogInMinutes.loadingState === "DONE" ?
+            this.state.expectedDailyTimeToLogInMinutes.value - this.getDurationSum() :
+            0;
     }
 
     private getExpectedTimeToLogConsideringTheWholeMonthTillToday() {
