@@ -30,7 +30,7 @@ interface TimelogDayViewState {
     timeLogs: TimelogInput[];
     isLoadingTimeLogs: boolean;
     expectedDailyTimeToLogInMinutes: AsyncValueType<number>;
-    expectedTimeToLogDeltaInMonthInMinutesUntil?: number
+    expectedTimeToLogDeltaInMonthInMinutesUntil: AsyncValueType<number>
 }
 
 export default class TimelogDayView extends React.Component<TimelogDayViewProps, TimelogDayViewState> {
@@ -46,6 +46,9 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
             timeLogs: [],
             isLoadingTimeLogs: true,
             expectedDailyTimeToLogInMinutes: {
+                loadingState: "LOADING"
+            },
+            expectedTimeToLogDeltaInMonthInMinutesUntil: {
                 loadingState: "LOADING"
             }
         }
@@ -93,12 +96,19 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
         if (this.props.day.getDate() !== 1) {
             TimeLogService.getExpectedTimeToLogDeltaInMonthInMinutesUntil(TimelogDayView.dayBefore(this.props.day))
                 .then(delta => this.setState({
-                    expectedTimeToLogDeltaInMonthInMinutesUntil: delta
+                    expectedTimeToLogDeltaInMonthInMinutesUntil: {
+                        loadingState: "DONE",
+                        value: delta
+                    }
                 }))
             // TODO: marmer 24.02.2020 Errorhandling!
         } else {
             this.setState({
-                expectedTimeToLogDeltaInMonthInMinutesUntil: 0
+                expectedTimeToLogDeltaInMonthInMinutesUntil: {
+                    loadingState: "DONE",
+                    value: 0
+                }
+
             })
         }
     }
@@ -205,7 +215,9 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
 
     private getExpectedTimeToLogConsideringTheWholeMonthTillToday() {
         // TODO: marmer 24.02.2020 handle this if any value is unset
-        return this.state.expectedTimeToLogDeltaInMonthInMinutesUntil! + this.getExpectedTimeToLogTodayOnly();
+        return this.state.expectedTimeToLogDeltaInMonthInMinutesUntil.loadingState === "DONE" ?
+            this.state.expectedTimeToLogDeltaInMonthInMinutesUntil.value + this.getExpectedTimeToLogTodayOnly() :
+            0;
     }
 
     private addTimelog() {
