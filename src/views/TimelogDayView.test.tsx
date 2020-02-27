@@ -460,9 +460,23 @@ describe("TimelogDayView", () => {
 
             const underTest = reactTest.render(<TimelogDayView day={day}/>);
 
-            const overtimeField = await reactTest.waitForElement(() => underTest.getByTitle("time left today only"));
+            expect(underTest.getByTitle("time left today only")).toHaveValue("Loading...");
 
-            await reactTest.wait(() => expect(overtimeField).toHaveValue("30"));
+            await reactTest.wait(() => expect(underTest.getByTitle("time left today only")).toHaveValue("30"));
+        });
+
+        it("should show an error for the daily expectation if it was not possible to load the daily expectation value", async () => {
+            TimeLogService.getTimeLogsForDay = jest.fn().mockResolvedValue([{
+                ...baseTimeLog,
+                durationInMinutes: 70
+            } as TimeLog]);
+
+            const day = new Date(2020, 2, 2);
+            SettingsService.getExpectedDailyTimelogInMinutes = jest.fn().mockRejectedValue(new Error("Oh no, oh why, why me, .... noooo"));
+
+            const underTest = reactTest.render(<TimelogDayView day={day}/>);
+
+            await reactTest.wait(() => expect(underTest.getByTitle("time left today only")).toHaveValue("Error: Oh no, oh why, why me, .... noooo"));
         });
 
         it("should calculete the overtime based on the configured expected daily time to log and the allready logged time this month", async () => {
