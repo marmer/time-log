@@ -26,7 +26,7 @@ describe("TimelogDayView", () => {
         JiraTimeService.jiraFormatToMinutes = jest.fn().mockImplementation(jiraFormat => jiraFormat ? Number.parseInt(jiraFormat) : 0);
         JiraTimeService.isValidJiraFormat = jest.fn().mockReturnValue(true);
         SettingsService.getExpectedDailyTimelogInMinutes = jest.fn().mockResolvedValue(42);
-        TimeLogService.getExpectedTimeToLogDeltaInMonthInMinutesUntil = jest.fn().mockResolvedValue(1337);
+        TimeLogService.getExpectedTimeToLogDeltaInMonthInMinutesUntilExclusive = jest.fn().mockResolvedValue(1337);
     });
 
     describe("loading", () => {
@@ -498,34 +498,16 @@ describe("TimelogDayView", () => {
             } as TimeLog]);
 
             const day = new Date(2020, 2, 2);
-            const dayBeforeCurrent = new Date(2020, 2, 1);
 
 // TODO: marmer 24.02.2020 handle error here in a different test
             SettingsService.getExpectedDailyTimelogInMinutes = jest.fn().mockResolvedValue(100);
 // TODO: marmer 24.02.2020 handle error here in a different test
-            TimeLogService.getExpectedTimeToLogDeltaInMonthInMinutesUntil = jest.fn().mockImplementation(d => isEqualDate(d, dayBeforeCurrent) ? Promise.resolve(20) : Promise.reject(new Error("Unexpected value: " + d)));
+            TimeLogService.getExpectedTimeToLogDeltaInMonthInMinutesUntilExclusive = jest.fn().mockImplementation(d => isEqualDate(d, day) ? Promise.resolve(20) : Promise.reject(new Error("Unexpected value: " + d)));
             const underTest = reactTest.render(<TimelogDayView day={day}/>);
 
             const overtimeField = await reactTest.waitForElement(() => underTest.getByTitle("time left monthly"));
 
             expect(overtimeField).toHaveValue("50");
-
-        });
-
-        it("should calculete the overtime based on the configured expected daily time to log and the already logged time this month at the first of a month", async () => {
-            TimeLogService.getTimeLogsForDay = jest.fn().mockResolvedValue([{
-                ...baseTimeLog,
-                durationInMinutes: 70
-            } as TimeLog]);
-
-            const day = new Date(2020, 2, 1);
-
-            SettingsService.getExpectedDailyTimelogInMinutes = jest.fn().mockResolvedValue(100);
-            const underTest = reactTest.render(<TimelogDayView day={day}/>);
-
-            const overtimeField = await reactTest.waitForElement(() => underTest.getByTitle("time left monthly"));
-
-            expect(overtimeField).toHaveValue("30");
 
         });
     });
