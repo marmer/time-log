@@ -84,19 +84,7 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
                 });
             });
         // TODO: marmer 23.02.2020 Errorhandling!
-        SettingsService.getExpectedDailyTimelogInMinutes()
-            .then(expectedTime => this.setState({
-                expectedDailyTimeToLogInMinutes: {
-                    loadingState: "DONE",
-                    value: expectedTime
-                }
-            }))
-            .catch(error => this.setState({
-                expectedDailyTimeToLogInMinutes: {
-                    loadingState: "ERROR",
-                    error
-                }
-            }));
+        this.loadExpectedDailyTimeToLogInMinutes();
 
         if (this.props.day.getDate() !== 1) {
             TimeLogService.getExpectedTimeToLogDeltaInMonthInMinutesUntil(TimelogDayView.dayBefore(this.props.day))
@@ -211,6 +199,27 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
 
     }
 
+    private loadExpectedDailyTimeToLogInMinutes() {
+        this.setState({
+            expectedDailyTimeToLogInMinutes: {
+                loadingState: "LOADING"
+            }
+        });
+        SettingsService.getExpectedDailyTimelogInMinutes()
+            .then(expectedTime => this.setState({
+                expectedDailyTimeToLogInMinutes: {
+                    loadingState: "DONE",
+                    value: expectedTime
+                }
+            }))
+            .catch(error => this.setState({
+                expectedDailyTimeToLogInMinutes: {
+                    loadingState: "ERROR",
+                    error
+                }
+            }));
+    }
+
     private getDailyExpectationViewValue() {
 
         switch (this.state.expectedDailyTimeToLogInMinutes.loadingState) {
@@ -222,7 +231,7 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
                 );
             case "ERROR":
             default:
-                return this.state.expectedDailyTimeToLogInMinutes.error.message.toString();
+                return this.state.expectedDailyTimeToLogInMinutes.error.toString();
         }
     }
 
