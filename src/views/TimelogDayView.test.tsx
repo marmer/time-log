@@ -37,6 +37,15 @@ describe("TimelogDayView", () => {
 
             expect(underTest.getByText("Loading..."))
         });
+        it("should show an error message if loading fails", async () => {
+            TimeLogService.getTimeLogsForDay = jest.fn().mockRejectedValue(new Error("I didn't do it"));
+
+            const someDay = new Date(2020, 2, 2);
+
+            const underTest = reactTest.render(<TimelogDayView day={someDay}/>);
+
+            expect(await reactTest.waitForElement(() => underTest.getByText("Try reloading... Error: I didn't do it"))).toBeVisible();
+        });
 
         it("should show existing entries if it's possible to load time logs", async () => {
             const someDay = new Date(2020, 2, 2);
