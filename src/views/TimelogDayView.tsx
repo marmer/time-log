@@ -29,7 +29,7 @@ interface TimelogDayViewState {
     timeLogsInput: TimelogInput[];
     timelogs: AsyncValueType<TimeLog[]>
     expectedDailyTimeToLogInMinutes: AsyncValueType<number>;
-    expectedTimeToLogDeltaInMonthInMinutesUntil: AsyncValueType<number>
+    expectedTimeToLogDeltaInMonthInMinutesUntilExclusive: AsyncValueType<number>
 }
 
 export default class TimelogDayView extends React.Component<TimelogDayViewProps, TimelogDayViewState> {
@@ -49,7 +49,7 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
             expectedDailyTimeToLogInMinutes: {
                 loadingState: "LOADING"
             },
-            expectedTimeToLogDeltaInMonthInMinutesUntil: {
+            expectedTimeToLogDeltaInMonthInMinutesUntilExclusive: {
                 loadingState: "LOADING"
             }
         }
@@ -72,15 +72,7 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
     componentDidMount(): void {
         this.loadTimelogs();
         this.loadExpectedDailyTimeToLogInMinutes();
-
-        TimeLogService.getExpectedTimeToLogDeltaInMonthInMinutesUntilExclusive(this.props.day)
-            .then(delta => this.setState({
-                expectedTimeToLogDeltaInMonthInMinutesUntil: {
-                    loadingState: "DONE",
-                    value: delta
-                }
-            }))
-        // TODO: marmer 24.02.2020 Errorhandling!
+        this.loadExpectedTimeToLogDeltaInMonthInMinutesUntilExclusive();
     }
 
     componentDidUpdate(prevProps: Readonly<TimelogDayViewProps>, prevState: Readonly<TimelogDayViewState>,): void {
@@ -180,6 +172,22 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
 
     }
 
+    private loadExpectedTimeToLogDeltaInMonthInMinutesUntilExclusive() {
+        this.setState({
+            expectedTimeToLogDeltaInMonthInMinutesUntilExclusive: {
+                loadingState: "LOADING",
+            }
+        });
+        TimeLogService.getExpectedTimeToLogDeltaInMonthInMinutesUntilExclusive(this.props.day)
+            .then(delta => this.setState({
+                expectedTimeToLogDeltaInMonthInMinutesUntilExclusive: {
+                    loadingState: "DONE",
+                    value: delta
+                }
+            }))
+        // TODO: marmer 24.02.2020 Errorhandling!
+    }
+
     private loadTimelogs() {
         this.setState({
             timelogs: {loadingState: "LOADING"}
@@ -249,8 +257,8 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
 
     private getExpectedTimeToLogConsideringTheWholeMonthTillTodayViewValue() {
         return JiraTimeService.minutesToJiraFormat(
-            this.state.expectedTimeToLogDeltaInMonthInMinutesUntil.loadingState === "DONE" ?
-                this.state.expectedTimeToLogDeltaInMonthInMinutesUntil.value + this.getExpectedTimeToLogTodayOnly() :
+            this.state.expectedTimeToLogDeltaInMonthInMinutesUntilExclusive.loadingState === "DONE" ?
+                this.state.expectedTimeToLogDeltaInMonthInMinutesUntilExclusive.value + this.getExpectedTimeToLogTodayOnly() :
                 0);
     }
 
