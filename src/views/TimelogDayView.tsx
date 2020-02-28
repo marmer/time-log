@@ -5,7 +5,6 @@ import "./TimelogDayView.css"
 
 import deepEqual from "deep-equal"
 import SettingsService from "../core/SettingsService";
-import moment from "moment";
 
 export interface TimelogDayViewProps {
     day: Date;
@@ -70,32 +69,18 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
         };
     }
 
-    private static dayBefore(date: Date) {
-        return moment(date).subtract(1, "day").toDate();
-    }
-
     componentDidMount(): void {
         this.loadTimelogs();
         this.loadExpectedDailyTimeToLogInMinutes();
 
-        if (this.props.day.getDate() !== 1) {
-            TimeLogService.getExpectedTimeToLogDeltaInMonthInMinutesUntil(TimelogDayView.dayBefore(this.props.day))
-                .then(delta => this.setState({
-                    expectedTimeToLogDeltaInMonthInMinutesUntil: {
-                        loadingState: "DONE",
-                        value: delta
-                    }
-                }))
-            // TODO: marmer 24.02.2020 Errorhandling!
-        } else {
-            this.setState({
+        TimeLogService.getExpectedTimeToLogDeltaInMonthInMinutesUntilExclusive(this.props.day)
+            .then(delta => this.setState({
                 expectedTimeToLogDeltaInMonthInMinutesUntil: {
                     loadingState: "DONE",
-                    value: 0
+                    value: delta
                 }
-
-            })
-        }
+            }))
+        // TODO: marmer 24.02.2020 Errorhandling!
     }
 
     componentDidUpdate(prevProps: Readonly<TimelogDayViewProps>, prevState: Readonly<TimelogDayViewState>,): void {

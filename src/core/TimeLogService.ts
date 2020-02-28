@@ -17,11 +17,14 @@ export default class TimeLogService {
     }
 
 
-    public static async getExpectedTimeToLogDeltaInMonthInMinutesUntil(dayInclusive: Date): Promise<number> {
-        const firstOfMonth = moment(dayInclusive).set("date", 1);
-        const numberOfDaysToTakeIntoAccount = moment(dayInclusive).diff(firstOfMonth, "day") + 1;
+    public static async getExpectedTimeToLogDeltaInMonthInMinutesUntilExclusive(dayExclusive: Date): Promise<number> {
+        if (dayExclusive.getDate() === 1) return 0;
+
+        const firstOfMonth = moment(dayExclusive).set("date", 1);
+        const endDay = moment(dayExclusive).subtract(1, "day");
+        const numberOfDaysToTakeIntoAccount = endDay.diff(firstOfMonth, "day") + 1;
         const sumOfExpectedWorkToLog = await SettingsService.getExpectedDailyTimelogInMinutes();
-        const loggedTimeSum: number = await TimeLogRepository.getSumOfTimeLoggedBetween(firstOfMonth.toDate(), dayInclusive);
+        const loggedTimeSum: number = await TimeLogRepository.getSumOfTimeLoggedBetween(firstOfMonth.toDate(), endDay.toDate());
         return sumOfExpectedWorkToLog * numberOfDaysToTakeIntoAccount - loggedTimeSum;
     }
 }
