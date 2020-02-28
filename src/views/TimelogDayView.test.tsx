@@ -26,6 +26,7 @@ describe("TimelogDayView", () => {
         JiraTimeService.jiraFormatToMinutes = jest.fn().mockImplementation(jiraFormat => jiraFormat ? Number.parseInt(jiraFormat) : 0);
         JiraTimeService.isValidJiraFormat = jest.fn().mockReturnValue(true);
         SettingsService.getExpectedDailyTimelogInMinutes = jest.fn().mockResolvedValue(42);
+        TimeLogService.getExpectedTimeToLogDeltaInMonthInMinutesUntil = jest.fn().mockResolvedValue(1337);
     });
 
     describe("loading", () => {
@@ -476,7 +477,9 @@ describe("TimelogDayView", () => {
 
             const underTest = reactTest.render(<TimelogDayView day={day}/>);
 
-            await reactTest.wait(() => expect(underTest.getByTitle("time left today only")).toHaveValue("Error: Oh no, oh why, why me, .... noooo"));
+            const dailyExpectationField = await reactTest.waitForElement(() => underTest.getByTitle("time left today only"));
+            expect(dailyExpectationField).toHaveValue("Error: Oh no, oh why, why me, .... noooo");
+            expect(dailyExpectationField).toBeVisible();
         });
 
         it("should calculete the overtime based on the configured expected daily time to log and the allready logged time this month", async () => {
