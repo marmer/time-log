@@ -61,7 +61,7 @@ describe("TimeLogRepository", () => {
     });
 
     describe("saveTimelogs", () => {
-        it("should save the given timeLogs at the specific day when nothing has been saved before", async () => {
+        it("should save the given timeLogsInput at the specific day when nothing has been saved before", async () => {
             const timelogToSave = {durationInMinutes: 42, description: "to Save"};
             const day = new Date(1985, 0, 2);
             const result = await TimeLogRepository.saveTimelogs(day, [timelogToSave]);
