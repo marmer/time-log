@@ -32,19 +32,43 @@ export default function DailyTimelogSettingsView() {
                 SettingsService.setExpectedDailyTimelogInMinutes(JiraTimeService.jiraFormatToMinutes(expectedDailyTimelogInMinutes.value));
                 return false;
             }}>
-                <label>Expected Time to log per day <input id="expectedTimeToLog" type="text"
-                                                           className={(JiraTimeService.isValidJiraFormat(expectedDailyTimelogInMinutes.value) ? "" : " invalid-format")}
-                                                           disabled={expectedDailyTimelogInMinutes.isLoading}
-                                                           value={expectedDailyTimelogInMinutes.value}
-                                                           onChange={({target}) => setExpectedDailyTimelogInMinutes({
-                                                               ...expectedDailyTimelogInMinutes, value: target.value
-                                                           })}
-                                                           placeholder="e.g. 7h 30m"/>
-                </label>
-                <button className="btn btn-primary fullWidth" title="save"
-                        disabled={!JiraTimeService.isValidJiraFormat(expectedDailyTimelogInMinutes.value)}
-                        type={"submit"}><i className="fa fa-save"/> save
-                </button>
+                <div className="d-flex flex-column">
+                    <label>Expected Time to log per day <input id="expectedTimeToLog" type="text"
+                                                               className={(JiraTimeService.isValidJiraFormat(expectedDailyTimelogInMinutes.value) ? "" : " invalid-format")}
+                                                               disabled={expectedDailyTimelogInMinutes.isLoading}
+                                                               value={expectedDailyTimelogInMinutes.value}
+                                                               onChange={({target}) => setExpectedDailyTimelogInMinutes({
+                                                                   ...expectedDailyTimelogInMinutes,
+                                                                   value: target.value
+                                                               })}
+                                                               placeholder="e.g. 7h 30m"/>
+                    </label>
+                    <label>
+                        <input type="checkbox"/> Monday
+                    </label>
+                    <label>
+                        <input type="checkbox"/> Tuesday
+                    </label>
+                    <label>
+                        <input type="checkbox"/> Wednesday
+                    </label>
+                    <label>
+                        <input type="checkbox"/> Thursday
+                    </label>
+                    <label>
+                        <input type="checkbox"/> Friday
+                    </label>
+                    <label>
+                        <input type="checkbox"/> Saturday
+                    </label>
+                    <label>
+                        <input type="checkbox"/> Sunday
+                    </label>
+                    <button className="btn btn-primary fullWidth" title="save"
+                            disabled={!JiraTimeService.isValidJiraFormat(expectedDailyTimelogInMinutes.value)}
+                            type={"submit"}><i className="fa fa-save"/> save
+                    </button>
+                </div>
             </form>
         </div>
     </div>
