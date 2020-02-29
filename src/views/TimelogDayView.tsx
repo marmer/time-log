@@ -95,7 +95,7 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
                 this.state.timelogs.loadingState === "LOADING" ?
                     <p>Loading...</p> :
                     this.state.timelogs.loadingState === "ERROR" ?
-                        <p>Try reloading... {this.state.timelogs.error.toString()}</p> :
+                        <p>Try again... {this.state.timelogs.error.toString()}</p> :
                         <table className="table table-sm">
                             <thead>
                             <tr>
@@ -283,8 +283,13 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
             .map(timelogInput => (TimelogDayView.toTimelog(timelogInput))))
             .then(timeLogs => this.setState({
                 timeLogsInput: timeLogs.map(timeLog => TimelogDayView.toTimelogInput(timeLog))
+            }))
+            .catch(error => this.setState({
+                timelogs: {
+                    loadingState: "ERROR",
+                    error
+                }
             }));
-        // TODO: marmer 23.02.2020 error handling!
     }
 
     private addTimelogBefore(index: number) {
