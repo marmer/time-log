@@ -265,7 +265,7 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
         if (this.state.expectedTimeToLogDeltaInMonthInMinutesUntilExclusive.loadingState === "LOADING" || this.state.expectedDailyTimeToLogInMinutes.loadingState === "LOADING") {
             return "Loading...";
         } else if (this.state.expectedTimeToLogDeltaInMonthInMinutesUntilExclusive.loadingState === "DONE" && this.state.expectedDailyTimeToLogInMinutes.loadingState === "DONE") {
-            return this.state.expectedTimeToLogDeltaInMonthInMinutesUntilExclusive.value + this.getExpectedTimeToLogTodayOnly();
+            return JiraTimeService.minutesToJiraFormat(this.state.expectedTimeToLogDeltaInMonthInMinutesUntilExclusive.value + this.getExpectedTimeToLogTodayOnly());
         } else if (this.state.expectedDailyTimeToLogInMinutes.loadingState === "ERROR") {
             return this.state.expectedDailyTimeToLogInMinutes.error.toString();
         } else if (this.state.expectedTimeToLogDeltaInMonthInMinutesUntilExclusive.loadingState === "ERROR")
