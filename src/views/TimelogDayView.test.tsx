@@ -44,7 +44,7 @@ describe("TimelogDayView", () => {
 
             const underTest = reactTest.render(<TimelogDayView day={someDay}/>);
 
-            expect(await reactTest.waitForElement(() => underTest.getByText("Try reloading... Error: I didn't do it"))).toBeVisible();
+            expect(await reactTest.waitForElement(() => underTest.getByText("Try again... Error: I didn't do it"))).toBeVisible();
         });
 
         it("should show existing entries if it's possible to load time logs", async () => {
@@ -397,8 +397,23 @@ describe("TimelogDayView", () => {
             userEvent.click(underTest.getByText("save"));
 
             expect(TimeLogService.saveTimeLogsForDay).toBeCalledWith(day, []);
-        })
+        });
 
+        it("should show an errormessage if an error occurs while saving", async () => {
+            TimeLogService.saveTimeLogsForDay = jest.fn().mockRejectedValue(new Error("Strange error while saving"));
+            TimeLogService.getTimeLogsForDay = jest.fn().mockResolvedValue([]);
+            JiraTimeService.isValidJiraFormat = jest.fn().mockReturnValue(true);
+
+            const day = new Date(2020, 2, 2);
+            const underTest = reactTest.render(<TimelogDayView day={day}/>);
+
+            //loading finished
+            await reactTest.waitForElement(() => underTest.getByTitle("TimeLog 0"));
+
+            userEvent.click(underTest.getByText("save"));
+
+            await reactTest.waitForElement(() => underTest.getByText("Try again... Error: Strange error while saving"));
+        });
     });
 
     describe("statistics", () => {
