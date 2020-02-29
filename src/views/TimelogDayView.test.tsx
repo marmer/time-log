@@ -44,7 +44,7 @@ describe("TimelogDayView", () => {
 
             const underTest = reactTest.render(<TimelogDayView day={someDay}/>);
 
-            expect(await reactTest.waitForElement(() => underTest.getByText("Try again... Error: I didn't do it"))).toBeVisible();
+            expect(await reactTest.waitForElement(() => underTest.getByText("Try reloading... Error: I didn't do it"))).toBeVisible();
         });
 
         it("should show existing entries if it's possible to load time logs", async () => {

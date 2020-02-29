@@ -28,6 +28,7 @@ type AsyncValueType<T> = {
 interface TimelogDayViewState {
     timeLogsInput: TimelogInput[];
     timelogs: AsyncValueType<TimeLog[]>
+    timelogsSaveError: Error | null
     expectedDailyTimeToLogInMinutes: AsyncValueType<number>;
     expectedTimeToLogDeltaInMonthInMinutesUntilExclusive: AsyncValueType<number>
 }
@@ -51,7 +52,8 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
             },
             expectedTimeToLogDeltaInMonthInMinutesUntilExclusive: {
                 loadingState: "LOADING"
-            }
+            },
+            timelogsSaveError: null
         }
     }
 
@@ -95,42 +97,44 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
                 this.state.timelogs.loadingState === "LOADING" ?
                     <p>Loading...</p> :
                     this.state.timelogs.loadingState === "ERROR" ?
-                        <p>Try again... {this.state.timelogs.error.toString()}</p> :
-                        <table className="table table-sm">
-                            <thead>
-                            <tr>
-                                <th scope="col" className="text-sm-center">#</th>
-                                <th scope="col" className="text-sm-center">Start Time</th>
-                                <th scope="col"
-                                    className="text-sm-center">Duration <em>{this.getDurationSumAsJiraFormat()}</em>
-                                </th>
-                                <th scope="col" className="text-sm-center">Description</th>
-                                <th scope="col" className="text-sm-center">Issue</th>
-                                <th scope="col" className="text-sm-center">Notes</th>
-                                <th scope="col" className="text-sm-left">Actions</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {this.state.timeLogsInput.map((timeLog, index) => <tr
-                                key={index}>
-                                <th className="text-sm-center" title={"TimeLog " + index}>{index}</th>
-                                <td><input className={"fullWidth"} disabled title="start time" placeholder="09:15"/>
-                                </td>
-                                <td><input
-                                    className={"fullWidth" + (JiraTimeService.isValidJiraFormat(timeLog.duration) ? "" : " invalid-format")}
-                                    title="duration" type="text"
-                                    placeholder={"5h 15m"}
-                                    value={timeLog.duration}
-                                    onChange={event => this.updateDuration(index, event.target.value)}/></td>
-                                <td><input className="fullWidth" title="description" type="text"
-                                           placeholder={"What did you to here"} value={timeLog.description}
-                                           onChange={event => this.updateDescription(index, event.target.value)}/>
-                                </td>
-                                <td><input className={"fullWidth"} disabled title="issue"
-                                           placeholder={"e.g. ISSUEID-123"}/></td>
-                                <td><input className={"fullWidth"} disabled title="notes"
-                                           placeholder={"Not supposed to get exported"}/></td>
-                                <td>
+                        <p>Try reloading... {this.state.timelogs.error.toString()}</p> :
+                        this.state.timelogsSaveError ?
+                            <p>Try again... {this.state.timelogsSaveError.toString()}</p> :
+                            <table className="table table-sm">
+                                <thead>
+                                <tr>
+                                    <th scope="col" className="text-sm-center">#</th>
+                                    <th scope="col" className="text-sm-center">Start Time</th>
+                                    <th scope="col"
+                                        className="text-sm-center">Duration <em>{this.getDurationSumAsJiraFormat()}</em>
+                                    </th>
+                                    <th scope="col" className="text-sm-center">Description</th>
+                                    <th scope="col" className="text-sm-center">Issue</th>
+                                    <th scope="col" className="text-sm-center">Notes</th>
+                                    <th scope="col" className="text-sm-left">Actions</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {this.state.timeLogsInput.map((timeLog, index) => <tr
+                                    key={index}>
+                                    <th className="text-sm-center" title={"TimeLog " + index}>{index}</th>
+                                    <td><input className={"fullWidth"} disabled title="start time" placeholder="09:15"/>
+                                    </td>
+                                    <td><input
+                                        className={"fullWidth" + (JiraTimeService.isValidJiraFormat(timeLog.duration) ? "" : " invalid-format")}
+                                        title="duration" type="text"
+                                        placeholder={"5h 15m"}
+                                        value={timeLog.duration}
+                                        onChange={event => this.updateDuration(index, event.target.value)}/></td>
+                                    <td><input className="fullWidth" title="description" type="text"
+                                               placeholder={"What did you to here"} value={timeLog.description}
+                                               onChange={event => this.updateDescription(index, event.target.value)}/>
+                                    </td>
+                                    <td><input className={"fullWidth"} disabled title="issue"
+                                               placeholder={"e.g. ISSUEID-123"}/></td>
+                                    <td><input className={"fullWidth"} disabled title="notes"
+                                               placeholder={"Not supposed to get exported"}/></td>
+                                    <td>
                             <span className="btn-group actions">
                                 <button className="btn btn-outline-primary" title="add before this entry"
                                         onClick={() => this.addTimelogBefore(index)}
@@ -282,13 +286,11 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
             .slice(0, this.state.timeLogsInput.length - 1)
             .map(timelogInput => (TimelogDayView.toTimelog(timelogInput))))
             .then(timeLogs => this.setState({
-                timeLogsInput: timeLogs.map(timeLog => TimelogDayView.toTimelogInput(timeLog))
+                timeLogsInput: timeLogs.map(timeLog => TimelogDayView.toTimelogInput(timeLog)),
+                timelogsSaveError: null
             }))
             .catch(error => this.setState({
-                timelogs: {
-                    loadingState: "ERROR",
-                    error
-                }
+                timelogsSaveError: error
             }));
     }
 
