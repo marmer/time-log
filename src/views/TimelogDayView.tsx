@@ -185,7 +185,14 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
                     value: delta
                 }
             }))
-        // TODO: marmer 24.02.2020 Errorhandling!
+            .catch(error => {
+                this.setState({
+                    expectedTimeToLogDeltaInMonthInMinutesUntilExclusive: {
+                        loadingState: "ERROR",
+                        error
+                    }
+                })
+            });
     }
 
     private loadTimelogs() {
@@ -249,17 +256,20 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
     }
 
     private getExpectedTimeToLogTodayOnly() {
-        // TODO: marmer 24.02.2020 handle this when the value is unset
         return this.state.expectedDailyTimeToLogInMinutes.loadingState === "DONE" ?
             this.state.expectedDailyTimeToLogInMinutes.value - this.getDurationSum() :
             0;
     }
 
     private getExpectedTimeToLogConsideringTheWholeMonthTillTodayViewValue() {
-        return JiraTimeService.minutesToJiraFormat(
-            this.state.expectedTimeToLogDeltaInMonthInMinutesUntilExclusive.loadingState === "DONE" ?
-                this.state.expectedTimeToLogDeltaInMonthInMinutesUntilExclusive.value + this.getExpectedTimeToLogTodayOnly() :
-                0);
+        if (this.state.expectedTimeToLogDeltaInMonthInMinutesUntilExclusive.loadingState === "LOADING" || this.state.expectedDailyTimeToLogInMinutes.loadingState === "LOADING") {
+            return "Loading...";
+        } else if (this.state.expectedTimeToLogDeltaInMonthInMinutesUntilExclusive.loadingState === "DONE" && this.state.expectedDailyTimeToLogInMinutes.loadingState === "DONE") {
+            return this.state.expectedTimeToLogDeltaInMonthInMinutesUntilExclusive.value + this.getExpectedTimeToLogTodayOnly();
+        } else if (this.state.expectedDailyTimeToLogInMinutes.loadingState === "ERROR") {
+            return this.state.expectedDailyTimeToLogInMinutes.error.toString();
+        } else if (this.state.expectedTimeToLogDeltaInMonthInMinutesUntilExclusive.loadingState === "ERROR")
+            return this.state.expectedTimeToLogDeltaInMonthInMinutesUntilExclusive.error.toString();
     }
 
     private addTimelog() {
