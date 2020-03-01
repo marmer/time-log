@@ -1,24 +1,30 @@
 import React, {useEffect, useState} from "react";
-import SettingsService from "../core/SettingsService";
+import DailyTimeLogSettingsService, {DailyTimelogSettings} from "../core/DailyTimeLogSettingsService";
 import JiraTimeService from "../core/JiraTimeService";
 import {AsyncValueType} from "./AsyncValueType";
 
 export default function DailyTimelogSettingsView() {
     const loadingPlaceholder = "Loading...";
 
-    const [expectedDailyTimelogInMinutes, setExpectedDailyTimelogInMinutes] = useState<AsyncValueType<string>>({
+    const [dailyTimelogSettingsInputs, setDailyTimelogSettingsInputs] = useState<AsyncValueType<{
+        expectedDailyTimelog: string,
+        expectedTimelogDays: boolean[]
+    }>>({
         loadingState: "LOADING",
     });
 
     useEffect(() => {
-        setExpectedDailyTimelogInMinutes({
+        setDailyTimelogSettingsInputs({
             loadingState: "LOADING",
         });
-        SettingsService.getExpectedDailyTimelogInMinutes()
-            .then(minutes => {
-                setExpectedDailyTimelogInMinutes({
+        DailyTimeLogSettingsService.getExpectedDailyTimelogSettings()
+            .then((dailyTimelogSettings: DailyTimelogSettings) => {
+                setDailyTimelogSettingsInputs({
                     loadingState: "DONE",
-                    value: JiraTimeService.minutesToJiraFormat(minutes)
+                    value: {
+                        expectedDailyTimelog: JiraTimeService.minutesToJiraFormat(dailyTimelogSettings.expectedDailyTimelogInMinutes),
+                        expectedTimelogDays: [true, true, true, true, true, true, true]
+                    }
                 });
             })
     }, []);
@@ -28,19 +34,26 @@ export default function DailyTimelogSettingsView() {
         </div>
         <div className="form-group row card-body">
             <form onSubmit={_ => {
-                if (expectedDailyTimelogInMinutes.loadingState === "DONE")
-                    SettingsService.setExpectedDailyTimelogInMinutes(JiraTimeService.jiraFormatToMinutes(expectedDailyTimelogInMinutes.value));
+                if (dailyTimelogSettingsInputs.loadingState === "DONE")
+                    DailyTimeLogSettingsService.setExpectedDailyTimelogSettings({
+                        expectedDailyTimelogInMinutes: JiraTimeService.jiraFormatToMinutes(dailyTimelogSettingsInputs.value.expectedDailyTimelog),
+                        // TODO: marmer 01.03.2020 save and care
+                        expectedTimelogDays: [false, true, true, true, true, true, false]
+                    });
                 return false;
             }}>
                 <div className="d-flex flex-column">
                     <label>Expected Time to log per day <input id="expectedTimeToLog" type="text"
-                                                               className={(JiraTimeService.isValidJiraFormat((expectedDailyTimelogInMinutes as any).value) ? "" : " invalid-format")}
-                                                               disabled={expectedDailyTimelogInMinutes.loadingState !== "DONE"}
-                                                               value={expectedDailyTimelogInMinutes.loadingState === "DONE" ? expectedDailyTimelogInMinutes.value : loadingPlaceholder}
-                                                               onChange={({target}) => setExpectedDailyTimelogInMinutes({
-                                                                   ...expectedDailyTimelogInMinutes,
+                                                               className={(dailyTimelogSettingsInputs.loadingState === "DONE" && JiraTimeService.isValidJiraFormat(dailyTimelogSettingsInputs.value.expectedDailyTimelog) ? "" : " invalid-format")}
+                                                               disabled={dailyTimelogSettingsInputs.loadingState !== "DONE"}
+                                                               value={dailyTimelogSettingsInputs.loadingState === "DONE" ? dailyTimelogSettingsInputs.value.expectedDailyTimelog : loadingPlaceholder}
+                                                               onChange={({target}) => setDailyTimelogSettingsInputs({
+                                                                   ...dailyTimelogSettingsInputs,
                                                                    loadingState: "DONE",
-                                                                   value: target.value
+                                                                   value: {
+                                                                       ...(dailyTimelogSettingsInputs as any).value,
+                                                                       expectedDailyTimelog: target.value
+                                                                   }
                                                                })}
                                                                placeholder="e.g. 7h 30m"/>
                     </label>
@@ -66,7 +79,7 @@ export default function DailyTimelogSettingsView() {
                         <input type="checkbox"/> Sunday
                     </label>
                     <button className="btn btn-primary fullWidth" title="save"
-                            disabled={expectedDailyTimelogInMinutes.loadingState !== "DONE" || !JiraTimeService.isValidJiraFormat(expectedDailyTimelogInMinutes.value)}
+                            disabled={dailyTimelogSettingsInputs.loadingState !== "DONE" || !JiraTimeService.isValidJiraFormat(dailyTimelogSettingsInputs.value.expectedDailyTimelog)}
                             type={"submit"}><i className="fa fa-save"/> save
                     </button>
                 </div>
