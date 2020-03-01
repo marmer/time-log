@@ -3,12 +3,15 @@ import '@testing-library/jest-dom/extend-expect'
 import * as reactTest from "@testing-library/react";
 
 import SettingsView from "./SettingsView";
-import SettingsService from "../core/SettingsService";
+import DailyTimeLogSettingsService from "../core/DailyTimeLogSettingsService";
 import userEvent from "@testing-library/user-event";
 
 describe("SettingsView", () => {
     it("should show some loading state while loading the settings", async () => {
-        SettingsService.getExpectedDailyTimelogInMinutes = jest.fn().mockResolvedValue({expectedDailyTimelogInMinutes: 480});
+        DailyTimeLogSettingsService.getExpectedDailyTimelogSettings = jest.fn().mockResolvedValue({
+            expectedDailyTimelogInMinutes: 480,
+            expectedTimelogDays: [false, true, true, true, true, true, false]
+        });
 
         const underTest = reactTest.render(<SettingsView/>);
 
@@ -19,7 +22,10 @@ describe("SettingsView", () => {
     });
 
     it("should show the current expected daily time to log after loading", async () => {
-        SettingsService.getExpectedDailyTimelogInMinutes = jest.fn().mockResolvedValue(480);
+        DailyTimeLogSettingsService.getExpectedDailyTimelogSettings = jest.fn().mockResolvedValue({
+            expectedDailyTimelogInMinutes: 480,
+            expectedTimelogDays: [false, true, true, true, true, true, false]
+        });
 
         const underTest = reactTest.render(<SettingsView/>);
 
@@ -31,8 +37,11 @@ describe("SettingsView", () => {
     });
 
     it("should show tie current expected daily time to log after loading", async () => {
-        SettingsService.getExpectedDailyTimelogInMinutes = jest.fn().mockResolvedValue(480);
-        SettingsService.setExpectedDailyTimelogInMinutes = jest.fn();
+        DailyTimeLogSettingsService.getExpectedDailyTimelogSettings = jest.fn().mockResolvedValue({
+            expectedDailyTimelogInMinutes: 480,
+            expectedTimelogDays: [false, true, true, true, true, true, false]
+        });
+        DailyTimeLogSettingsService.setExpectedDailyTimelogSettings = jest.fn();
 
         const underTest = reactTest.render(<SettingsView/>);
 
@@ -41,12 +50,18 @@ describe("SettingsView", () => {
         userEvent.type(dailyTimelogField, "15m");
         userEvent.click(underTest.getByTitle("save"));
 
-        expect(SettingsService.setExpectedDailyTimelogInMinutes).toBeCalledWith(15);
+        expect(DailyTimeLogSettingsService.setExpectedDailyTimelogSettings).toBeCalledWith({
+            expectedDailyTimelogInMinutes: 15,
+            expectedTimelogDays: [false, true, true, true, true, true, false]
+        });
     });
 
     it("should mark invalid values and make saving of that invalid value impossible", async () => {
-        SettingsService.getExpectedDailyTimelogInMinutes = jest.fn().mockResolvedValue(480);
-        SettingsService.setExpectedDailyTimelogInMinutes = jest.fn();
+        DailyTimeLogSettingsService.getExpectedDailyTimelogSettings = jest.fn().mockResolvedValue({
+            expectedDailyTimelogInMinutes: 480,
+            expectedTimelogDays: [false, true, true, true, true, true, false]
+        });
+        DailyTimeLogSettingsService.setExpectedDailyTimelogSettings = jest.fn();
 
         const underTest = reactTest.render(<SettingsView/>);
 

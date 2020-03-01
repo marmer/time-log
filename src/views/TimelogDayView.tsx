@@ -4,7 +4,7 @@ import JiraTimeService from "../core/JiraTimeService";
 import "./TimelogDayView.css"
 
 import deepEqual from "deep-equal"
-import SettingsService from "../core/SettingsService";
+import DailyTimeLogSettingsService from "../core/DailyTimeLogSettingsService";
 import {AsyncValueType} from "./AsyncValueType";
 
 export interface TimelogDayViewProps {
@@ -220,7 +220,7 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
                 loadingState: "LOADING"
             }
         });
-        SettingsService.getExpectedDailyTimelogInMinutes()
+        DailyTimeLogSettingsService.getExpectedDailyTimelogInMinutes()
             .then(expectedTime => this.setState({
                 expectedDailyTimeToLogInMinutes: {
                     loadingState: "DONE",

@@ -1,5 +1,5 @@
 import TimeLogRepository from "../local/TimeLogRepository";
-import SettingsService from "./SettingsService";
+import DailyTimeLogSettingsService from "./DailyTimeLogSettingsService";
 import moment from "moment";
 
 export interface TimeLog {
@@ -23,7 +23,7 @@ export default class TimeLogService {
         const firstOfMonth = moment(dayExclusive).set("date", 1);
         const endDay = moment(dayExclusive).subtract(1, "day");
         const numberOfDaysToTakeIntoAccount = endDay.diff(firstOfMonth, "day") + 1;
-        const sumOfExpectedWorkToLog = await SettingsService.getExpectedDailyTimelogInMinutes();
+        const sumOfExpectedWorkToLog = await DailyTimeLogSettingsService.getExpectedDailyTimelogInMinutes();
         const loggedTimeSum: number = await TimeLogRepository.getSumOfTimeLoggedBetween(firstOfMonth.toDate(), endDay.toDate());
         return sumOfExpectedWorkToLog * numberOfDaysToTakeIntoAccount - loggedTimeSum;
     }
