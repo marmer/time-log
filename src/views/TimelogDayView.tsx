@@ -5,6 +5,7 @@ import "./TimelogDayView.css"
 
 import deepEqual from "deep-equal"
 import SettingsService from "../core/SettingsService";
+import {AsyncValueType} from "./AsyncValueType";
 
 export interface TimelogDayViewProps {
     day: Date;
@@ -14,16 +15,6 @@ interface TimelogInput {
     duration: string;
     description: string;
 }
-
-type AsyncValueType<T> = {
-    loadingState: "LOADING";
-} | {
-    loadingState: "ERROR";
-    error: Error;
-} | {
-    loadingState: "DONE";
-    value: T;
-};
 
 interface TimelogDayViewState {
     timeLogsInput: TimelogInput[];
