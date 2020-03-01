@@ -20,7 +20,7 @@ describe("SettingsView", () => {
             expect(underTest.getByTitle("save")).toBeDisabled()
         });
 
-        it("should show tie current expected daily time to log after loading", async () => {
+        it("should show the current expected daily time to log after loading", async () => {
             SettingsService.getExpectedDailyTimelogInMinutes = jest.fn().mockResolvedValue(480);
 
             const underTest = reactTest.render(<SettingsView/>);
