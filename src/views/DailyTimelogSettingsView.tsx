@@ -13,6 +13,7 @@ enum WeekDays {
     SATURDAY
 }
 
+
 export default function DailyTimelogSettingsView() {
     const loadingPlaceholder = "Loading...";
 
@@ -46,6 +47,19 @@ export default function DailyTimelogSettingsView() {
                 });
             })
     }, []);
+
+    function flip(weekDay: WeekDays) {
+        if (dailyTimelogSettingsInputs.loadingState === "DONE") {
+            setDailyTimelogSettingsInputs({
+                ...dailyTimelogSettingsInputs,
+                value: {
+                    ...(dailyTimelogSettingsInputs as any).value,
+                    expectedTimelogDays: dailyTimelogSettingsInputs.value.expectedTimelogDays.map((value, index) => index === weekDay ? !value : value)
+                }
+            })
+        }
+    }
+
     return <div className="card">
         <div className="card-header">
             Day Settings
@@ -83,25 +97,68 @@ export default function DailyTimelogSettingsView() {
                                                                placeholder="e.g. 7h 30m"/>
                     </label>
                     <label>
-                        <input type="checkbox"/> Monday
+                        <input type="checkbox"
+                               disabled={dailyTimelogSettingsInputs.loadingState !== "DONE"}
+                               checked={
+                                   dailyTimelogSettingsInputs.loadingState === "DONE" && dailyTimelogSettingsInputs.value.expectedTimelogDays[WeekDays.MONDAY]
+                               }
+                               onChange={(_) => {
+                                   flip(WeekDays.MONDAY);
+                               }}/> Monday
                     </label>
                     <label>
-                        <input type="checkbox"/> Tuesday
+                        <input type="checkbox"
+                               disabled={dailyTimelogSettingsInputs.loadingState !== "DONE"}
+                               checked={dailyTimelogSettingsInputs.loadingState === "DONE" && dailyTimelogSettingsInputs.value.expectedTimelogDays[WeekDays.TUESDAY]}
+                               onChange={(_) => {
+                                   flip(WeekDays.TUESDAY);
+                               }}
+                        /> Tuesday
                     </label>
                     <label>
-                        <input type="checkbox"/> Wednesday
+                        <input type="checkbox"
+                               disabled={dailyTimelogSettingsInputs.loadingState !== "DONE"}
+                               checked={dailyTimelogSettingsInputs.loadingState === "DONE" && dailyTimelogSettingsInputs.value.expectedTimelogDays[WeekDays.WEDNESDAY]}
+                               onChange={(_) => {
+                                   flip(WeekDays.WEDNESDAY);
+                               }}
+                        /> Wednesday
                     </label>
                     <label>
-                        <input type="checkbox"/> Thursday
+                        <input type="checkbox"
+                               disabled={dailyTimelogSettingsInputs.loadingState !== "DONE"}
+                               checked={dailyTimelogSettingsInputs.loadingState === "DONE" && dailyTimelogSettingsInputs.value.expectedTimelogDays[WeekDays.THURSDAY]}
+                               onChange={(_) => {
+                                   flip(WeekDays.THURSDAY);
+                               }}
+                        /> Thursday
                     </label>
                     <label>
-                        <input type="checkbox"/> Friday
+                        <input type="checkbox"
+                               disabled={dailyTimelogSettingsInputs.loadingState !== "DONE"}
+                               checked={dailyTimelogSettingsInputs.loadingState === "DONE" && dailyTimelogSettingsInputs.value.expectedTimelogDays[WeekDays.FRIDAY]}
+                               onChange={(_) => {
+                                   flip(WeekDays.FRIDAY);
+                               }}
+                        /> Friday
                     </label>
                     <label>
-                        <input type="checkbox"/> Saturday
+                        <input type="checkbox"
+                               disabled={dailyTimelogSettingsInputs.loadingState !== "DONE"}
+                               checked={dailyTimelogSettingsInputs.loadingState === "DONE" && dailyTimelogSettingsInputs.value.expectedTimelogDays[WeekDays.SATURDAY]}
+                               onChange={(_) => {
+                                   flip(WeekDays.SATURDAY);
+                               }}
+                        /> Saturday
                     </label>
                     <label>
-                        <input type="checkbox"/> Sunday
+                        <input type="checkbox"
+                               disabled={dailyTimelogSettingsInputs.loadingState !== "DONE"}
+                               checked={dailyTimelogSettingsInputs.loadingState === "DONE" && dailyTimelogSettingsInputs.value.expectedTimelogDays[WeekDays.SUNDAY]}
+                               onChange={(_) => {
+                                   flip(WeekDays.SUNDAY);
+                               }}
+                        /> Sunday
                     </label>
                     <button className="btn btn-primary fullWidth" title="save"
                             disabled={dailyTimelogSettingsInputs.loadingState !== "DONE" || !JiraTimeService.isValidJiraFormat(dailyTimelogSettingsInputs.value.expectedDailyTimelog)}
