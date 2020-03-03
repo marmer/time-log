@@ -3,6 +3,16 @@ import DailyTimeLogSettingsService, {DailyTimelogSettings} from "../core/DailyTi
 import JiraTimeService from "../core/JiraTimeService";
 import {AsyncValueType} from "./AsyncValueType";
 
+enum WeekDays {
+    SUNDAY,
+    MONDAY,
+    TUESDAY,
+    WEDNESDAY,
+    THURSDAY,
+    FRIDAY,
+    SATURDAY
+}
+
 export default function DailyTimelogSettingsView() {
     const loadingPlaceholder = "Loading...";
 
@@ -46,13 +56,13 @@ export default function DailyTimelogSettingsView() {
                     DailyTimeLogSettingsService.setExpectedDailyTimelogSettings({
                         expectedDailyTimelogInMinutes: JiraTimeService.jiraFormatToMinutes(dailyTimelogSettingsInputs.value.expectedDailyTimelog),
                         expectedTimelogDays: {
-                            sunday: dailyTimelogSettingsInputs.value.expectedTimelogDays[0],
-                            monday: dailyTimelogSettingsInputs.value.expectedTimelogDays[1],
-                            tuesday: dailyTimelogSettingsInputs.value.expectedTimelogDays[2],
-                            wednesday: dailyTimelogSettingsInputs.value.expectedTimelogDays[3],
-                            thursday: dailyTimelogSettingsInputs.value.expectedTimelogDays[4],
-                            friday: dailyTimelogSettingsInputs.value.expectedTimelogDays[5],
-                            saturday: dailyTimelogSettingsInputs.value.expectedTimelogDays[6]
+                            sunday: dailyTimelogSettingsInputs.value.expectedTimelogDays[WeekDays.SUNDAY],
+                            monday: dailyTimelogSettingsInputs.value.expectedTimelogDays[WeekDays.MONDAY],
+                            tuesday: dailyTimelogSettingsInputs.value.expectedTimelogDays[WeekDays.TUESDAY],
+                            wednesday: dailyTimelogSettingsInputs.value.expectedTimelogDays[WeekDays.WEDNESDAY],
+                            thursday: dailyTimelogSettingsInputs.value.expectedTimelogDays[WeekDays.THURSDAY],
+                            friday: dailyTimelogSettingsInputs.value.expectedTimelogDays[WeekDays.FRIDAY],
+                            saturday: dailyTimelogSettingsInputs.value.expectedTimelogDays[WeekDays.SATURDAY]
                         }
                     });
                 return false;
