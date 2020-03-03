@@ -3,7 +3,15 @@ import SettingsRepository from "../local/SettingsRepository";
 
 export interface DailyTimelogSettings {
     expectedDailyTimelogInMinutes: number,
-    expectedTimelogDays: [boolean, boolean, boolean, boolean, boolean, boolean, boolean]
+    expectedTimelogDays: {
+        sunday: boolean,
+        monday: boolean,
+        tuesday: boolean,
+        wednesday: boolean,
+        thursday: boolean,
+        friday: boolean,
+        saturday: boolean
+    }
 }
 
 export default class DailyTimeLogSettingsService {
@@ -16,7 +24,15 @@ export default class DailyTimeLogSettingsService {
         // TODO: marmer 01.03.2020 implement vor active days and other properties as well
         return {
             expectedDailyTimelogInMinutes: await this.getExpectedDailyTimelogInMinutes(),
-            expectedTimelogDays: [false, true, true, true, true, true, false]
+            expectedTimelogDays: {
+                sunday: false,
+                monday: true,
+                tuesday: true,
+                wednesday: true,
+                thursday: true,
+                friday: true,
+                saturday: false
+            }
         }
     }
 
