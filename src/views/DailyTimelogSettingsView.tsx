@@ -23,7 +23,15 @@ export default function DailyTimelogSettingsView() {
                     loadingState: "DONE",
                     value: {
                         expectedDailyTimelog: JiraTimeService.minutesToJiraFormat(dailyTimelogSettings.expectedDailyTimelogInMinutes),
-                        expectedTimelogDays: [true, true, true, true, true, true, true]
+                        expectedTimelogDays: [
+                            dailyTimelogSettings.expectedTimelogDays.saturday,
+                            dailyTimelogSettings.expectedTimelogDays.monday,
+                            dailyTimelogSettings.expectedTimelogDays.tuesday,
+                            dailyTimelogSettings.expectedTimelogDays.wednesday,
+                            dailyTimelogSettings.expectedTimelogDays.thursday,
+                            dailyTimelogSettings.expectedTimelogDays.friday,
+                            dailyTimelogSettings.expectedTimelogDays.sunday
+                        ]
                     }
                 });
             })
@@ -37,8 +45,15 @@ export default function DailyTimelogSettingsView() {
                 if (dailyTimelogSettingsInputs.loadingState === "DONE")
                     DailyTimeLogSettingsService.setExpectedDailyTimelogSettings({
                         expectedDailyTimelogInMinutes: JiraTimeService.jiraFormatToMinutes(dailyTimelogSettingsInputs.value.expectedDailyTimelog),
-                        // TODO: marmer 01.03.2020 save and care
-                        expectedTimelogDays: [false, true, true, true, true, true, false]
+                        expectedTimelogDays: {
+                            sunday: dailyTimelogSettingsInputs.value.expectedTimelogDays[0],
+                            monday: dailyTimelogSettingsInputs.value.expectedTimelogDays[1],
+                            tuesday: dailyTimelogSettingsInputs.value.expectedTimelogDays[2],
+                            wednesday: dailyTimelogSettingsInputs.value.expectedTimelogDays[3],
+                            thursday: dailyTimelogSettingsInputs.value.expectedTimelogDays[4],
+                            friday: dailyTimelogSettingsInputs.value.expectedTimelogDays[5],
+                            saturday: dailyTimelogSettingsInputs.value.expectedTimelogDays[6]
+                        }
                     });
                 return false;
             }}>
