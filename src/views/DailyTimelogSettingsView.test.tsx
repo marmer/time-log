@@ -76,6 +76,52 @@ describe("SettingsView", () => {
         userEvent.type(dailyTimelogField, "something invalid");
         expect(dailyTimelogField.classList).toContain("invalid-format");
         expect(underTest.getByTitle("save")).toBeDisabled();
+        expect(DailyTimeLogSettingsService.setExpectedDailyTimelogSettings).not.toBeCalled();
     });
     // TODO: marmer 23.02.2020 Errorhandling while loading
+    it("should save and set saved valid values", async () => {
+        DailyTimeLogSettingsService.getExpectedDailyTimelogSettings = jest.fn().mockResolvedValue(
+            deepmerge(dailyTimelogSettingsBase, {
+                expectedDailyTimelogInMinutes: 480,
+                expectedTimelogDays: {
+                    sunday: false,
+                    monday: true,
+                    tuesday: true,
+                    wednesday: true,
+                    thursday: true,
+                    friday: true,
+                    saturday: false
+                }
+            }));
+        DailyTimeLogSettingsService.setExpectedDailyTimelogSettings = jest.fn();
+
+        const underTest = reactTest.render(<SettingsView/>);
+
+        const dailyTimelogField = underTest.getByLabelText("Expected Time to log per day");
+        await reactTest.waitForDomChange({container: dailyTimelogField});
+        userEvent.type(dailyTimelogField, "15m");
+        underTest.getByLabelText("Monday").click();
+        underTest.getByLabelText("Tuesday").click();
+        underTest.getByLabelText("Wednesday").click();
+        underTest.getByLabelText("Thursday").click();
+        underTest.getByLabelText("Friday").click();
+        underTest.getByLabelText("Saturday").click();
+        underTest.getByLabelText("Sunday").click();
+        reactTest.fireEvent.submit(dailyTimelogField);
+
+        expect(DailyTimeLogSettingsService.setExpectedDailyTimelogSettings).toBeCalledWith(
+            deepmerge(dailyTimelogSettingsBase, {
+                expectedDailyTimelogInMinutes: 15,
+                expectedTimelogDays: {
+                    sunday: true,
+                    monday: false,
+                    tuesday: false,
+                    wednesday: false,
+                    thursday: false,
+                    friday: false,
+                    saturday: true
+                }
+            })
+        );
+    });
 });
