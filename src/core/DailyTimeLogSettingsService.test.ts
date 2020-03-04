@@ -1,6 +1,19 @@
 import DailyTimeLogSettingsService, {DailyTimelogSettings} from "./DailyTimeLogSettingsService";
 import SettingsRepository from "../local/SettingsRepository";
 
+const dailyTimeLogSettingsBase = {
+    expectedDailyTimelogInMinutes: 480,
+    expectedTimelogDays: {
+        sunday: false,
+        monday: true,
+        tuesday: false,
+        wednesday: true,
+        thursday: false,
+        friday: true,
+        saturday: false,
+    }
+} as DailyTimelogSettings;
+
 describe("DailyTimeLogSettingsService", () => {
     beforeEach(() => {
         jest.unmock("../local/SettingsRepository");
@@ -67,18 +80,19 @@ describe("DailyTimeLogSettingsService", () => {
 
             const result = await DailyTimeLogSettingsService.getExpectedDailyTimelogSettings();
 
-            expect(result).toStrictEqual({
-                expectedDailyTimelogInMinutes: 480,
-                expectedTimelogDays: {
-                    sunday: false,
-                    monday: true,
-                    tuesday: false,
-                    wednesday: true,
-                    thursday: false,
-                    friday: true,
-                    saturday: false,
-                }
-            } as DailyTimelogSettings)
+            expect(result).toStrictEqual({...dailyTimeLogSettingsBase})
+        });
+
+        describe("setExpectedDailyTimelogSettings", () => {
+            it("should store the given settings and resolve after", async () => {
+                SettingsRepository.setExpectedDailyTimelogSettings = jest.fn();
+
+                await DailyTimeLogSettingsService.setExpectedDailyTimelogSettings({
+                    ...dailyTimeLogSettingsBase
+                });
+
+                expect(SettingsRepository.setExpectedDailyTimelogSettings).toBeCalledWith({...dailyTimeLogSettingsBase});
+            });
         });
     });
 });

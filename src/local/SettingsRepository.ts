@@ -29,6 +29,10 @@ export default class SettingsRepository {
         return null;
     }
 
+    static async setExpectedDailyTimelogSettings(dailyTimelogSettings: DailyTimelogSettings) {
+        return null;
+    }
+
     private static async prepareSettings() {
         if (!(await timlogExpectationSettings.get(initialKey))) {
             await timlogExpectationSettings.put({

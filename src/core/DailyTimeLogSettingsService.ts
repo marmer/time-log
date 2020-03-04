@@ -16,8 +16,7 @@ export interface DailyTimelogSettings {
 
 export default class DailyTimeLogSettingsService {
     static async setExpectedDailyTimelogSettings(dailyTimelogSettings: DailyTimelogSettings): Promise<void> {
-        // TODO: marmer 01.03.2020 implement vor active days and other properties as well
-        await this.setExpectedDailyTimelogInMinutes(dailyTimelogSettings.expectedDailyTimelogInMinutes)
+        await SettingsRepository.setExpectedDailyTimelogSettings(dailyTimelogSettings);
     }
 
     static async getExpectedDailyTimelogSettings(): Promise<DailyTimelogSettings> {
