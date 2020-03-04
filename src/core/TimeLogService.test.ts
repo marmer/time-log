@@ -1,7 +1,20 @@
 import TimeLogService, {TimeLog} from "./TimeLogService";
 import TimeLogRepository from "../local/TimeLogRepository";
-import DailyTimeLogSettingsService from "./DailyTimeLogSettingsService";
+import DailyTimeLogSettingsService, {DailyTimelogSettings} from "./DailyTimeLogSettingsService";
 
+
+const dailyTimelogSettingsBase: DailyTimelogSettings = {
+    expectedDailyTimeToLogInMinutes: 123,
+    expectedTimelogDays: {
+        saturday: true,
+        friday: true,
+        thursday: true,
+        wednesday: true,
+        tuesday: true,
+        monday: true,
+        sunday: true,
+    }
+};
 
 describe("TimeLogService", () => {
     describe("getTimeLogsForDay", () => {
@@ -43,7 +56,10 @@ describe("TimeLogService", () => {
     describe("getExpectedTimeToLogDeltaInMonthInMinutesUntilExclusive", () => {
 
         it("should serve the delta between logged and expected work to log from the beginning of the month to the day before the given one", async () => {
-            DailyTimeLogSettingsService.getExpectedDailyTimeToLogInMinutes = jest.fn().mockResolvedValue(10);
+            DailyTimeLogSettingsService.getExpectedDailyTimelogSettings = jest.fn().mockResolvedValue({
+                ...dailyTimelogSettingsBase,
+                expectedDailyTimeToLogInMinutes: 10
+            } as DailyTimelogSettings);
             TimeLogRepository.getSumOfTimeLoggedBetween = jest.fn().mockImplementation((start: Date, end: Date) => {
                 if (!isDateEqual(start, new Date(2020, 1, 1))) {
                     throw new Error("Unexpected start: " + start);
