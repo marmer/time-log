@@ -58,21 +58,30 @@ describe("TimeLogService", () => {
         it("should serve the delta between logged and expected work to log from the beginning of the month to the day before the given one", async () => {
             DailyTimeLogSettingsService.getExpectedDailyTimelogSettings = jest.fn().mockResolvedValue({
                 ...dailyTimelogSettingsBase,
-                expectedDailyTimeToLogInMinutes: 10
+                expectedDailyTimeToLogInMinutes: 10,
+                expectedTimelogDays: {
+                    sunday: true,
+                    monday: true,
+                    tuesday: false,
+                    wednesday: false,
+                    thursday: false,
+                    friday: false,
+                    saturday: false,
+                }
             } as DailyTimelogSettings);
             TimeLogRepository.getSumOfTimeLoggedBetween = jest.fn().mockImplementation((start: Date, end: Date) => {
                 if (!isDateEqual(start, new Date(2020, 1, 1))) {
                     throw new Error("Unexpected start: " + start);
                 }
-                if (!isDateEqual(end, new Date(2020, 1, 2))) {
+                if (!isDateEqual(end, new Date(2020, 1, 14))) {
                     throw new Error("Unexpected end: " + end);
                 }
-                return 8;
+                return 7;
             });
 
-            const delta = await TimeLogService.getExpectedTimeToLogDeltaInMonthInMinutesUntilExclusive(new Date(2020, 1, 3));
+            const delta = await TimeLogService.getExpectedTimeToLogDeltaInMonthInMinutesUntilExclusive(new Date(2020, 1, 15));
 
-            expect(delta).toBe(12)
+            expect(delta).toBe(33)
         });
 
         it("should serve zero if the first of a month because it's impossible to have an expectation before a month has begun", async () => {
