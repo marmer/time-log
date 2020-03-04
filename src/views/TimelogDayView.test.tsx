@@ -485,9 +485,9 @@ describe("TimelogDayView", () => {
 
             const underTest = reactTest.render(<TimelogDayView day={day}/>);
 
-            expect(underTest.getByTitle("time left today only")).toHaveValue("Loading...");
+            expect(underTest.getByLabelText("Expected time to log since 2020-03-02:")).toHaveValue("Loading...");
 
-            await reactTest.wait(() => expect(underTest.getByTitle("time left today only")).toHaveValue("30"));
+            await reactTest.wait(() => expect(underTest.getByLabelText("Expected time to log since 2020-03-02:")).toHaveValue("30"));
         });
 
         it("should show an error for the daily expectation if it was not possible to load the daily expectation value", async () => {
@@ -501,7 +501,7 @@ describe("TimelogDayView", () => {
 
             const underTest = reactTest.render(<TimelogDayView day={day}/>);
 
-            const dailyExpectationField = await reactTest.waitForElement(() => underTest.getByTitle("time left today only"));
+            const dailyExpectationField = await reactTest.waitForElement(() => underTest.getByLabelText("Expected time to log since 2020-03-02:"));
             expect(dailyExpectationField).toHaveValue("Error: Oh no, oh why, why me, .... noooo");
             expect(dailyExpectationField).toBeVisible();
         });
@@ -519,7 +519,7 @@ describe("TimelogDayView", () => {
             TimeLogService.getExpectedTimeToLogDeltaInMonthInMinutesUntilExclusive = jest.fn().mockImplementation(d => isEqualDate(d, day) ? Promise.resolve(20) : Promise.reject(new Error("Unexpected value: " + d)));
             const underTest = reactTest.render(<TimelogDayView day={day}/>);
 
-            const overtimeField = await reactTest.waitForElement(() => underTest.getByTitle("time left monthly"));
+            const overtimeField = await reactTest.waitForElement(() => underTest.getByLabelText("Expected time to log since 2020-03-01:"));
 
             expect(overtimeField).toHaveValue("50");
         });
@@ -537,7 +537,7 @@ describe("TimelogDayView", () => {
             TimeLogService.getExpectedTimeToLogDeltaInMonthInMinutesUntilExclusive = jest.fn().mockImplementation(d => isEqualDate(d, day) ? Promise.resolve(20) : Promise.reject(new Error("Unexpected value: " + d)));
             const underTest = reactTest.render(<TimelogDayView day={day}/>);
 
-            const overtimeField = await reactTest.waitForElement(() => underTest.getByTitle("time left monthly"));
+            const overtimeField = await reactTest.waitForElement(() => underTest.getByLabelText("Expected time to log since 2020-03-01:"));
 
             await reactTest.wait(() => expect(overtimeField).toHaveValue("Error: woohoo"));
         });
@@ -556,7 +556,7 @@ describe("TimelogDayView", () => {
             TimeLogService.getExpectedTimeToLogDeltaInMonthInMinutesUntilExclusive = jest.fn().mockRejectedValue(new Error("Fancy something"));
             const underTest = reactTest.render(<TimelogDayView day={day}/>);
 
-            const overtimeField = await reactTest.waitForElement(() => underTest.getByTitle("time left monthly"));
+            const overtimeField = await reactTest.waitForElement(() => underTest.getByLabelText("Expected time to log since 2020-03-01:"));
 
             expect(overtimeField).toHaveValue("Error: Fancy something");
         });

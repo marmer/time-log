@@ -6,6 +6,7 @@ import "./TimelogDayView.css"
 import deepEqual from "deep-equal"
 import DailyTimeLogSettingsService from "../core/DailyTimeLogSettingsService";
 import {AsyncValueType} from "./AsyncValueType";
+import moment from "moment";
 
 export interface TimelogDayViewProps {
     day: Date;
@@ -155,12 +156,15 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
 
             <section className="stats">
                 <label>
-                    Time to log by daily expectation: <input disabled title={"time left today only"}
-                                                             value={this.getDailyExpectationViewValue()}/>
+                    Expected time to log since {moment(this.props.day).format("YYYY-MM-DD")}: <input disabled
+                                                                                                     title={"time left today only"}
+                                                                                                     value={this.getDailyExpectationViewValue()}/>
                 </label>
                 <label>
-                    Time to log by monthly expectation till today: <input disabled title={"time left monthly"}
-                                                                          value={this.getExpectedTimeToLogConsideringTheWholeMonthTillTodayViewValue()}/>
+                    Expected time to log since {moment(this.props.day).set("date", 1).format("YYYY-MM-DD")}: <input
+                    disabled
+                    title={"time left monthly"}
+                    value={this.getExpectedTimeToLogConsideringTheWholeMonthTillTodayViewValue()}/>
                 </label>
             </section>
         </div>
