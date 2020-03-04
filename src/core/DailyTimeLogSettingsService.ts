@@ -2,7 +2,7 @@ import SettingsRepository from "../local/SettingsRepository";
 
 
 export interface DailyTimelogSettings {
-    expectedDailyTimelogInMinutes: number,
+    expectedDailyTimeToLogInMinutes: number,
     expectedTimelogDays: {
         sunday: boolean,
         monday: boolean,
@@ -23,7 +23,7 @@ export default class DailyTimeLogSettingsService {
         const settings = await SettingsRepository.getExpectedDailyTimelogSettings();
         const eightHours = 480;
         return settings ? settings : {
-            expectedDailyTimelogInMinutes: eightHours,
+            expectedDailyTimeToLogInMinutes: eightHours,
             expectedTimelogDays: {
                 sunday: false,
                 monday: true,
@@ -36,13 +36,9 @@ export default class DailyTimeLogSettingsService {
         };
     }
 
-    static async setExpectedDailyTimelogInMinutes(value: number): Promise<void> {
-        SettingsRepository.setExpectedDailyTimelogInMinutes(value)
-    }
-
-    static async getExpectedDailyTimelogInMinutes(): Promise<number> {
+    static async getExpectedDailyTimeToLogInMinutes(): Promise<number> {
         const eightHours = 480;
-        const configuredHoursToWorkPerDay = await SettingsRepository.getExpectedDailyTimelogInMinutes();
+        const configuredHoursToWorkPerDay = await SettingsRepository.getExpectedDailyTimeToLogInMinutes();
         return Promise.resolve(configuredHoursToWorkPerDay ? configuredHoursToWorkPerDay : eightHours);
     }
 }

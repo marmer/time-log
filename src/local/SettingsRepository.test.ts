@@ -1,55 +1,80 @@
 import SettingsRepository from "./SettingsRepository";
 import TimeLogDatabase from "./TimeLogDatabase";
 import moment from "moment";
+import {DailyTimelogSettings} from "../core/DailyTimeLogSettingsService";
 
 
 describe("SettingsRepository", () => {
-    const initialKey = moment(new Date(0)).format("YYYY-MM-DD");
     const db: TimeLogDatabase = new TimeLogDatabase();
+    const initialKey = moment(new Date(0)).format("YYYY-MM-DD");
+    const timelogExpectationSettingsDboBase = {
+        validFrom: initialKey,
+        expectedDailyTimeToLogInMinutes: 42,
+        expectedTimelogDays: {
+            wednesday: true,
+            tuesday: false,
+            thursday: true,
+            sunday: false,
+            saturday: true,
+            monday: false,
+            friday: true
+        }
+    };
 
     beforeEach(async () => {
         await db.clearAllTables();
     });
 
-    describe("getExpectedDailyTimelogInMinutes", () => {
+    describe("getExpectedDailyTimeToLogInMinutes", () => {
         it("should return null if no settings has been stored yet", async () => {
-            expect(await SettingsRepository.getExpectedDailyTimelogInMinutes()).toBeNull();
+            expect(await SettingsRepository.getExpectedDailyTimeToLogInMinutes()).toBeNull();
         });
 
-        it("should return null if settings have been stored yet but not this one", async () => {
-            await db.timlogExpectationSettings.put({
-                validFrom: initialKey,
-            });
-            expect(await SettingsRepository.getExpectedDailyTimelogInMinutes()).toBeNull();
-        });
         it("should return the stored expected daily timelog in minutes if it exists", async () => {
             await db.timlogExpectationSettings.put({
+                ...timelogExpectationSettingsDboBase,
                 validFrom: initialKey,
-                expectedDailyTimelogsInMinutes: 42
+                expectedDailyTimeToLogInMinutes: 42,
             });
 
-            expect(await SettingsRepository.getExpectedDailyTimelogInMinutes()).toBe(42);
+            expect(await SettingsRepository.getExpectedDailyTimeToLogInMinutes()).toBe(42);
         });
     });
 
-    describe("setExpectedDailyTimelogInMinutes", () => {
-        it("should store the value with new settings if they don't exist yet", async () => {
-            await SettingsRepository.setExpectedDailyTimelogInMinutes(42);
-
-            const settings = await db.timlogExpectationSettings.get(initialKey);
-            expect(settings).toHaveProperty("expectedDailyTimelogsInMinutes", 42)
+    describe("getExpectedDailyTimelogSettings", () => {
+        it("should return null if no expected daily timelog settings exist yet", async () => {
+            const result = await SettingsRepository.getExpectedDailyTimelogSettings();
+            expect(result).toBeNull();
         });
 
-        it("should update an existing value without to change different properties", async () => {
-            await db.timlogExpectationSettings.put({
+        it("should serve stored settings", async () => {
+            db.timlogExpectationSettings.put({
                 validFrom: initialKey,
-                expectedDailyTimelogsInMinutes: 123,
-                differentProp: "someValue"
-            } as any);
-            await SettingsRepository.setExpectedDailyTimelogInMinutes(42);
+                expectedDailyTimeToLogInMinutes: 123,
+                expectedTimelogDays: {
+                    monday: false,
+                    tuesday: false,
+                    wednesday: true,
+                    thursday: true,
+                    friday: true,
+                    saturday: true,
+                    sunday: false,
+                }
+            });
 
-            expect(await db.timlogExpectationSettings.get(initialKey)).toHaveProperty("expectedDailyTimelogsInMinutes", 42);
-            expect(await db.timlogExpectationSettings.get(initialKey)).toHaveProperty("differentProp", "someValue");
+            const result = await SettingsRepository.getExpectedDailyTimelogSettings();
+            expect(result).toStrictEqual({
+                expectedDailyTimeToLogInMinutes: 123,
+                expectedTimelogDays: {
+                    monday: false,
+                    tuesday: false,
+                    wednesday: true,
+                    thursday: true,
+                    friday: true,
+                    saturday: true,
+                    sunday: false,
+                }
+            } as DailyTimelogSettings)
         });
     });
 });

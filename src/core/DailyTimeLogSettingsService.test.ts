@@ -2,7 +2,7 @@ import DailyTimeLogSettingsService, {DailyTimelogSettings} from "./DailyTimeLogS
 import SettingsRepository from "../local/SettingsRepository";
 
 const dailyTimeLogSettingsBase = {
-    expectedDailyTimelogInMinutes: 480,
+    expectedDailyTimeToLogInMinutes: 480,
     expectedTimelogDays: {
         sunday: false,
         monday: true,
@@ -20,27 +20,18 @@ describe("DailyTimeLogSettingsService", () => {
         jest.resetAllMocks();
     });
 
-    describe("getExpectedDailyTimelogInMinutes", () => {
+    describe("getExpectedDailyTimeToLogInMinutes", () => {
 
         it("should resolve with a default value of 8 hours if nothing is stored in the repository yet", async () => {
-            SettingsRepository.getExpectedDailyTimelogInMinutes = jest.fn().mockResolvedValue(null);
+            SettingsRepository.getExpectedDailyTimeToLogInMinutes = jest.fn().mockResolvedValue(null);
 
-            return expect(DailyTimeLogSettingsService.getExpectedDailyTimelogInMinutes()).resolves.toBe(480);
+            return expect(DailyTimeLogSettingsService.getExpectedDailyTimeToLogInMinutes()).resolves.toBe(480);
         });
 
         it("should return the value of the repository if it serves a value", async () => {
-            SettingsRepository.getExpectedDailyTimelogInMinutes = jest.fn().mockResolvedValue(42);
+            SettingsRepository.getExpectedDailyTimeToLogInMinutes = jest.fn().mockResolvedValue(42);
 
-            return expect(DailyTimeLogSettingsService.getExpectedDailyTimelogInMinutes()).resolves.toBe(42);
-        });
-    });
-    describe("setExpectedDailyTimelogInMinutes", () => {
-        it("should save the given value", async () => {
-            SettingsRepository.setExpectedDailyTimelogInMinutes = jest.fn();
-
-            const result = await DailyTimeLogSettingsService.setExpectedDailyTimelogInMinutes(42);
-            expect(result).toBe(undefined);
-            expect(SettingsRepository.setExpectedDailyTimelogInMinutes).toBeCalledWith(42);
+            return expect(DailyTimeLogSettingsService.getExpectedDailyTimeToLogInMinutes()).resolves.toBe(42);
         });
     });
 
@@ -51,7 +42,7 @@ describe("DailyTimeLogSettingsService", () => {
             const result = await DailyTimeLogSettingsService.getExpectedDailyTimelogSettings();
 
             expect(result).toStrictEqual({
-                expectedDailyTimelogInMinutes: 480,
+                expectedDailyTimeToLogInMinutes: 480,
                 expectedTimelogDays: {
                     sunday: false,
                     monday: true,
@@ -66,7 +57,7 @@ describe("DailyTimeLogSettingsService", () => {
 
         it("should serve received settings", async () => {
             SettingsRepository.getExpectedDailyTimelogSettings = jest.fn().mockResolvedValue({
-                expectedDailyTimelogInMinutes: 480,
+                expectedDailyTimeToLogInMinutes: 480,
                 expectedTimelogDays: {
                     sunday: false,
                     monday: true,

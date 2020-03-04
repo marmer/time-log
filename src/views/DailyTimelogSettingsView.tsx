@@ -33,7 +33,7 @@ export default function DailyTimelogSettingsView() {
                 setDailyTimelogSettingsInputs({
                     loadingState: "DONE",
                     value: {
-                        expectedDailyTimelog: JiraTimeService.minutesToJiraFormat(dailyTimelogSettings.expectedDailyTimelogInMinutes),
+                        expectedDailyTimelog: JiraTimeService.minutesToJiraFormat(dailyTimelogSettings.expectedDailyTimeToLogInMinutes),
                         expectedTimelogDays: [
                             dailyTimelogSettings.expectedTimelogDays.saturday,
                             dailyTimelogSettings.expectedTimelogDays.monday,
@@ -68,7 +68,7 @@ export default function DailyTimelogSettingsView() {
             <form onSubmit={_ => {
                 if (dailyTimelogSettingsInputs.loadingState === "DONE")
                     DailyTimeLogSettingsService.setExpectedDailyTimelogSettings({
-                        expectedDailyTimelogInMinutes: JiraTimeService.jiraFormatToMinutes(dailyTimelogSettingsInputs.value.expectedDailyTimelog),
+                        expectedDailyTimeToLogInMinutes: JiraTimeService.jiraFormatToMinutes(dailyTimelogSettingsInputs.value.expectedDailyTimelog),
                         expectedTimelogDays: {
                             sunday: dailyTimelogSettingsInputs.value.expectedTimelogDays[WeekDays.SUNDAY],
                             monday: dailyTimelogSettingsInputs.value.expectedTimelogDays[WeekDays.MONDAY],
