@@ -1,5 +1,6 @@
 import TimeLogDatabase, {TimlogExpectationSettings} from "./TimeLogDatabase";
 import moment from "moment";
+import {DailyTimelogSettings} from "../core/DailyTimeLogSettingsService";
 
 
 const {timlogExpectationSettings} = new TimeLogDatabase();
@@ -21,6 +22,11 @@ export default class SettingsRepository {
             validFrom: initialKey,
             expectedDailyTimelogsInMinutes
         } as TimlogExpectationSettings)
+    }
+
+    static async getExpectedDailyTimelogSettings(): Promise<DailyTimelogSettings | null> {
+        // TODO: marmer 04.03.2020 implement me
+        return null;
     }
 
     private static async prepareSettings() {
