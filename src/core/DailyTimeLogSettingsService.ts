@@ -21,9 +21,10 @@ export default class DailyTimeLogSettingsService {
     }
 
     static async getExpectedDailyTimelogSettings(): Promise<DailyTimelogSettings> {
-        // TODO: marmer 01.03.2020 implement vor active days and other properties as well
-        return {
-            expectedDailyTimelogInMinutes: await this.getExpectedDailyTimelogInMinutes(),
+        const settings = await SettingsRepository.getExpectedDailyTimelogSettings();
+        const eightHours = 480;
+        return settings ? settings : {
+            expectedDailyTimelogInMinutes: eightHours,
             expectedTimelogDays: {
                 sunday: false,
                 monday: true,
@@ -33,7 +34,7 @@ export default class DailyTimeLogSettingsService {
                 friday: true,
                 saturday: false
             }
-        }
+        };
     }
 
     static async setExpectedDailyTimelogInMinutes(value: number): Promise<void> {
