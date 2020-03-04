@@ -8,7 +8,7 @@ import userEvent from "@testing-library/user-event";
 import deepmerge from "deepmerge";
 
 const dailyTimelogSettingsBase: DailyTimelogSettings = {
-    expectedDailyTimelogInMinutes: 480,
+    expectedDailyTimeToLogInMinutes: 480,
     expectedTimelogDays: {
         sunday: false,
         monday: true,
@@ -35,7 +35,7 @@ describe("SettingsView", () => {
 
     it("should show the current expected daily time to log after loading", async () => {
         DailyTimeLogSettingsService.getExpectedDailyTimelogSettings = jest.fn().mockResolvedValue(
-            deepmerge(dailyTimelogSettingsBase, {expectedDailyTimelogInMinutes: 480})
+            deepmerge(dailyTimelogSettingsBase, {expectedDailyTimeToLogInMinutes: 480})
         );
 
         const underTest = reactTest.render(<SettingsView/>);
@@ -49,7 +49,7 @@ describe("SettingsView", () => {
 
     it("should show tie current expected daily time to log after loading", async () => {
         DailyTimeLogSettingsService.getExpectedDailyTimelogSettings = jest.fn().mockResolvedValue(
-            deepmerge(dailyTimelogSettingsBase, {expectedDailyTimelogInMinutes: 480})
+            deepmerge(dailyTimelogSettingsBase, {expectedDailyTimeToLogInMinutes: 480})
         );
         DailyTimeLogSettingsService.setExpectedDailyTimelogSettings = jest.fn();
 
@@ -61,12 +61,12 @@ describe("SettingsView", () => {
         userEvent.click(underTest.getByTitle("save"));
 
         expect(DailyTimeLogSettingsService.setExpectedDailyTimelogSettings).toBeCalledWith(
-            deepmerge(dailyTimelogSettingsBase, {expectedDailyTimelogInMinutes: 15}));
+            deepmerge(dailyTimelogSettingsBase, {expectedDailyTimeToLogInMinutes: 15}));
     });
 
     it("should mark invalid values and make saving of that invalid value impossible", async () => {
         DailyTimeLogSettingsService.getExpectedDailyTimelogSettings = jest.fn().mockResolvedValue(
-            deepmerge(dailyTimelogSettingsBase, {expectedDailyTimelogInMinutes: 480}));
+            deepmerge(dailyTimelogSettingsBase, {expectedDailyTimeToLogInMinutes: 480}));
         DailyTimeLogSettingsService.setExpectedDailyTimelogSettings = jest.fn();
 
         const underTest = reactTest.render(<SettingsView/>);
@@ -82,7 +82,7 @@ describe("SettingsView", () => {
     it("should save and set saved valid values", async () => {
         DailyTimeLogSettingsService.getExpectedDailyTimelogSettings = jest.fn().mockResolvedValue(
             deepmerge(dailyTimelogSettingsBase, {
-                expectedDailyTimelogInMinutes: 480,
+                expectedDailyTimeToLogInMinutes: 480,
                 expectedTimelogDays: {
                     sunday: false,
                     monday: true,
@@ -111,7 +111,7 @@ describe("SettingsView", () => {
 
         expect(DailyTimeLogSettingsService.setExpectedDailyTimelogSettings).toBeCalledWith(
             deepmerge(dailyTimelogSettingsBase, {
-                expectedDailyTimelogInMinutes: 15,
+                expectedDailyTimeToLogInMinutes: 15,
                 expectedTimelogDays: {
                     sunday: true,
                     monday: false,

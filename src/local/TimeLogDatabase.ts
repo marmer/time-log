@@ -3,7 +3,7 @@ import {TimeLog} from "../core/TimeLogService";
 
 export default class TimeLogDatabase extends Dexie {
     timelogDay: Dexie.Table<TimelogDayDbo, string>;
-    timlogExpectationSettings: Dexie.Table<TimlogExpectationSettings, string>;
+    timlogExpectationSettings: Dexie.Table<TimlogExpectationSettingsDbo, string>;
 
     constructor() {
         super("TimeLogDatabase");
@@ -28,7 +28,16 @@ export interface TimelogDayDbo {
     timelogs: TimeLog[];
 }
 
-export interface TimlogExpectationSettings {
+export interface TimlogExpectationSettingsDbo {
     validFrom: string,
-    expectedDailyTimelogsInMinutes?: number,
+    expectedDailyTimeToLogInMinutes: number,
+    expectedTimelogDays: {
+        sunday: boolean,
+        monday: boolean,
+        tuesday: boolean,
+        wednesday: boolean,
+        thursday: boolean,
+        friday: boolean,
+        saturday: boolean
+    }
 }
