@@ -30,22 +30,7 @@ export default class TimeLogService {
     }
 
     private static isExpectedDay(day: moment.Moment, settings: DailyTimelogSettings) {
-        switch (day.get("day")) {
-            case 1:
-                return settings.expectedTimelogDays.monday;
-            case 2:
-                return settings.expectedTimelogDays.tuesday;
-            case 3:
-                return settings.expectedTimelogDays.wednesday;
-            case 4:
-                return settings.expectedTimelogDays.thursday;
-            case 5:
-                return settings.expectedTimelogDays.friday;
-            case 6:
-                return settings.expectedTimelogDays.saturday;
-            default:
-                return settings.expectedTimelogDays.sunday;
-        }
+        return DailyTimeLogSettingsService.isExpectedWeekday(day.toDate(), settings);
     }
 
     private static getDateRangeInclusive(startInclusive: Moment, endInclusive: Moment): Moment[] {
