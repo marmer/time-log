@@ -37,8 +37,32 @@ export default class DailyTimeLogSettingsService {
     }
 
     static async getExpectedDailyTimeToLogInMinutesFor(day: Date): Promise<number> {
-        const eightHours = 480;
-        const configuredHoursToWorkPerDay = await SettingsRepository.getExpectedDailyTimeToLogInMinutes();
-        return Promise.resolve(configuredHoursToWorkPerDay ? configuredHoursToWorkPerDay : eightHours);
+        const settings = await this.getExpectedDailyTimelogSettings();
+
+        let isWeekdayExpected = this.isExpectedWeekday(day, settings);
+
+        return isWeekdayExpected ?
+            settings.expectedDailyTimeToLogInMinutes :
+            0;
+    }
+
+    public static isExpectedWeekday(day: Date, settings: DailyTimelogSettings): boolean {
+        const {monday, friday, thursday, wednesday, tuesday, sunday, saturday} = settings.expectedTimelogDays;
+        switch (day.getDay()) {
+            case 1:
+                return monday;
+            case 2:
+                return tuesday;
+            case 3:
+                return wednesday;
+            case 4:
+                return thursday;
+            case 5:
+                return friday;
+            case 6:
+                return saturday;
+            default:
+                return sunday;
+        }
     }
 }
