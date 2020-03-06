@@ -21,11 +21,14 @@ const baseTimeLog: TimeLog = {
 describe("TimelogDayView", () => {
 
     beforeEach(() => {
+        jest.unmock("../core/JiraTimeService");
+        jest.unmock("../core/DailyTimeLogSettingsService");
+        jest.unmock("../core/TimeLogService");
         jest.fn().mockReset();
         JiraTimeService.minutesToJiraFormat = jest.fn().mockImplementation(minutes => minutes.toString());
         JiraTimeService.jiraFormatToMinutes = jest.fn().mockImplementation(jiraFormat => jiraFormat ? Number.parseInt(jiraFormat) : 0);
         JiraTimeService.isValidJiraFormat = jest.fn().mockReturnValue(true);
-        DailyTimeLogSettingsService.getExpectedDailyTimeToLogInMinutes = jest.fn().mockResolvedValue(42);
+        DailyTimeLogSettingsService.getExpectedDailyTimeToLogInMinutesFor = jest.fn().mockResolvedValue(42);
         TimeLogService.getExpectedTimeToLogDeltaInMonthInMinutesUntilExclusive = jest.fn().mockResolvedValue(1337);
     });
 
@@ -481,7 +484,12 @@ describe("TimelogDayView", () => {
             } as TimeLog]);
 
             const day = new Date(2020, 2, 2);
-            DailyTimeLogSettingsService.getExpectedDailyTimeToLogInMinutes = jest.fn().mockResolvedValue(100);
+            DailyTimeLogSettingsService.getExpectedDailyTimeToLogInMinutesFor = jest.fn().mockImplementation((d: Date) => {
+                if (d !== day) {
+                    throw new Error("Unexpected date: " + d);
+                }
+                return Promise.resolve(100);
+            });
 
             const underTest = reactTest.render(<TimelogDayView day={day}/>);
 
@@ -497,7 +505,7 @@ describe("TimelogDayView", () => {
             } as TimeLog]);
 
             const day = new Date(2020, 2, 2);
-            DailyTimeLogSettingsService.getExpectedDailyTimeToLogInMinutes = jest.fn().mockRejectedValue(new Error("Oh no, oh why, why me, .... noooo"));
+            DailyTimeLogSettingsService.getExpectedDailyTimeToLogInMinutesFor = jest.fn().mockRejectedValue(new Error("Oh no, oh why, why me, .... noooo"));
 
             const underTest = reactTest.render(<TimelogDayView day={day}/>);
 
@@ -514,7 +522,7 @@ describe("TimelogDayView", () => {
 
             const day = new Date(2020, 2, 2);
 
-            DailyTimeLogSettingsService.getExpectedDailyTimeToLogInMinutes = jest.fn().mockResolvedValue(100);
+            DailyTimeLogSettingsService.getExpectedDailyTimeToLogInMinutesFor = jest.fn().mockResolvedValue(100);
 
             TimeLogService.getExpectedTimeToLogDeltaInMonthInMinutesUntilExclusive = jest.fn().mockImplementation(d => isEqualDate(d, day) ? Promise.resolve(20) : Promise.reject(new Error("Unexpected value: " + d)));
             const underTest = reactTest.render(<TimelogDayView day={day}/>);
@@ -532,7 +540,7 @@ describe("TimelogDayView", () => {
 
             const day = new Date(2020, 2, 2);
 
-            DailyTimeLogSettingsService.getExpectedDailyTimeToLogInMinutes = jest.fn().mockRejectedValue(new Error("woohoo"));
+            DailyTimeLogSettingsService.getExpectedDailyTimeToLogInMinutesFor = jest.fn().mockRejectedValue(new Error("woohoo"));
 
             TimeLogService.getExpectedTimeToLogDeltaInMonthInMinutesUntilExclusive = jest.fn().mockImplementation(d => isEqualDate(d, day) ? Promise.resolve(20) : Promise.reject(new Error("Unexpected value: " + d)));
             const underTest = reactTest.render(<TimelogDayView day={day}/>);
@@ -551,7 +559,7 @@ describe("TimelogDayView", () => {
 
             const day = new Date(2020, 2, 2);
 
-            DailyTimeLogSettingsService.getExpectedDailyTimeToLogInMinutes = jest.fn().mockResolvedValue(100);
+            DailyTimeLogSettingsService.getExpectedDailyTimeToLogInMinutesFor = jest.fn().mockResolvedValue(100);
 
             TimeLogService.getExpectedTimeToLogDeltaInMonthInMinutesUntilExclusive = jest.fn().mockRejectedValue(new Error("Fancy something"));
             const underTest = reactTest.render(<TimelogDayView day={day}/>);

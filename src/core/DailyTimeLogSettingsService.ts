@@ -36,7 +36,7 @@ export default class DailyTimeLogSettingsService {
         };
     }
 
-    static async getExpectedDailyTimeToLogInMinutes(): Promise<number> {
+    static async getExpectedDailyTimeToLogInMinutesFor(day: Date): Promise<number> {
         const eightHours = 480;
         const configuredHoursToWorkPerDay = await SettingsRepository.getExpectedDailyTimeToLogInMinutes();
         return Promise.resolve(configuredHoursToWorkPerDay ? configuredHoursToWorkPerDay : eightHours);

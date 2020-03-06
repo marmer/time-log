@@ -224,7 +224,7 @@ export default class TimelogDayView extends React.Component<TimelogDayViewProps,
                 loadingState: "LOADING"
             }
         });
-        DailyTimeLogSettingsService.getExpectedDailyTimeToLogInMinutes()
+        DailyTimeLogSettingsService.getExpectedDailyTimeToLogInMinutesFor(this.props.day)
             .then(expectedTime => this.setState({
                 expectedDailyTimeToLogInMinutes: {
                     loadingState: "DONE",
