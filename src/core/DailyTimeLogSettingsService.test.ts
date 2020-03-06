@@ -24,14 +24,14 @@ describe("DailyTimeLogSettingsService", () => {
 
         it("should resolve with a default value of 8 hours if nothing is stored in the repository yet", async () => {
             SettingsRepository.getExpectedDailyTimeToLogInMinutes = jest.fn().mockResolvedValue(null);
-
-            return expect(DailyTimeLogSettingsService.getExpectedDailyTimeToLogInMinutesFor(this.props.day)).resolves.toBe(480);
+            const day = new Date(2020, 0, 2);
+            return expect(DailyTimeLogSettingsService.getExpectedDailyTimeToLogInMinutesFor(day)).resolves.toBe(480);
         });
 
         it("should return the value of the repository if it serves a value", async () => {
             SettingsRepository.getExpectedDailyTimeToLogInMinutes = jest.fn().mockResolvedValue(42);
-
-            return expect(DailyTimeLogSettingsService.getExpectedDailyTimeToLogInMinutesFor(this.props.day)).resolves.toBe(42);
+            const day = new Date(2020, 0, 2);
+            return expect(DailyTimeLogSettingsService.getExpectedDailyTimeToLogInMinutesFor(day)).resolves.toBe(42);
         });
     });
 
