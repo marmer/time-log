@@ -36,6 +36,8 @@ export default class RemoteLoginService {
     static async loginBySearchString(searchString: string): Promise<LoginResult> {
         const oauthResponse: GoogleOAuthResponse = SearchStringService.parse(searchString);
 
+        // TODO: marmer 21.03.2020 load refresh token
+
         return GoogleUserInfoCrudService.getUserInfo(oauthResponse.access_token)
             .then(userInfo => {
                 UserService.setCurrentuser({

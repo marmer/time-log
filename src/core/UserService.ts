@@ -12,6 +12,7 @@ export default class UserService {
     static logout() {
         RemoteLoginService.logout();
         UserRepository.removeCurrentUser();
+        // TODO: marmer 21.03.2020 remove locally stored data
         WindowService.reload();
     }
 
