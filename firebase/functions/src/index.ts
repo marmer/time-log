@@ -5,8 +5,9 @@ const unirest = require("unirest");
 
 const app = express();
 
-app.get("/v1/auth/token/google/token/refresh/:refreshToken", async (request, response) => {
+app.post("/v1/auth/token/google/token/refresh/:refreshToken", async (request, response) => {
     response.set('Access-Control-Allow-Origin', 'https://marmer.github.io');
+
 
     const req = unirest("POST", "https://oauth2.googleapis.com/token");
 
@@ -15,7 +16,7 @@ app.get("/v1/auth/token/google/token/refresh/:refreshToken", async (request, res
         "refresh_token": request.params.refreshToken,
         "client_id": "502499757378-a54o9nthuijpls8ihifb37tltl76tvgj.apps.googleusercontent.com",
         "grant_type": "refresh_token",
-        "client_secret": process.env.CLIENT_SECRET
+        "client_secret": ###set client secret here before deployment ###
     });
 
 
