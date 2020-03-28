@@ -22,7 +22,7 @@ app.post("/v1/auth/token/google/token/refresh/:refreshToken", async (request, re
 
     req.end((res: any) => {
         response.status(res.status ? res.status : 500);
-        if (res.error) {
+        if (!res.body && res.error) {
             response.send(JSON.stringify({
                 "error": "unexpected error",
                 "error_description": "unexpected error"
