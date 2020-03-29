@@ -3,7 +3,7 @@ import GoogleUserInfoCrudService from "../google/oauth/GoogleUserInfoCrudService
 import UserService from "./UserService";
 
 export interface LoginResult {
-    sourceUrl: string
+    sourceUrl: string;
 }
 
 export interface GoogleOAuthSuccessResponse {
@@ -26,17 +26,12 @@ export default class RemoteLoginService {
         return currentUser ?
             fetch("https://oauth2.googleapis.com/revoke?token=" + UserService.getCurrentUser()?.accessToken, {
                 method: "GET",
-                headers: {
-                    "content-type": "application/x-www-form-urlencoded"
-                }
             }) :
             Promise.resolve()
     }
 
     static async loginBySearchString(searchString: string): Promise<LoginResult> {
         const oauthResponse: GoogleOAuthResponse = SearchStringService.parse(searchString);
-
-        // TODO: marmer 21.03.2020 load refresh token
 
         return GoogleUserInfoCrudService.getUserInfo(oauthResponse.access_token)
             .then(userInfo => {
