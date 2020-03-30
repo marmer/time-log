@@ -62,5 +62,5 @@ const toSearchString = (requestProps: { [p: string]: string | number | boolean }
 
     return "?" + Object.keys(requestProps)
         .map((key: string) => key + "=" + encodeURIComponent(requestProps[key]))
-        .reduce((previousValue, currentValue) => previousValue + "&" + currentValue);
+        .join("&");
 };
