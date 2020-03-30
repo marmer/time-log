@@ -7,6 +7,9 @@ const unirest = require("unirest");
 const app = express();
 app.use(bodyParser.json());
 
+// TODO: marmer 29.03.2020 Do Not Commit this Secret!!!!!
+const clientSecret = set_client_secret_before_deployment;
+
 app.get("/v1/auth/code", (request, response) => {
     response.set('Access-Control-Allow-Origin', 'https://marmer.github.io');
 
@@ -29,8 +32,7 @@ app.get("/v1/auth/code", (request, response) => {
         "redirect_uri": !query.state || query.state.includes("localhost") ?
             "http://localhost:5001/time-log-e5c6b/us-central1/timelogapi/v1/login" :
             "https://us-central1-time-log-e5c6b.cloudfunctions.net/timelogapi/v1/login",
-        // TODO: marmer 29.03.2020 Do Not Commit this Secret!!!!!
-        "client_secret": ###set client secret here before deployment ###
+        "client_secret": clientSecret
     });
 
     req.headers({
