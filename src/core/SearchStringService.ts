@@ -18,7 +18,7 @@ export default class SearchStringService {
 
         return "?" + Object.keys(requestProps)
             .map((key: string) => key + "=" + encodeURIComponent(requestProps[key]))
-            .reduce((previousValue, currentValue) => previousValue + "&" + currentValue);
+            .join("&");
     }
 
     private static removeSearchStringOpening(searchString: string) {
