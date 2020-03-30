@@ -7,8 +7,7 @@ const unirest = require("unirest");
 const app = express();
 app.use(bodyParser.json());
 
-app.get("/v1/login", async (request, response) => {
-
+app.get("/v1/login", (request, response) => {
     response.set('Access-Control-Allow-Origin', 'https://marmer.github.io');
 
     const query: { state: string, code: string, scope: string, authuser: string, prompt: string, error?: string } = {...request.query};
@@ -24,15 +23,12 @@ app.get("/v1/login", async (request, response) => {
         "code": query.code,
         "client_id": "502499757378-a54o9nthuijpls8ihifb37tltl76tvgj.apps.googleusercontent.com",
         "grant_type": "authorization_code",
-        "redirect_uri": query.state.includes("localhost") ?
+        "redirect_uri": !query.state || query.state.includes("localhost") ?
             "http://localhost:5001/time-log-e5c6b/us-central1/timelogapi/v1/login" :
             "https://us-central1-time-log-e5c6b.cloudfunctions.net/timelogapi/v1/login",
         // TODO: marmer 29.03.2020 Do Not Commit this Secret!!!!!
         "client_secret": ###set client secret here before deployment ###
-    });
-
-
-    req.end((res: any) => {
+    }).then(() => req.end((res: any) => {
         response.status(res.status ? res.status : 500);
         if (!res.body && res.error) {
             response.redirect(query.state + toSearchString({
@@ -43,6 +39,13 @@ app.get("/v1/login", async (request, response) => {
         } else {
             response.redirect(query.state + toSearchString({...query, ...res.body}));
         }
+    })).catch((error: any) => {
+        response.redirect(query.state + toSearchString({
+            ...query,
+            error: "unexpected error",
+            error_description: error ? "" + error : "unexpected error"
+        }));
+
     });
 });
 
