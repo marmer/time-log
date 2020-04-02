@@ -8,7 +8,7 @@ const app = express();
 app.use(bodyParser.json());
 
 // TODO: marmer 29.03.2020 Do Not Commit this Secret!!!!!
-const clientSecret = set_client_secret_before_deployment;
+const clientSecret = enter_secret_here;
 
 // TODO: marmer 30.03.2020 cleanup and remove duplications
 
@@ -20,21 +20,25 @@ app.get("/v1/auth/code", (request, response) => {
     const req = unirest("POST", "https://oauth2.googleapis.com/token");
 
     if (query.error) {
+        console.log("Not trying to get a refresh token for a token because we got an error allready: " + query.error);
         response.redirect(query.state + toSearchString(query as any))
     }
     if (!query.code) {
-        response.redirect("Missing parameter code")
+        console.log("Missing parameter 'code'");
+        response.redirect(query.state + toSearchString(query as any))
     }
 
     req.timeout(30000);
+    let redirectUri = !query.state || query.state.includes("localhost") ?
+        "http://localhost:5001/time-log-e5c6b/us-central1/timelogapi/v1/auth/code" :
+        "https://us-central1-time-log-e5c6b.cloudfunctions.net/timelogapi/auth/code";
+
     req.query({
         "code": query.code,
-        "client_id": "502499757378-a54o9nthuijpls8ihifb37tltl76tvgj.apps.googleusercontent.com",
-        "grant_type": "authorization_code",
-        "redirect_uri": !query.state || query.state.includes("localhost") ?
-            "http://localhost:5001/time-log-e5c6b/us-central1/timelogapi/v1/login" :
-            "https://us-central1-time-log-e5c6b.cloudfunctions.net/timelogapi/v1/login",
-        "client_secret": clientSecret
+        "client_id": encodeURIComponent("502499757378-a54o9nthuijpls8ihifb37tltl76tvgj.apps.googleusercontent.com"),
+        "grant_type": encodeURIComponent("authorization_code"),
+        "redirect_uri": encodeURI(redirectUri),
+        "client_secret": encodeURIComponent(clientSecret)
     });
 
     req.headers({
@@ -44,6 +48,7 @@ app.get("/v1/auth/code", (request, response) => {
     req.form({});
 
     req.end((res: any) => {
+        console.log("Refresh code loading done with status: " + res.status);
         response.status(res.status ? res.status : 500);
         if (!res.body && res.error) {
             response.redirect(query.state + toSearchString({
@@ -73,10 +78,10 @@ app.get("/v1/auth/refresh_token", (request, response) => {
 
     req.timeout(30000);
     req.query({
-        "refresh_token": query.refresh_token,
-        "client_id": "502499757378-a54o9nthuijpls8ihifb37tltl76tvgj.apps.googleusercontent.com",
-        "grant_type": "refresh_token",
-        "client_secret": clientSecret
+        "refresh_token": encodeURIComponent(query.refresh_token),
+        "client_id": encodeURIComponent("502499757378-a54o9nthuijpls8ihifb37tltl76tvgj.apps.googleusercontent.com"),
+        "grant_type": encodeURIComponent("refresh_token"),
+        "client_secret": encodeURIComponent(clientSecret)
     });
 
     req.headers({
