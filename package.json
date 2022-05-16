@@ -26,7 +26,7 @@
     "dexie": "^2.0.4",
     "font-awesome": "^4.7.0",
     "lockr": "^0.8.5",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "npm": "^6.13.7",
     "react": "^16.12.0",
     "react-datepicker": "^2.11.0",
