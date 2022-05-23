@@ -23,7 +23,7 @@
     "bootstrap": "^4.4.1",
     "deep-equal": "^2.0.1",
     "deepmerge": "^4.2.2",
-    "dexie": "^2.0.4",
+    "dexie": "^3.2.2",
     "font-awesome": "^4.7.0",
     "lockr": "^0.8.5",
     "moment": "^2.24.0",
